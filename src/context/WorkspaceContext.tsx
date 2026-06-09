@@ -85,6 +85,20 @@ export interface Attachment {
   created_at: string;
 }
 
+export interface ProjectMessage {
+  id: string;
+  project_id: string;
+  user_id: string;
+  content: string;
+  created_at: string;
+  profile?: {
+    id: string;
+    email: string;
+    full_name: string;
+    avatar_url: string;
+  };
+}
+
 export interface Notification {
   id: string;
   user_id: string;
@@ -139,6 +153,8 @@ interface WorkspaceContextType {
   deleteComment: (commentId: string) => Promise<{ error: any }>;
   addAttachment: (taskId: string, name: string, url: string, fileType: string, size: number) => Promise<{ attachment: Attachment | null; error: any }>;
   deleteAttachment: (attachmentId: string) => Promise<{ error: any }>;
+  getProjectMessages: (projectId: string) => Promise<{ messages: ProjectMessage[]; error: any }>;
+  sendProjectMessage: (projectId: string, content: string) => Promise<{ message: ProjectMessage | null; error: any }>;
   markNotificationRead: (notificationId: string) => Promise<void>;
   markAllNotificationsRead: () => Promise<void>;
   logActivity: (action: string, targetType: string, targetName: string) => Promise<void>;
@@ -459,7 +475,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
       if (supabaseProfile) {
         profile = supabaseProfile;
-      } else {
+      } else if (isUsingMock) {
         const dbState = JSON.parse(localStorage.getItem('taskflow_mock_db') || '{}');
         profile = (dbState.profiles || []).find((p: any) => p.email.toLowerCase() === email.toLowerCase());
       }
@@ -782,6 +798,18 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         .single();
       
       if (error) throw error;
+
+      // Log activity
+      let task = null;
+      const { data: supTask } = await supabase.from('tasks').select('*').eq('id', taskId).maybeSingle();
+      if (supTask) {
+        task = supTask;
+      } else {
+        const dbState = JSON.parse(localStorage.getItem('taskflow_mock_db') || '{}');
+        task = (dbState.tasks || []).find((t: any) => t.id === taskId);
+      }
+      await logActivity(`added subtask "${title}" to`, 'task', task ? task.title : 'task');
+
       return { item: data, error: null };
     } catch (error: any) {
       return { item: null, error };
@@ -790,12 +818,34 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const toggleChecklistItem = async (itemId: string, isCompleted: boolean) => {
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('checklists')
         .update({ is_completed: isCompleted })
-        .eq('id', itemId);
+        .eq('id', itemId)
+        .select()
+        .single();
       
-      return { error };
+      if (error) throw error;
+
+      let item = data;
+      if (!item) {
+        const dbState = JSON.parse(localStorage.getItem('taskflow_mock_db') || '{}');
+        item = (dbState.checklists || []).find((c: any) => c.id === itemId);
+      }
+      if (item) {
+        let task = null;
+        const { data: supTask } = await supabase.from('tasks').select('*').eq('id', item.task_id).maybeSingle();
+        if (supTask) {
+          task = supTask;
+        } else {
+          const dbState = JSON.parse(localStorage.getItem('taskflow_mock_db') || '{}');
+          task = (dbState.tasks || []).find((t: any) => t.id === item.task_id);
+        }
+        const actionText = isCompleted ? 'completed subtask' : 'uncompleted subtask';
+        await logActivity(`${actionText} "${item.title}" in`, 'task', task ? task.title : 'task');
+      }
+      
+      return { error: null };
     } catch (error: any) {
       return { error };
     }
@@ -860,6 +910,18 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         await triggerNotification(task.assignee_id, `New Comment on "${task.title}"`, `${user.full_name}: "${content.substring(0, 40)}${content.length > 40 ? '...' : ''}"`);
       }
 
+      // Mention notifications
+      members.forEach((member) => {
+        const name = member.profile?.full_name;
+        if (name && content.toLowerCase().includes(`@${name.toLowerCase()}`) && member.user_id !== user.id) {
+          triggerNotification(
+            member.user_id,
+            `Mentioned you in comment on "${task?.title || 'task'}"`,
+            `${user.full_name}: "${content.substring(0, 40)}${content.length > 40 ? '...' : ''}"`
+          );
+        }
+      });
+
       return { comment: { ...data, profile }, error: null };
     } catch (error: any) {
       return { comment: null, error };
@@ -906,6 +968,78 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       return { error };
     } catch (error: any) {
       return { error };
+    }
+  };
+
+  const getProjectMessages = async (projectId: string) => {
+    try {
+      const { data: messagesData, error } = await supabase
+        .from('project_messages')
+        .select('*, profiles(*)')
+        .eq('project_id', projectId)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+
+      const messages = (messagesData || []).map((m: any) => {
+        let profile = m.profiles;
+        if (!profile) {
+          const dbState = JSON.parse(localStorage.getItem('taskflow_mock_db') || '{}');
+          profile = (dbState.profiles || []).find((p: any) => p.id === m.user_id);
+        }
+        return { ...m, profile };
+      });
+
+      return { messages, error: null };
+    } catch (error: any) {
+      console.error('Error loading project messages:', error);
+      return { messages: [], error };
+    }
+  };
+
+  const sendProjectMessage = async (projectId: string, content: string) => {
+    try {
+      if (!user) throw new Error('Not authenticated');
+
+      const { data, error } = await supabase
+        .from('project_messages')
+        .insert({ project_id: projectId, user_id: user.id, content })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      let profile = null;
+      const { data: supabaseProfile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+      
+      if (supabaseProfile) {
+        profile = supabaseProfile;
+      } else {
+        const dbState = JSON.parse(localStorage.getItem('taskflow_mock_db') || '{}');
+        profile = (dbState.profiles || []).find((p: any) => p.id === user.id);
+      }
+
+      // Mention notifications in chat
+      members.forEach((member) => {
+        const name = member.profile?.full_name;
+        if (name && content.toLowerCase().includes(`@${name.toLowerCase()}`) && member.user_id !== user.id) {
+          const proj = projects.find(p => p.id === projectId);
+          triggerNotification(
+            member.user_id,
+            `Mentioned in project chat: ${proj?.name || 'Project'}`,
+            `${user.full_name}: "${content.substring(0, 40)}${content.length > 40 ? '...' : ''}"`
+          );
+        }
+      });
+
+      return { message: { ...data, profile }, error: null };
+    } catch (error: any) {
+      console.error('Error sending project message:', error);
+      return { message: null, error };
     }
   };
 

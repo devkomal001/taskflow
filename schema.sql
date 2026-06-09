@@ -101,6 +101,15 @@ CREATE TABLE IF NOT EXISTS attachments (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
 
+-- Project Messages Table (Team Chat)
+CREATE TABLE IF NOT EXISTS project_messages (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  project_id UUID REFERENCES projects(id) ON DELETE CASCADE NOT NULL,
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
+  content TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
 -- Notifications Table
 CREATE TABLE IF NOT EXISTS notifications (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -265,6 +274,9 @@ DROP POLICY IF EXISTS "Enable insert for all on firewall_rate_limits" ON firewal
 DROP POLICY IF EXISTS "Enable update for all on firewall_rate_limits" ON firewall_rate_limits;
 DROP POLICY IF EXISTS "Enable insert for all on audit_logs" ON audit_logs;
 
+DROP POLICY IF EXISTS "Workspace members can view project messages" ON project_messages;
+DROP POLICY IF EXISTS "Workspace members can insert project messages" ON project_messages;
+
 -- Profiles Policies
 CREATE POLICY "Public profiles are viewable by everyone" ON profiles FOR SELECT USING (true);
 CREATE POLICY "Users can insert their own profiles" ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
@@ -302,17 +314,22 @@ CREATE POLICY "Users can delete their own membership" ON workspace_members FOR D
 
 -- Projects Policies
 CREATE POLICY "Workspace members can view projects" ON projects FOR SELECT USING (
-  public.is_workspace_member(workspace_id)
+  public.is_workspace_member(workspace_id) OR
+  public.is_workspace_owner(workspace_id)
 );
 CREATE POLICY "Workspace managers/owners can manage projects" ON projects FOR ALL USING (
-  public.has_workspace_role(workspace_id, ARRAY['owner', 'manager'])
+  public.has_workspace_role(workspace_id, ARRAY['owner', 'manager']) OR
+  public.is_workspace_owner(workspace_id)
 );
 
 -- Tasks Policies
 CREATE POLICY "Workspace members can view/manage tasks" ON tasks FOR ALL USING (
   EXISTS (
     SELECT 1 FROM projects p 
-    WHERE p.id = tasks.project_id AND public.is_workspace_member(p.workspace_id)
+    WHERE p.id = tasks.project_id AND (
+      public.is_workspace_member(p.workspace_id) OR
+      public.is_workspace_owner(p.workspace_id)
+    )
   )
 );
 
@@ -321,11 +338,33 @@ CREATE POLICY "Users can manage their own notifications" ON notifications FOR AL
 
 -- Activity Logs Policies
 CREATE POLICY "Workspace members can view activity logs" ON activity_logs FOR SELECT USING (
-  public.is_workspace_member(workspace_id)
+  public.is_workspace_member(workspace_id) OR
+  public.is_workspace_owner(workspace_id)
 );
 CREATE POLICY "Workspace members can insert activity logs" ON activity_logs FOR INSERT WITH CHECK (
   public.is_workspace_member(workspace_id) OR
   public.is_workspace_owner(workspace_id)
+);
+
+-- Project Messages Policies
+ALTER TABLE project_messages ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Workspace members can view project messages" ON project_messages FOR SELECT USING (
+  EXISTS (
+    SELECT 1 FROM projects p 
+    WHERE p.id = project_messages.project_id AND (
+      public.is_workspace_member(p.workspace_id) OR
+      public.is_workspace_owner(p.workspace_id)
+    )
+  )
+);
+CREATE POLICY "Workspace members can insert project messages" ON project_messages FOR INSERT WITH CHECK (
+  EXISTS (
+    SELECT 1 FROM projects p 
+    WHERE p.id = project_messages.project_id AND (
+      public.is_workspace_member(p.workspace_id) OR
+      public.is_workspace_owner(p.workspace_id)
+    )
+  ) AND auth.uid() = user_id
 );
 
 -- ==========================================

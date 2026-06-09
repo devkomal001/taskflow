@@ -249,6 +249,7 @@ function loadDb() {
       attachments: defaultAttachments,
       notifications: defaultNotifications,
       activity_logs: defaultActivityLogs,
+      project_messages: [],
       firewall_blocked_ips: [],
       firewall_rate_limits: [],
       audit_logs: []
@@ -259,6 +260,7 @@ function loadDb() {
     if (!db.firewall_blocked_ips) db.firewall_blocked_ips = [];
     if (!db.firewall_rate_limits) db.firewall_rate_limits = [];
     if (!db.audit_logs) db.audit_logs = [];
+    if (!db.project_messages) db.project_messages = [];
     if (db.profiles) {
       db.profiles = db.profiles.map((p: any) => ({
         ...p,

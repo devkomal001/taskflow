@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { FirewallProvider } from './context/FirewallContext';
 import { WorkspaceProvider } from './context/WorkspaceContext';
+import { ThemeProvider } from './context/ThemeContext';
 
 // Pages
 import Login from './pages/Login';
@@ -63,11 +64,11 @@ const DashboardLayout: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-950 text-slate-100">
+    <div className="flex h-screen w-screen overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <div className="flex flex-1 flex-col overflow-hidden">
         <Topbar onMenuClick={() => setIsSidebarOpen(true)} />
-        <main className="flex-1 overflow-y-auto bg-slate-900/50 p-6 md:p-8">
+        <main className="flex-1 overflow-y-auto bg-slate-100/40 dark:bg-slate-900/30 p-6 md:p-8">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/projects" element={<Projects />} />
@@ -96,29 +97,31 @@ const DashboardLayout: React.FC = () => {
 const App: React.FC = () => {
   return (
     <Router>
-      <AuthProvider>
-        <FirewallProvider>
-          <WorkspaceProvider>
-            <Routes>
-              {/* Auth Portals */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
+      <ThemeProvider>
+        <AuthProvider>
+          <FirewallProvider>
+            <WorkspaceProvider>
+              <Routes>
+                {/* Auth Portals */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
 
-              {/* Dashboard Workspace */}
-              <Route
-                path="/*"
-                element={
-                  <ProtectedRoute>
-                    <DashboardLayout />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </WorkspaceProvider>
-        </FirewallProvider>
-      </AuthProvider>
+                {/* Dashboard Workspace */}
+                <Route
+                  path="/*"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+            </WorkspaceProvider>
+          </FirewallProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </Router>
   );
 };

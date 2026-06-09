@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useWorkspace } from '../../context/WorkspaceContext';
-import { Bell, Search, CheckCheck, Inbox, ShieldAlert, Menu } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
+import { Bell, Search, CheckCheck, Inbox, Menu, Sun, Moon } from 'lucide-react';
 
 interface TopbarProps {
   onMenuClick?: () => void;
@@ -9,6 +10,7 @@ interface TopbarProps {
 
 const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
   const { notifications, markNotificationRead, markAllNotificationsRead } = useWorkspace();
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -51,41 +53,50 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
   };
 
   return (
-    <header className="flex h-16 w-full items-center justify-between border-b border-slate-800/80 bg-slate-950/40 px-6 backdrop-blur-md">
+    <header className="flex h-16 w-full items-center justify-between border-b border-slate-200 dark:border-slate-800/80 bg-white/80 dark:bg-slate-950/40 px-6 backdrop-blur-md transition-colors duration-200 text-slate-850 dark:text-white">
       {/* Menu Hamburger Trigger & Page Title */}
       <div className="flex items-center gap-3">
         <button
           onClick={onMenuClick}
-          className="rounded-xl border border-slate-800 bg-slate-900/40 p-2 text-slate-400 hover:bg-slate-900 hover:text-slate-200 md:hidden transition-colors"
+          className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-700 dark:hover:text-slate-200 md:hidden transition-colors"
         >
           <Menu size={18} />
         </button>
-        <h1 className="text-base font-bold tracking-tight text-white md:text-xl truncate max-w-[180px] sm:max-w-xs md:max-w-none">
+        <h1 className="text-base font-bold tracking-tight text-slate-850 dark:text-white md:text-xl truncate max-w-[180px] sm:max-w-xs md:max-w-none">
           {getHeaderTitle()}
         </h1>
       </div>
 
       {/* Global Actions Bar */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         {/* Search Input */}
         <div className="relative hidden max-w-xs md:block">
-          <Search size={16} className="absolute left-3.5 top-2.5 text-slate-500" />
+          <Search size={16} className="absolute left-3.5 top-2.5 text-slate-400 dark:text-slate-500" />
           <input
             type="text"
             placeholder="Search workspace..."
-            className="w-56 rounded-xl border border-slate-800 bg-slate-900/40 py-2 pl-10 pr-4 text-xs text-slate-200 placeholder-slate-500 focus:border-brand-500/80 focus:bg-slate-900 focus:outline-none transition-all duration-200"
+            className="w-56 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/40 py-2 pl-10 pr-4 text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:border-brand-500/80 focus:bg-white dark:focus:bg-slate-900 focus:outline-none transition-all duration-200"
           />
         </div>
+
+        {/* Theme Toggle Button */}
+        <button
+          onClick={toggleTheme}
+          className="relative rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+          title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+        >
+          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
 
         {/* Notifications Icon Tray */}
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setIsNotifOpen(!isNotifOpen)}
-            className="relative rounded-xl border border-slate-800 bg-slate-900/40 p-2 text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-colors"
+            className="relative rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
           >
             <Bell size={18} />
             {unreadCount > 0 && (
-              <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-brand-500 text-[8px] font-bold text-white ring-2 ring-slate-950">
+              <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-brand-500 text-[8px] font-bold text-white ring-2 ring-white dark:ring-slate-950">
                 {unreadCount}
               </span>
             )}
@@ -93,13 +104,13 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
 
           {/* Notifications Flyout Drawer */}
           {isNotifOpen && (
-            <div className="absolute right-0 z-50 mt-2 w-80 rounded-2xl border border-slate-800 bg-slate-950 p-2 shadow-2xl shadow-black/60 animate-in fade-in slide-in-from-top-2 duration-150">
-              <div className="flex items-center justify-between border-b border-slate-800 px-3 py-2">
-                <span className="text-sm font-bold text-slate-200">Notifications</span>
+            <div className="absolute right-0 z-50 mt-2 w-80 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-2 shadow-2xl shadow-slate-200 dark:shadow-black/60 animate-in fade-in slide-in-from-top-2 duration-150">
+              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-3 py-2">
+                <span className="text-sm font-bold text-slate-800 dark:text-slate-200">Notifications</span>
                 {unreadCount > 0 && (
                   <button
                     onClick={markAllNotificationsRead}
-                    className="flex items-center gap-1 text-[10px] font-bold text-brand-400 hover:text-brand-300"
+                    className="flex items-center gap-1 text-[10px] font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300"
                   >
                     <CheckCheck size={12} />
                     <span>Mark all read</span>
@@ -110,11 +121,11 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
               <div className="max-h-72 overflow-y-auto py-1">
                 {notifications.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-8 text-center">
-                    <div className="rounded-full bg-slate-900 p-2 text-slate-500 mb-2">
+                    <div className="rounded-full bg-slate-100 dark:bg-slate-900 p-2 text-slate-400 dark:text-slate-500 mb-2">
                       <Inbox size={20} />
                     </div>
-                    <p className="text-xs font-semibold text-slate-400">All caught up!</p>
-                    <p className="text-[10px] text-slate-600">No new notifications.</p>
+                    <p className="text-xs font-semibold text-slate-650 dark:text-slate-400">All caught up!</p>
+                    <p className="text-[10px] text-slate-400 dark:text-slate-600">No new notifications.</p>
                   </div>
                 ) : (
                   notifications.map((notif) => (
@@ -123,17 +134,17 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
                       onClick={() => !notif.is_read && markNotificationRead(notif.id)}
                       className={`flex flex-col gap-0.5 rounded-lg px-3 py-2 text-left cursor-pointer transition-colors ${
                         notif.is_read 
-                          ? 'hover:bg-slate-900/35 text-slate-400' 
-                          : 'bg-brand-500/[0.03] border-l-2 border-brand-500 hover:bg-brand-500/[0.06] text-slate-200'
+                          ? 'hover:bg-slate-50 dark:hover:bg-slate-900/35 text-slate-400 dark:text-slate-500' 
+                          : 'bg-brand-500/[0.03] border-l-2 border-brand-500 hover:bg-brand-500/[0.06] text-slate-800 dark:text-slate-200'
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <span className="text-xs font-semibold">{notif.title}</span>
-                        <span className="text-[9px] text-slate-500 whitespace-nowrap">
+                        <span className="text-[9px] text-slate-400 dark:text-slate-500 whitespace-nowrap">
                           {formatNotifTime(notif.created_at)}
                         </span>
                       </div>
-                      <p className="text-[10px] leading-relaxed text-slate-400">{notif.description}</p>
+                      <p className="text-[10px] leading-relaxed text-slate-500 dark:text-slate-400">{notif.description}</p>
                     </div>
                   ))
                 )}

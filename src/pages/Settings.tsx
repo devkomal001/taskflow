@@ -3,18 +3,16 @@ import { useAuth } from '../context/AuthContext';
 import { useWorkspace } from '../context/WorkspaceContext';
 import { 
   User, 
-  Settings as SettingsIcon, 
   Briefcase, 
   Check, 
   X, 
   Sparkles, 
-  ShieldCheck, 
-  UploadCloud 
+  ShieldCheck
 } from 'lucide-react';
 
 const Settings: React.FC = () => {
   const { user, updateProfile } = useAuth();
-  const { activeWorkspace, members, refreshWorkspaceData, acceptInvitation, declineInvitation, seedDatabase, updateWorkspace } = useWorkspace();
+  const { activeWorkspace, members, acceptInvitation, declineInvitation, seedDatabase, updateWorkspace } = useWorkspace();
 
   // Profile forms
   const [profileName, setProfileName] = useState(user?.full_name || '');
@@ -93,39 +91,39 @@ const Settings: React.FC = () => {
   const pendingInvites = members.filter(m => m.status === 'pending');
 
   return (
-    <div className="space-y-8 max-w-4xl mx-auto">
+    <div className="space-y-8 max-w-4xl mx-auto transition-colors duration-200">
       <div>
-        <h2 className="text-2xl font-extrabold tracking-tight text-white md:text-3xl">Account & Settings</h2>
-        <p className="text-sm text-slate-400">Configure personal credentials and update workspace features.</p>
+        <h2 className="text-2xl font-extrabold tracking-tight text-slate-800 dark:text-white md:text-3xl">Account & Settings</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400">Configure personal credentials and update workspace features.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* User Profile Form */}
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/30 p-6 shadow-xl backdrop-blur-sm">
-          <div className="mb-5 flex items-center gap-2 border-b border-slate-800 pb-3">
-            <User className="text-brand-400" size={18} />
-            <h3 className="text-sm font-bold text-slate-200">Personal Profile</h3>
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/30 p-6 shadow-xs backdrop-blur-xs">
+          <div className="mb-5 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+            <User className="text-brand-500 dark:text-brand-400" size={18} />
+            <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">Personal Profile</h3>
           </div>
 
-          <form onSubmit={handleUpdateProfile} className="space-y-4">
+          <form onSubmit={handleUpdateProfile} className="space-y-4 text-slate-800 dark:text-slate-105">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">Full Name</label>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Full Name</label>
               <input
                 type="text"
                 required
                 value={profileName}
                 onChange={(e) => setProfileName(e.target.value)}
-                className="mt-1.5 w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-sm text-slate-200 placeholder-slate-600 focus:border-brand-500 focus:outline-none"
+                className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-955 p-2.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:border-brand-500 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">Avatar Image URL</label>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Avatar Image URL</label>
               <input
                 type="text"
                 value={profileAvatar}
                 onChange={(e) => setProfileAvatar(e.target.value)}
-                className="mt-1.5 w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-sm text-slate-200 placeholder-slate-600 focus:border-brand-500 focus:outline-none"
+                className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-955 p-2.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:border-brand-500 focus:outline-none"
               />
             </div>
 
@@ -137,7 +135,7 @@ const Settings: React.FC = () => {
                 <span>Save Changes</span>
               </button>
               {profileSuccess && (
-                <span className="flex items-center gap-1 text-xs font-semibold text-emerald-400 animate-fade-in">
+                <span className="flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 animate-fade-in">
                   <Check size={14} />
                   <span>Profile updated</span>
                 </span>
@@ -147,48 +145,54 @@ const Settings: React.FC = () => {
         </div>
 
         {/* Workspace Management Form */}
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/30 p-6 shadow-xl backdrop-blur-sm">
-          <div className="mb-5 flex items-center gap-2 border-b border-slate-800 pb-3">
-            <Briefcase className="text-violet-400" size={18} />
-            <h3 className="text-sm font-bold text-slate-200">Workspace Settings</h3>
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/30 p-6 shadow-xs backdrop-blur-xs">
+          <div className="mb-5 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+            <Briefcase className="text-violet-500 dark:text-violet-400" size={18} />
+            <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">Workspace Settings</h3>
           </div>
 
-          {!isWorkspaceAdmin ? (
-            <div className="flex flex-col items-center justify-center py-10 text-center text-slate-500">
+          {!activeWorkspace ? (
+            <div className="flex flex-col items-center justify-center py-10 text-center text-slate-400 dark:text-slate-500">
+              <Briefcase size={28} className="stroke-[1.5] mb-2" />
+              <p className="text-xs font-bold">Workspace Required</p>
+              <p className="text-[10px] text-slate-505 dark:text-slate-600 max-w-xs mt-1">Please select or create a workspace using the sidebar selector first.</p>
+            </div>
+          ) : !isWorkspaceAdmin ? (
+            <div className="flex flex-col items-center justify-center py-10 text-center text-slate-400 dark:text-slate-500">
               <ShieldCheck size={28} className="stroke-[1.5] mb-2" />
               <p className="text-xs font-bold">Admin Privileges Required</p>
-              <p className="text-[10px] text-slate-600 max-w-xs mt-1">Only workspace owners and project managers can edit this workspace details.</p>
+              <p className="text-[10px] text-slate-500 dark:text-slate-600 max-w-xs mt-1">Only workspace owners and project managers can edit this workspace details.</p>
             </div>
           ) : (
-            <form onSubmit={handleUpdateWorkspace} className="space-y-4">
+            <form onSubmit={handleUpdateWorkspace} className="space-y-4 text-slate-800 dark:text-slate-105">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">Workspace Name</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Workspace Name</label>
                 <input
                   type="text"
                   required
                   value={wsName}
                   onChange={(e) => setWsName(e.target.value)}
-                  className="mt-1.5 w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-sm text-slate-200 placeholder-slate-600 focus:border-brand-500 focus:outline-none"
+                  className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-955 p-2.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:border-brand-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">Description</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Description</label>
                 <textarea
                   value={wsDesc}
                   onChange={(e) => setWsDesc(e.target.value)}
                   rows={2}
-                  className="mt-1.5 w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-sm text-slate-200 placeholder-slate-600 focus:border-brand-500 focus:outline-none resize-none"
+                  className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-955 p-2.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:border-brand-500 focus:outline-none resize-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">Workspace Logo URL</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Workspace Logo URL</label>
                 <input
                   type="text"
                   value={wsLogo}
                   onChange={(e) => setWsLogo(e.target.value)}
-                  className="mt-1.5 w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-sm text-slate-200 placeholder-slate-600 focus:border-brand-500 focus:outline-none"
+                  className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-955 p-2.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:border-brand-500 focus:outline-none"
                 />
               </div>
 
@@ -200,7 +204,7 @@ const Settings: React.FC = () => {
                   <span>Update Settings</span>
                 </button>
                 {wsSuccess && (
-                  <span className="flex items-center gap-1 text-xs font-semibold text-emerald-400">
+                  <span className="flex items-center gap-1 text-xs font-semibold text-emerald-650 dark:text-emerald-400">
                     <Check size={14} />
                     <span>Workspace updated</span>
                   </span>
@@ -211,31 +215,31 @@ const Settings: React.FC = () => {
         </div>
       </div>
 
-      {/* Pending Workspace Invites list (displayed only if invites exist) */}
+      {/* Pending Workspace Invites list */}
       {pendingInvites.length > 0 && (
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/30 p-6 shadow-xl backdrop-blur-sm">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/30 p-6 shadow-xs backdrop-blur-xs">
           <div className="mb-4 flex items-center gap-2">
-            <Sparkles className="text-amber-400" size={18} />
-            <h3 className="text-sm font-bold text-slate-200">Pending Workspace Invites</h3>
+            <Sparkles className="text-amber-500 dark:text-amber-400" size={18} />
+            <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">Pending Workspace Invites</h3>
           </div>
 
           <div className="space-y-3">
             {pendingInvites.map((invite) => (
-              <div key={invite.id} className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+              <div key={invite.id} className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 p-4">
                 <div>
-                  <p className="text-xs font-bold text-slate-200">{invite.profile.full_name}</p>
+                  <p className="text-xs font-bold text-slate-800 dark:text-slate-200">{invite.profile.full_name}</p>
                   <p className="text-[10px] text-slate-500 mt-0.5">{invite.profile.email} (Invited as {invite.role})</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => acceptInvitation(invite.id)}
-                    className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 hover:bg-emerald-500 hover:text-white transition-colors"
+                    className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 hover:bg-emerald-500 hover:text-white transition-colors"
                   >
                     <Check size={14} />
                   </button>
                   <button
                     onClick={() => declineInvitation(invite.id)}
-                    className="flex h-7 w-7 items-center justify-center rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/25 hover:bg-rose-500 hover:text-white transition-colors"
+                    className="flex h-7 w-7 items-center justify-center rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/25 hover:bg-rose-500 hover:text-white transition-colors"
                   >
                     <X size={14} />
                   </button>
@@ -247,12 +251,12 @@ const Settings: React.FC = () => {
       )}
 
       {/* Database Seeding Section */}
-      <div className="rounded-2xl border border-slate-800/80 bg-slate-900/30 p-6 shadow-xl backdrop-blur-sm">
-        <div className="mb-4 flex items-center gap-2 border-b border-slate-800 pb-3">
-          <Sparkles className="text-violet-400" size={18} />
-          <h3 className="text-sm font-bold text-slate-200">Database Seeding</h3>
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/30 p-6 shadow-xs backdrop-blur-xs">
+        <div className="mb-4 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+          <Sparkles className="text-violet-500 dark:text-violet-400" size={18} />
+          <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">Database Seeding</h3>
         </div>
-        <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+        <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">
           If your database is empty, you can seed it with the default website mockup data (workspaces, projects, Kanban cards, check lists, comments, files). This will insert all necessary records directly into Supabase under your account so you can start testing immediately.
         </p>
         <div className="flex items-center gap-4">
@@ -271,13 +275,13 @@ const Settings: React.FC = () => {
             )}
           </button>
           {seedStatus === 'success' && (
-            <span className="flex items-center gap-1 text-xs font-semibold text-emerald-400 animate-fade-in">
+            <span className="flex items-center gap-1 text-xs font-semibold text-emerald-605 dark:text-emerald-400 animate-fade-in">
               <Check size={14} />
               <span>Database seeded successfully!</span>
             </span>
           )}
           {seedStatus === 'error' && (
-            <span className="flex items-center gap-1 text-xs font-semibold text-rose-400 animate-fade-in">
+            <span className="flex items-center gap-1 text-xs font-semibold text-rose-605 dark:text-rose-400 animate-fade-in">
               <X size={14} />
               <span>Failed to seed database. Verify RLS tables exist.</span>
             </span>
