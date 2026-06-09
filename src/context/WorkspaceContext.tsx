@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
+import { supabase, isUsingMock } from '../supabaseClient';
 import { useAuth } from './AuthContext';
 
 // Schema Interfaces
@@ -471,7 +471,12 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         userId = profile.id;
         targetProfile = profile;
       } else {
-        // Simulating auto-creating a profile for the guest invitation
+        // In live Supabase mode, the database expects a valid UUID that exists in profiles table
+        if (!isUsingMock) {
+          throw new Error('This email address is not registered on TaskFlow. Please ask them to sign up first!');
+        }
+
+        // Simulating auto-creating a profile for the guest invitation in mock mode
         userId = 'user_' + Math.random().toString(36).substr(2, 9);
         targetProfile = {
           id: userId,
