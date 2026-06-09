@@ -366,8 +366,8 @@ const ProjectDetail: React.FC = () => {
       const query = spaceIndex === -1 ? textAfterAt : textAfterAt.slice(0, spaceIndex);
       
       const filtered = members.filter(m => 
-        m.profile.full_name.toLowerCase().includes(query.toLowerCase()) ||
-        m.profile.email.toLowerCase().includes(query.toLowerCase())
+        (m.profile?.full_name || '').toLowerCase().includes(query.toLowerCase()) ||
+        (m.profile?.email || '').toLowerCase().includes(query.toLowerCase())
       );
 
       if (filtered.length > 0) {
@@ -404,7 +404,7 @@ const ProjectDetail: React.FC = () => {
     return parts.map((part, index) => {
       if (part.startsWith('@')) {
         const name = part.slice(1);
-        const isMember = members.some(m => m.profile.full_name.toLowerCase() === name.toLowerCase());
+        const isMember = members.some(m => (m.profile?.full_name || '').toLowerCase() === name.toLowerCase());
         if (isMember) {
           return (
             <span key={index} className="inline-block rounded-md bg-brand-500/10 dark:bg-brand-500/20 px-1 py-0.5 text-brand-600 dark:text-brand-400 font-bold border border-brand-500/20 shadow-xs">
@@ -770,8 +770,8 @@ const ProjectDetail: React.FC = () => {
                       {item.profile?.avatar_url ? (
                         <img src={item.profile.avatar_url} alt="" className="h-8 w-8 rounded-full object-cover border border-slate-250 dark:border-slate-800 self-end mb-1 shadow-sm" />
                       ) : (
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-850 font-bold border border-slate-350 self-end mb-1 shadow-sm text-slate-600 dark:text-slate-400">
-                          {item.profile?.full_name.substring(0, 2).toUpperCase() || 'US'}
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-855 font-bold border border-slate-350 self-end mb-1 shadow-sm text-slate-600 dark:text-slate-400">
+                          {(item.profile?.full_name || 'US').substring(0, 2).toUpperCase()}
                         </div>
                       )}
                       
@@ -1352,7 +1352,7 @@ const ProjectDetail: React.FC = () => {
                         <img src={comm.profile.avatar_url} alt="" className="h-8 w-8 rounded-full object-cover border border-slate-200 dark:border-slate-800 shadow-sm" />
                       ) : (
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800 font-bold border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 shadow-sm">
-                          {comm.profile?.full_name.substring(0, 2).toUpperCase() || 'US'}
+                          {(comm.profile?.full_name || 'US').substring(0, 2).toUpperCase()}
                         </div>
                       )}
                       <div className="flex-1 rounded-xl bg-slate-50 dark:bg-slate-900/30 p-3 border border-slate-200 dark:border-slate-850/50 shadow-xs">

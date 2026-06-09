@@ -107,9 +107,9 @@ const Dashboard: React.FC = () => {
   const workloadData = members.map(m => {
     const memberTasks = allTasks.filter((t: any) => t.assignee_id === m.user_id);
     return {
-      name: m.profile.full_name.split(' ')[0],
+      name: (m.profile?.full_name || 'User').split(' ')[0],
       tasks: memberTasks.length,
-      avatar: m.profile.avatar_url
+      avatar: m.profile?.avatar_url
     };
   });
 
@@ -365,7 +365,7 @@ const Dashboard: React.FC = () => {
                     <img src={member.profile.avatar_url} alt="" className="h-9 w-9 rounded-full object-cover border border-slate-200 dark:border-slate-800" />
                   ) : (
                     <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold">
-                      {member.profile?.full_name.substring(0, 2).toUpperCase() || 'US'}
+                      {(member.profile?.full_name || 'US').substring(0, 2).toUpperCase()}
                     </div>
                   )}
                   <div className="overflow-hidden">

@@ -84,7 +84,7 @@ const Members: React.FC = () => {
 
   const filteredMembers = members.filter(m => {
     const term = searchQuery.toLowerCase();
-    return m.profile.full_name.toLowerCase().includes(term) || m.profile.email.toLowerCase().includes(term);
+    return (m.profile?.full_name || '').toLowerCase().includes(term) || (m.profile?.email || '').toLowerCase().includes(term);
   });
 
   return (
@@ -142,7 +142,7 @@ const Members: React.FC = () => {
                         <img src={member.profile.avatar_url} alt="" className="h-10 w-10 rounded-full object-cover border border-slate-200 dark:border-slate-800" />
                       ) : (
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-sm font-bold border border-slate-300 dark:border-transparent">
-                          {member.profile.full_name.substring(0, 2).toUpperCase()}
+                          {(member.profile?.full_name || 'US').substring(0, 2).toUpperCase()}
                         </div>
                       )}
                       <div>

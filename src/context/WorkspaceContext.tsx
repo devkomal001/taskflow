@@ -539,7 +539,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const removeMember = async (memberId: string) => {
     try {
       const member = members.find(m => m.id === memberId);
-      const name = member ? member.profile.full_name : 'Unknown';
+      const name = member?.profile?.full_name || 'Unknown';
 
       const { error } = await supabase
         .from('workspace_members')
@@ -568,7 +568,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
       const member = members.find(m => m.id === memberId);
       if (member) {
-        await logActivity('updated role to ' + role + ' for', 'member', member.profile.full_name);
+        await logActivity('updated role to ' + role + ' for', 'member', member.profile?.full_name || 'Unknown');
       }
       await refreshWorkspaceData();
       return { error: null };
@@ -589,7 +589,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       
       const member = members.find(m => m.id === memberId);
       if (member) {
-        await logActivity('accepted workspace invitation', 'member', member.profile.full_name);
+        await logActivity('accepted workspace invitation', 'member', member.profile?.full_name || 'Unknown');
       }
       await refreshWorkspaceData();
       return { error: null };
