@@ -32,6 +32,7 @@ const ProjectDetail: React.FC = () => {
   const { user: currentUser } = useAuth();
   const { theme } = useTheme();
   const { 
+    activeWorkspace,
     projects, 
     members, 
     getProjectTasks, 
