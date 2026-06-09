@@ -244,6 +244,8 @@ DROP POLICY IF EXISTS "Workspace owners can delete workspaces" ON workspaces;
 DROP POLICY IF EXISTS "Workspace members can view membership lists" ON workspace_members;
 DROP POLICY IF EXISTS "Allow members insertion by workspace owners or self" ON workspace_members;
 DROP POLICY IF EXISTS "Workspace managers/owners can edit memberships" ON workspace_members;
+DROP POLICY IF EXISTS "Users can update their own membership status" ON workspace_members;
+DROP POLICY IF EXISTS "Users can delete their own membership" ON workspace_members;
 
 DROP POLICY IF EXISTS "Workspace members can view projects" ON projects;
 DROP POLICY IF EXISTS "Workspace managers/owners can manage projects" ON projects;
@@ -290,6 +292,12 @@ CREATE POLICY "Allow members insertion by workspace owners or self" ON workspace
 CREATE POLICY "Workspace managers/owners can edit memberships" ON workspace_members FOR ALL USING (
   public.has_workspace_role(workspace_id, ARRAY['owner', 'manager']) OR
   public.is_workspace_owner(workspace_id)
+);
+CREATE POLICY "Users can update their own membership status" ON workspace_members FOR UPDATE USING (
+  auth.uid() = user_id
+);
+CREATE POLICY "Users can delete their own membership" ON workspace_members FOR DELETE USING (
+  auth.uid() = user_id
 );
 
 -- Projects Policies
