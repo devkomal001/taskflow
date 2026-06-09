@@ -231,6 +231,37 @@ ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE activity_logs ENABLE ROW LEVEL SECURITY;
 
+-- Clean existing policies to prevent conflicts
+DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON profiles;
+DROP POLICY IF EXISTS "Users can insert their own profiles" ON profiles;
+DROP POLICY IF EXISTS "Users can update their own profiles" ON profiles;
+
+DROP POLICY IF EXISTS "Users can view workspaces they are members of" ON workspaces;
+DROP POLICY IF EXISTS "Workspace owners can insert workspaces" ON workspaces;
+DROP POLICY IF EXISTS "Workspace owners can update workspaces" ON workspaces;
+DROP POLICY IF EXISTS "Workspace owners can delete workspaces" ON workspaces;
+
+DROP POLICY IF EXISTS "Workspace members can view membership lists" ON workspace_members;
+DROP POLICY IF EXISTS "Allow members insertion by workspace owners or self" ON workspace_members;
+DROP POLICY IF EXISTS "Workspace managers/owners can edit memberships" ON workspace_members;
+
+DROP POLICY IF EXISTS "Workspace members can view projects" ON projects;
+DROP POLICY IF EXISTS "Workspace managers/owners can manage projects" ON projects;
+
+DROP POLICY IF EXISTS "Workspace members can view/manage tasks" ON tasks;
+
+DROP POLICY IF EXISTS "Users can manage their own notifications" ON notifications;
+
+DROP POLICY IF EXISTS "Workspace members can view activity logs" ON activity_logs;
+
+DROP POLICY IF EXISTS "Admins can manage firewall_blocked_ips" ON firewall_blocked_ips;
+DROP POLICY IF EXISTS "Admins can manage firewall_rate_limits" ON firewall_rate_limits;
+DROP POLICY IF EXISTS "Admins can manage audit_logs" ON audit_logs;
+DROP POLICY IF EXISTS "Enable select for all on firewall_blocked_ips" ON firewall_blocked_ips;
+DROP POLICY IF EXISTS "Enable insert for all on firewall_rate_limits" ON firewall_rate_limits;
+DROP POLICY IF EXISTS "Enable update for all on firewall_rate_limits" ON firewall_rate_limits;
+DROP POLICY IF EXISTS "Enable insert for all on audit_logs" ON audit_logs;
+
 -- Profiles Policies
 CREATE POLICY "Public profiles are viewable by everyone" ON profiles FOR SELECT USING (true);
 CREATE POLICY "Users can insert their own profiles" ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
@@ -262,18 +293,17 @@ CREATE POLICY "Workspace managers/owners can edit memberships" ON workspace_memb
 
 -- Projects Policies
 CREATE POLICY "Workspace members can view projects" ON projects FOR SELECT USING (
-  EXISTS (SELECT 1 FROM workspace_members WHERE workspace_id = projects.workspace_id AND user_id = auth.uid())
+  public.is_workspace_member(workspace_id)
 );
 CREATE POLICY "Workspace managers/owners can manage projects" ON projects FOR ALL USING (
-  EXISTS (SELECT 1 FROM workspace_members WHERE workspace_id = projects.workspace_id AND user_id = auth.uid() AND role IN ('owner', 'manager'))
+  public.has_workspace_role(workspace_id, ARRAY['owner', 'manager'])
 );
 
 -- Tasks Policies
 CREATE POLICY "Workspace members can view/manage tasks" ON tasks FOR ALL USING (
   EXISTS (
     SELECT 1 FROM projects p 
-    JOIN workspace_members wm ON wm.workspace_id = p.workspace_id 
-    WHERE p.id = tasks.project_id AND wm.user_id = auth.uid()
+    WHERE p.id = tasks.project_id AND public.is_workspace_member(p.workspace_id)
   )
 );
 
@@ -282,7 +312,7 @@ CREATE POLICY "Users can manage their own notifications" ON notifications FOR AL
 
 -- Activity Logs Policies
 CREATE POLICY "Workspace members can view activity logs" ON activity_logs FOR SELECT USING (
-  EXISTS (SELECT 1 FROM workspace_members WHERE workspace_id = activity_logs.workspace_id AND user_id = auth.uid())
+  public.is_workspace_member(workspace_id)
 );
 
 -- ==========================================
