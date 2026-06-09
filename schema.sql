@@ -180,6 +180,45 @@ CREATE OR REPLACE TRIGGER on_auth_user_created
 
 
 -- ==========================================
+-- 2.5. RLS SECURITY DEFINER FUNCTIONS (to avoid policy recursion)
+-- ==========================================
+
+CREATE OR REPLACE FUNCTION public.is_workspace_member(workspace_id UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM public.workspace_members
+    WHERE workspace_members.workspace_id = is_workspace_member.workspace_id
+    AND workspace_members.user_id = auth.uid()
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE OR REPLACE FUNCTION public.is_workspace_owner(workspace_id UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM public.workspaces
+    WHERE workspaces.id = is_workspace_owner.workspace_id
+    AND workspaces.owner_id = auth.uid()
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE OR REPLACE FUNCTION public.has_workspace_role(workspace_id UUID, roles TEXT[])
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM public.workspace_members
+    WHERE workspace_members.workspace_id = has_workspace_role.workspace_id
+    AND workspace_members.user_id = auth.uid()
+    AND workspace_members.role = ANY(roles)
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+
+-- ==========================================
 -- 3. ROW LEVEL SECURITY (RLS) & POLICIES
 -- ==========================================
 
@@ -201,7 +240,7 @@ CREATE POLICY "Users can update their own profiles" ON profiles FOR UPDATE USING
 CREATE POLICY "Users can view workspaces they are members of" ON workspaces
   FOR SELECT USING (
     auth.uid() = owner_id OR 
-    EXISTS (SELECT 1 FROM workspace_members WHERE workspace_id = id AND user_id = auth.uid())
+    public.is_workspace_member(id)
   );
 CREATE POLICY "Workspace owners can insert workspaces" ON workspaces FOR INSERT WITH CHECK (auth.uid() = owner_id);
 CREATE POLICY "Workspace owners can update workspaces" ON workspaces FOR UPDATE USING (auth.uid() = owner_id);
@@ -209,16 +248,16 @@ CREATE POLICY "Workspace owners can delete workspaces" ON workspaces FOR DELETE 
 
 -- Workspace Members Policies
 CREATE POLICY "Workspace members can view membership lists" ON workspace_members FOR SELECT USING (
-  EXISTS (SELECT 1 FROM workspace_members WHERE workspace_id = workspace_members.workspace_id AND user_id = auth.uid()) OR
-  EXISTS (SELECT 1 FROM workspaces WHERE id = workspace_members.workspace_id AND owner_id = auth.uid())
+  public.is_workspace_member(workspace_id) OR
+  public.is_workspace_owner(workspace_id)
 );
 CREATE POLICY "Allow members insertion by workspace owners or self" ON workspace_members FOR INSERT WITH CHECK (
   auth.uid() = user_id OR
-  EXISTS (SELECT 1 FROM workspaces WHERE id = workspace_members.workspace_id AND owner_id = auth.uid())
+  public.is_workspace_owner(workspace_id)
 );
 CREATE POLICY "Workspace managers/owners can edit memberships" ON workspace_members FOR ALL USING (
-  EXISTS (SELECT 1 FROM workspace_members WHERE workspace_id = workspace_members.workspace_id AND user_id = auth.uid() AND role IN ('owner', 'manager')) OR
-  EXISTS (SELECT 1 FROM workspaces WHERE id = workspace_members.workspace_id AND owner_id = auth.uid())
+  public.has_workspace_role(workspace_id, ARRAY['owner', 'manager']) OR
+  public.is_workspace_owner(workspace_id)
 );
 
 -- Projects Policies
