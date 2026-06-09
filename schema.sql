@@ -262,6 +262,10 @@ DROP POLICY IF EXISTS "Workspace managers/owners can manage projects" ON project
 DROP POLICY IF EXISTS "Workspace members can view/manage tasks" ON tasks;
 
 DROP POLICY IF EXISTS "Users can manage their own notifications" ON notifications;
+DROP POLICY IF EXISTS "Users can view their own notifications" ON notifications;
+DROP POLICY IF EXISTS "Users can insert notifications for anyone" ON notifications;
+DROP POLICY IF EXISTS "Users can update their own notifications" ON notifications;
+DROP POLICY IF EXISTS "Users can delete their own notifications" ON notifications;
 
 DROP POLICY IF EXISTS "Workspace members can view activity logs" ON activity_logs;
 DROP POLICY IF EXISTS "Workspace members can insert activity logs" ON activity_logs;
@@ -334,7 +338,10 @@ CREATE POLICY "Workspace members can view/manage tasks" ON tasks FOR ALL USING (
 );
 
 -- Notifications Policies
-CREATE POLICY "Users can manage their own notifications" ON notifications FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Users can view their own notifications" ON notifications FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can insert notifications for anyone" ON notifications FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
+CREATE POLICY "Users can update their own notifications" ON notifications FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY "Users can delete their own notifications" ON notifications FOR DELETE USING (auth.uid() = user_id);
 
 -- Activity Logs Policies
 CREATE POLICY "Workspace members can view activity logs" ON activity_logs FOR SELECT USING (
