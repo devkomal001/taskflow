@@ -253,6 +253,7 @@ DROP POLICY IF EXISTS "Workspace members can view/manage tasks" ON tasks;
 DROP POLICY IF EXISTS "Users can manage their own notifications" ON notifications;
 
 DROP POLICY IF EXISTS "Workspace members can view activity logs" ON activity_logs;
+DROP POLICY IF EXISTS "Workspace members can insert activity logs" ON activity_logs;
 
 DROP POLICY IF EXISTS "Admins can manage firewall_blocked_ips" ON firewall_blocked_ips;
 DROP POLICY IF EXISTS "Admins can manage firewall_rate_limits" ON firewall_rate_limits;
@@ -313,6 +314,10 @@ CREATE POLICY "Users can manage their own notifications" ON notifications FOR AL
 -- Activity Logs Policies
 CREATE POLICY "Workspace members can view activity logs" ON activity_logs FOR SELECT USING (
   public.is_workspace_member(workspace_id)
+);
+CREATE POLICY "Workspace members can insert activity logs" ON activity_logs FOR INSERT WITH CHECK (
+  public.is_workspace_member(workspace_id) OR
+  public.is_workspace_owner(workspace_id)
 );
 
 -- ==========================================
