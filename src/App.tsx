@@ -1,17 +1,20 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { FirewallProvider } from './context/FirewallContext';
 import { WorkspaceProvider } from './context/WorkspaceContext';
 
 // Pages
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
 import ProjectDetail from './pages/ProjectDetail';
 import Members from './pages/Members';
 import Settings from './pages/Settings';
+import FirewallDashboard from './pages/FirewallDashboard';
 
 // Layout
 import Sidebar from './components/shared/Sidebar';
@@ -39,6 +42,22 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   return <>{children}</>;
 };
 
+// Admin Protection Route Wrapper
+const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return null;
+  }
+
+  // Check if profile has is_admin set to true
+  if (!user || !(user as any).is_admin) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <>{children}</>;
+};
+
 // Main Dashboard Shell
 const DashboardLayout: React.FC = () => {
   return (
@@ -53,6 +72,17 @@ const DashboardLayout: React.FC = () => {
             <Route path="/project/:projectId" element={<ProjectDetail />} />
             <Route path="/members" element={<Members />} />
             <Route path="/settings" element={<Settings />} />
+            
+            {/* Admin Firewall Page */}
+            <Route 
+              path="/admin/firewall" 
+              element={
+                <AdminRoute>
+                  <FirewallDashboard />
+                </AdminRoute>
+              } 
+            />
+
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
@@ -65,24 +95,27 @@ const App: React.FC = () => {
   return (
     <Router>
       <AuthProvider>
-        <WorkspaceProvider>
-          <Routes>
-            {/* Auth Portals */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
+        <FirewallProvider>
+          <WorkspaceProvider>
+            <Routes>
+              {/* Auth Portals */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
 
-            {/* Dashboard Workspace */}
-            <Route
-              path="/*"
-              element={
-                <ProtectedRoute>
-                  <DashboardLayout />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </WorkspaceProvider>
+              {/* Dashboard Workspace */}
+              <Route
+                path="/*"
+                element={
+                  <ProtectedRoute>
+                    <DashboardLayout />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </WorkspaceProvider>
+        </FirewallProvider>
       </AuthProvider>
     </Router>
   );

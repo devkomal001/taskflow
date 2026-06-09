@@ -11,6 +11,7 @@ CREATE TABLE profiles (
   email TEXT NOT NULL,
   full_name TEXT,
   avatar_url TEXT,
+  is_admin BOOLEAN DEFAULT false NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
 
@@ -121,6 +122,37 @@ CREATE TABLE activity_logs (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
 
+-- Firewall Blocked IPs Table
+CREATE TABLE firewall_blocked_ips (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  ip_address TEXT UNIQUE NOT NULL,
+  reason TEXT,
+  blocked_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+  expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  attempts_count INTEGER DEFAULT 1 NOT NULL
+);
+
+-- Firewall Rate Limits Table
+CREATE TABLE firewall_rate_limits (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  ip_address TEXT NOT NULL,
+  action TEXT NOT NULL,
+  attempt_count INTEGER DEFAULT 1 NOT NULL,
+  last_attempt_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+  UNIQUE (ip_address, action)
+);
+
+-- Audit Logs Table
+CREATE TABLE audit_logs (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
+  email TEXT,
+  action TEXT NOT NULL,
+  ip_address TEXT,
+  user_agent TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
 
 -- ==========================================
 -- 2. AUTOMATIC PROFILE CREATION TRIGGER (auth.users -> profiles)
@@ -213,3 +245,34 @@ CREATE POLICY "Users can manage their own notifications" ON notifications FOR AL
 CREATE POLICY "Workspace members can view activity logs" ON activity_logs FOR SELECT USING (
   EXISTS (SELECT 1 FROM workspace_members WHERE workspace_id = activity_logs.workspace_id AND user_id = auth.uid())
 );
+
+-- ==========================================
+-- 4. FIREWALL & AUDIT LOGS POLICIES
+-- ==========================================
+
+ALTER TABLE firewall_blocked_ips ENABLE ROW LEVEL SECURITY;
+ALTER TABLE firewall_rate_limits ENABLE ROW LEVEL SECURITY;
+ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
+
+-- Admins policy: Allow full read/write access to admins
+CREATE POLICY "Admins can manage firewall_blocked_ips" ON firewall_blocked_ips
+  FOR ALL USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND is_admin = true));
+
+CREATE POLICY "Admins can manage firewall_rate_limits" ON firewall_rate_limits
+  FOR ALL USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND is_admin = true));
+
+CREATE POLICY "Admins can manage audit_logs" ON audit_logs
+  FOR ALL USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND is_admin = true));
+
+-- Public/Client policy: Allow anyone to query blocked IPs, modify rate limits and insert audit logs
+CREATE POLICY "Enable select for all on firewall_blocked_ips" ON firewall_blocked_ips
+  FOR SELECT USING (true);
+
+CREATE POLICY "Enable insert for all on firewall_rate_limits" ON firewall_rate_limits
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Enable update for all on firewall_rate_limits" ON firewall_rate_limits
+  FOR UPDATE USING (true);
+
+CREATE POLICY "Enable insert for all on audit_logs" ON audit_logs
+  FOR INSERT WITH CHECK (true);

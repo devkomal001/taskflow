@@ -60,6 +60,7 @@ const defaultProfiles = [
     email: 'owner@taskflow.com',
     full_name: 'David Larsson',
     avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    is_admin: true,
     updated_at: new Date().toISOString()
   },
   {
@@ -67,6 +68,7 @@ const defaultProfiles = [
     email: 'manager@taskflow.com',
     full_name: 'Sarah Chen',
     avatar_url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+    is_admin: false,
     updated_at: new Date().toISOString()
   },
   {
@@ -74,6 +76,7 @@ const defaultProfiles = [
     email: 'developer@taskflow.com',
     full_name: 'Marcus Miller',
     avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+    is_admin: false,
     updated_at: new Date().toISOString()
   }
 ];
@@ -224,29 +227,47 @@ const defaultActivityLogs = [
 // Helper to initialize db structure
 function loadDb() {
   const data = localStorage.getItem(MOCK_STORAGE_KEY);
+  let db: any = null;
   if (data) {
     try {
-      return JSON.parse(data);
+      db = JSON.parse(data);
     } catch (e) {
       console.error("Corrupted mock database, resetting...");
     }
   }
 
-  const newDb = {
-    profiles: defaultProfiles,
-    workspaces: defaultWorkspaces,
-    workspace_members: defaultWorkspaceMembers,
-    projects: defaultProjects,
-    project_members: defaultProjectMembers,
-    tasks: defaultTasks,
-    checklists: defaultChecklists,
-    comments: defaultComments,
-    attachments: defaultAttachments,
-    notifications: defaultNotifications,
-    activity_logs: defaultActivityLogs
-  };
-  saveDb(newDb);
-  return newDb;
+  if (!db) {
+    db = {
+      profiles: defaultProfiles,
+      workspaces: defaultWorkspaces,
+      workspace_members: defaultWorkspaceMembers,
+      projects: defaultProjects,
+      project_members: defaultProjectMembers,
+      tasks: defaultTasks,
+      checklists: defaultChecklists,
+      comments: defaultComments,
+      attachments: defaultAttachments,
+      notifications: defaultNotifications,
+      activity_logs: defaultActivityLogs,
+      firewall_blocked_ips: [],
+      firewall_rate_limits: [],
+      audit_logs: []
+    };
+    saveDb(db);
+  } else {
+    // Ensure new tables/fields exist for migrations
+    if (!db.firewall_blocked_ips) db.firewall_blocked_ips = [];
+    if (!db.firewall_rate_limits) db.firewall_rate_limits = [];
+    if (!db.audit_logs) db.audit_logs = [];
+    if (db.profiles) {
+      db.profiles = db.profiles.map((p: any) => ({
+        ...p,
+        is_admin: p.id === 'user1' ? true : (p.is_admin || false)
+      }));
+    }
+    saveDb(db);
+  }
+  return db;
 }
 
 function saveDb(db: any) {
@@ -342,6 +363,15 @@ export const mockSupabase = {
         } catch (e) {}
       }
       return { data: { user: null }, error: null };
+    },
+
+    resetPasswordForEmail: async (email: string, options?: any) => {
+      const db = loadDb();
+      const profile = db.profiles.find((p: any) => p.email.toLowerCase() === email.toLowerCase());
+      if (!profile) {
+        return { data: null, error: new Error('User with this email not found') };
+      }
+      return { data: {}, error: null };
     },
 
     updateUser: async ({ password, data }: any) => {

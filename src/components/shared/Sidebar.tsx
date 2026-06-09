@@ -12,7 +12,8 @@ import {
   Plus, 
   FolderPlus,
   X,
-  Briefcase
+  Briefcase,
+  ShieldCheck
 } from 'lucide-react';
 
 const Sidebar: React.FC = () => {
@@ -45,6 +46,10 @@ const Sidebar: React.FC = () => {
     { name: 'Members', path: '/members', icon: Users },
     { name: 'Settings', path: '/settings', icon: Settings },
   ];
+
+  if (user && (user as any).is_admin) {
+    menuItems.push({ name: 'Firewall', path: '/admin/firewall', icon: ShieldCheck });
+  }
 
   return (
     <aside className="relative flex h-full w-64 flex-col border-r border-slate-800/80 bg-slate-950 p-4">
