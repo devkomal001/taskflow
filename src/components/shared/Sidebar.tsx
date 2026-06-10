@@ -176,17 +176,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                 <img
                   src={activeWorkspace.logo_url}
                   alt=""
-                  className="h-7 w-7 rounded-lg object-cover border border-slate-200 dark:border-slate-805 shrink-0"
+                  className="h-7 w-7 rounded-lg object-cover border border-slate-200 dark:border-slate-800 shrink-0"
                 />
               ) : (
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-105 dark:bg-slate-800 text-slate-500 shrink-0">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 shrink-0">
                   <Briefcase size={14} />
                 </div>
               )}
               {!isCollapsed && (
                 <div className="truncate animate-in fade-in duration-200">
-                  <p className="text-xs font-bold text-slate-850 dark:text-slate-200 truncate">{activeWorkspace?.name || 'No Workspace'}</p>
-                  <p className="text-[9px] font-semibold text-slate-450 dark:text-slate-500 truncate">Workspace</p>
+                  <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{activeWorkspace?.name || 'No Workspace'}</p>
+                  <p className="text-[9px] font-semibold text-slate-400 dark:text-slate-500 truncate">Workspace</p>
                 </div>
               )}
             </div>
@@ -194,7 +194,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
           </button>
 
           {isWorkspaceMenuOpen && (
-            <div className={`absolute z-50 mt-1 w-60 rounded-xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-950 p-1.5 shadow-xl animate-in fade-in slide-in-from-top-1 duration-150 ${isCollapsed ? 'left-14 top-0' : 'left-0 right-0'}`}>
+            <div className={`absolute z-50 mt-1 w-60 rounded-xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-950 p-1.5 shadow-xl animate-dropdown ${isCollapsed ? 'left-14 top-0' : 'left-0 right-0'}`}>
               <p className="px-2 py-1 text-[9px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">Workspaces</p>
               <div className="max-h-48 overflow-y-auto py-1">
                 {workspaces.map((ws) => (
@@ -259,7 +259,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
           {/* Teams list divider inside sidebar */}
           {teams.length > 0 && !isCollapsed && (
             <div className="pt-4 pb-2 animate-in fade-in duration-200">
-              <p className="px-3 text-[9px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-550">Teams</p>
+              <p className="px-3 text-[9px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">Teams</p>
               <div className="mt-1 space-y-0.5">
                 {teams.map(team => (
                   <NavLink
@@ -307,7 +307,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
               <button
                 onClick={logout}
                 title="Sign Out"
-                className="rounded-lg p-1.5 text-slate-450 hover:bg-slate-150 dark:hover:bg-slate-800 hover:text-rose-500 transition-colors shrink-0"
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-rose-500 transition-colors shrink-0"
               >
                 <LogOut size={14} />
               </button>
@@ -332,7 +332,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                 </button>
               </div>
               
-              <form onSubmit={handleCreateWorkspace} className="mt-4 space-y-4">
+               <form onSubmit={handleCreateWorkspace} className="mt-4 space-y-4">
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Workspace Name *</label>
                   <input
@@ -341,29 +341,29 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                     placeholder="e.g. Creative Labs"
                     value={newWsName}
                     onChange={(e) => setNewWsName(e.target.value)}
-                    className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-55 dark:bg-slate-950 p-2.5 text-sm focus:border-brand-500 focus:outline-none"
+                    className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-2.5 text-sm text-slate-800 dark:text-slate-200 focus:border-brand-500 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-550 dark:text-slate-400">Description</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Description</label>
                   <textarea
                     placeholder="Short description of this workspace..."
                     value={newWsDesc}
                     onChange={(e) => setNewWsDesc(e.target.value)}
                     rows={3}
-                    className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-55 dark:bg-slate-955 p-2.5 text-sm focus:border-brand-500 focus:outline-none resize-none"
+                    className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-2.5 text-sm text-slate-800 dark:text-slate-200 focus:border-brand-500 focus:outline-none resize-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-550 dark:text-slate-400">Logo URL</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Logo URL</label>
                   <input
                     type="text"
                     placeholder="https://example.com/logo.png"
                     value={newWsLogo}
                     onChange={(e) => setNewWsLogo(e.target.value)}
-                    className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-55 dark:bg-slate-950 p-2.5 text-sm focus:border-brand-500 focus:outline-none"
+                    className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-2.5 text-sm text-slate-800 dark:text-slate-200 focus:border-brand-500 focus:outline-none"
                   />
                 </div>
 
@@ -371,7 +371,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                   <button
                     type="button"
                     onClick={() => setIsCreateModalOpen(false)}
-                    className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-550 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                   >
                     Cancel
                   </button>

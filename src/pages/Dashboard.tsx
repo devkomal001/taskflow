@@ -178,16 +178,16 @@ const Dashboard: React.FC = () => {
           <h2 className="text-2xl font-extrabold tracking-tight text-slate-800 dark:text-white md:text-3xl">
             {activeWorkspace.name} Overview
           </h2>
-          <p className="text-sm text-slate-550 dark:text-slate-400">Track and monitor your workspace progress and team metrics.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Track and monitor your workspace progress and team metrics.</p>
         </div>
       </div>
 
       {/* Metrics Cards Grid */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-        <div className="glass-card rounded-2xl p-5 shadow-xs hover:border-brand-500/35 transition-all">
+        <div className="glass-card hover-lift rounded-2xl p-5 shadow-xs hover:border-brand-500/35 transition-all">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Teams</span>
-            <div className="rounded-xl bg-indigo-500/10 p-2 text-indigo-550 dark:text-indigo-400">
+            <div className="rounded-xl bg-indigo-500/10 p-2 text-indigo-500 dark:text-indigo-400">
               <Layers size={16} />
             </div>
           </div>
@@ -197,10 +197,10 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="glass-card rounded-2xl p-5 shadow-xs hover:border-brand-500/35 transition-all">
+        <div className="glass-card hover-lift rounded-2xl p-5 shadow-xs hover:border-brand-500/35 transition-all">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Projects</span>
-            <div className="rounded-xl bg-blue-500/10 p-2 text-blue-550 dark:text-blue-400">
+            <div className="rounded-xl bg-blue-500/10 p-2 text-blue-500 dark:text-blue-400">
               <Folder size={16} />
             </div>
           </div>
@@ -210,10 +210,10 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="glass-card rounded-2xl p-5 shadow-xs hover:border-brand-500/35 transition-all">
+        <div className="glass-card hover-lift rounded-2xl p-5 shadow-xs hover:border-brand-500/35 transition-all">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Successes</span>
-            <div className="rounded-xl bg-emerald-500/10 p-2 text-emerald-555 dark:text-emerald-400">
+            <div className="rounded-xl bg-emerald-500/10 p-2 text-emerald-500 dark:text-emerald-400">
               <CheckCircle2 size={16} />
             </div>
           </div>
@@ -223,10 +223,10 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="glass-card rounded-2xl p-5 shadow-xs hover:border-brand-500/35 transition-all">
+        <div className="glass-card hover-lift rounded-2xl p-5 shadow-xs hover:border-brand-500/35 transition-all">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Tasks</span>
-            <div className="rounded-xl bg-brand-500/10 p-2 text-brand-550 dark:text-brand-400">
+            <div className="rounded-xl bg-brand-500/10 p-2 text-brand-500 dark:text-brand-400">
               <ListTodo size={16} />
             </div>
           </div>
@@ -236,7 +236,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="glass-card rounded-2xl p-5 shadow-xs hover:border-brand-500/35 transition-all">
+        <div className="glass-card hover-lift rounded-2xl p-5 shadow-xs hover:border-brand-500/35 transition-all">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Overdue</span>
             <div className={`rounded-xl p-2 ${overdueTasks > 0 ? 'bg-rose-500/10 text-rose-500' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
@@ -244,12 +244,12 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           <div className="mt-4 flex items-baseline gap-1.5">
-            <span className={`text-2xl font-extrabold leading-none ${overdueTasks > 0 ? 'text-rose-500 dark:text-rose-400' : 'text-slate-805 dark:text-white'}`}>{overdueTasks}</span>
+            <span className={`text-2xl font-extrabold leading-none ${overdueTasks > 0 ? 'text-rose-500 dark:text-rose-400' : 'text-slate-800 dark:text-white'}`}>{overdueTasks}</span>
             <span className="text-[10px] text-slate-500 font-semibold">Attention</span>
           </div>
         </div>
 
-        <div className="glass-card rounded-2xl p-5 shadow-xs hover:border-brand-500/35 transition-all">
+        <div className="glass-card hover-lift rounded-2xl p-5 shadow-xs hover:border-brand-500/35 transition-all">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Members</span>
             <div className="rounded-xl bg-violet-500/10 p-2 text-violet-550 dark:text-violet-400">
@@ -381,15 +381,15 @@ const Dashboard: React.FC = () => {
                 {act.profile?.avatar_url ? (
                   <img src={act.profile.avatar_url} alt="" className="h-8 w-8 rounded-full object-cover border border-slate-200 dark:border-slate-800 mt-0.5 shrink-0" />
                 ) : (
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-205 dark:bg-slate-800 text-slate-600 font-bold text-[9px] mt-0.5 shrink-0">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 font-bold text-[9px] mt-0.5 shrink-0">
                     {(act.profile?.full_name || 'US').substring(0, 2).toUpperCase()}
                   </div>
                 )}
                 <div className="overflow-hidden">
-                  <p className="text-slate-600 dark:text-slate-305 leading-relaxed">
+                  <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                     <strong className="text-slate-800 dark:text-slate-100 font-bold">{act.profile?.full_name || 'System User'}</strong>
                     {' '}{act.action}{' '}
-                    <span className="rounded bg-slate-105 dark:bg-slate-850 px-1.5 py-0.5 text-[9px] text-slate-700 dark:text-slate-300 font-mono font-semibold">
+                    <span className="rounded bg-slate-100 dark:bg-slate-850 px-1.5 py-0.5 text-[9px] text-slate-700 dark:text-slate-300 font-mono font-semibold">
                       {act.target_type}: {act.target_name}
                     </span>
                   </p>

@@ -169,7 +169,7 @@ const Projects: React.FC = () => {
             <div
               key={project.id}
               onClick={() => navigate(`/project/${project.id}`)}
-              className="relative flex flex-col justify-between rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/30 p-6 shadow-xs cursor-pointer hover:border-slate-350 dark:hover:border-slate-700/80 hover:bg-slate-50/20 dark:hover:bg-slate-900/40 transition-all duration-200"
+              className="relative flex flex-col justify-between rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/30 p-6 shadow-xs cursor-pointer hover-lift hover:border-slate-350 dark:hover:border-slate-700/80 hover:bg-slate-50/20 dark:hover:bg-slate-900/40 transition-all duration-200"
             >
               {/* Menu and badges */}
               <div className="flex items-start justify-between gap-4">
@@ -194,7 +194,7 @@ const Projects: React.FC = () => {
                   </button>
 
                   {activeProjectMenu === project.id && (
-                    <div className="absolute right-0 z-20 mt-1 w-32 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-1 shadow-2xl">
+                    <div className="absolute right-0 z-20 mt-1 w-32 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-1 shadow-2xl animate-dropdown">
                       <button
                         onClick={(e) => handleDelete(project.id, e)}
                         className="flex w-full items-center gap-1.5 rounded px-2.5 py-1.5 text-left text-xs font-semibold text-rose-500 hover:bg-slate-50 dark:hover:bg-slate-900"
@@ -231,7 +231,7 @@ const Projects: React.FC = () => {
 
               {/* Progress Tracker */}
               <div className="mt-4">
-                <div className="flex items-center justify-between text-[10px] text-slate-550 dark:text-slate-400 font-bold mb-1">
+                <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 font-bold mb-1">
                   <span>Task Progress</span>
                   <span>{project.progress || 0}%</span>
                 </div>
@@ -258,7 +258,7 @@ const Projects: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="rounded-lg p-1 text-slate-400 dark:text-slate-500 hover:bg-slate-105 dark:hover:bg-slate-800 hover:text-slate-800 dark:hover:text-slate-100 transition-colors"
+                className="rounded-lg p-1 text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-800 dark:hover:text-slate-100 transition-colors"
               >
                 <X size={18} />
               </button>
@@ -290,7 +290,7 @@ const Projects: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-550 dark:text-slate-400">Start Date</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Start Date</label>
                   <input
                     type="date"
                     value={startDate}
@@ -299,7 +299,7 @@ const Projects: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-550 dark:text-slate-400">Due Date</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Due Date</label>
                   <input
                     type="date"
                     value={dueDate}
@@ -311,7 +311,7 @@ const Projects: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-550 dark:text-slate-400">Priority Level</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Priority Level</label>
                   <select
                     value={priority}
                     onChange={(e) => setPriority(e.target.value as any)}
@@ -324,7 +324,7 @@ const Projects: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-550 dark:text-slate-400">Status</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</label>
                   <select
                     value={status}
                     onChange={(e) => setStatus(e.target.value as any)}

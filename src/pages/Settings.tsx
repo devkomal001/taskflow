@@ -127,7 +127,7 @@ const Settings: React.FC = () => {
                 type="text"
                 value={profileAvatar}
                 onChange={(e) => setProfileAvatar(e.target.value)}
-                className="mt-2 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-955/40 p-3 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-450 dark:placeholder-slate-600 focus:border-brand-500 focus:bg-white dark:focus:bg-slate-950 focus:outline-none transition-all duration-200"
+                className="mt-2 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 p-3 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:border-brand-500 focus:bg-white dark:focus:bg-slate-950 focus:outline-none transition-all duration-200"
               />
             </div>
 
@@ -172,13 +172,13 @@ const Settings: React.FC = () => {
           ) : (
             <form onSubmit={handleUpdateWorkspace} className="space-y-5 text-slate-800 dark:text-slate-100">
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Workspace Name</label>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Workspace Name *</label>
                 <input
                   type="text"
                   required
                   value={wsName}
                   onChange={(e) => setWsName(e.target.value)}
-                  className="mt-2 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-955/40 p-3 text-sm text-slate-800 dark:text-slate-202 placeholder-slate-400 dark:placeholder-slate-650 focus:border-brand-500 focus:bg-white dark:focus:bg-slate-950 focus:outline-none transition-all duration-200"
+                  className="mt-2 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 p-3 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-650 focus:border-brand-500 focus:bg-white dark:focus:bg-slate-950 focus:outline-none transition-all duration-200"
                 />
               </div>
 
@@ -188,7 +188,7 @@ const Settings: React.FC = () => {
                   value={wsDesc}
                   onChange={(e) => setWsDesc(e.target.value)}
                   rows={2}
-                  className="mt-2 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-955/40 p-3 text-sm text-slate-800 dark:text-slate-202 placeholder-slate-400 dark:placeholder-slate-650 focus:border-brand-500 focus:bg-white dark:focus:bg-slate-950 focus:outline-none resize-none transition-all duration-200"
+                  className="mt-2 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 p-3 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-650 focus:border-brand-500 focus:bg-white dark:focus:bg-slate-950 focus:outline-none resize-none transition-all duration-200"
                 />
               </div>
 
@@ -198,7 +198,7 @@ const Settings: React.FC = () => {
                   type="text"
                   value={wsLogo}
                   onChange={(e) => setWsLogo(e.target.value)}
-                  className="mt-2 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-955/40 p-3 text-sm text-slate-800 dark:text-slate-202 placeholder-slate-400 dark:placeholder-slate-650 focus:border-brand-500 focus:bg-white dark:focus:bg-slate-950 focus:outline-none transition-all duration-200"
+                  className="mt-2 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 p-3 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-650 focus:border-brand-500 focus:bg-white dark:focus:bg-slate-950 focus:outline-none transition-all duration-200"
                 />
               </div>
 
@@ -223,20 +223,20 @@ const Settings: React.FC = () => {
 
       {/* Pending Workspace Invites list */}
       {pendingInvites.length > 0 && (
-        <div className="rounded-3xl border border-slate-200/60 dark:border-slate-805/80 bg-white/70 dark:bg-slate-900/20 p-6 shadow-sm backdrop-blur-md">
-          <div className="mb-5 flex items-center gap-3 border-b border-slate-100 dark:border-slate-808/60 pb-3">
+        <div className="rounded-3xl border border-slate-200/60 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/20 p-6 shadow-sm backdrop-blur-md">
+          <div className="mb-5 flex items-center gap-3 border-b border-slate-100 dark:border-slate-800/60 pb-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
               <Sparkles size={18} />
             </div>
-            <h3 className="text-sm font-bold text-slate-800 dark:text-slate-202 uppercase tracking-wider">Pending Workspace Invites</h3>
+            <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">Pending Workspace Invites</h3>
           </div>
 
           <div className="space-y-3">
             {pendingInvites.map((invite) => (
-              <div key={invite.id} className="flex items-center justify-between rounded-2xl border border-slate-200/60 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/60 p-4 transition-all hover:bg-slate-50 dark:hover:bg-slate-900/40">
+              <div key={invite.id} className="flex items-center justify-between rounded-2xl border border-slate-200/60 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-955/60 p-4 transition-all hover:bg-slate-50 dark:hover:bg-slate-900/40">
                 <div>
                   <p className="text-xs font-bold text-slate-800 dark:text-slate-200">{invite.profile.full_name}</p>
-                  <p className="text-[10px] text-slate-550 dark:text-slate-400 mt-0.5">{invite.profile.email} (Invited as {invite.role})</p>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">{invite.profile.email} (Invited as {invite.role})</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
@@ -264,7 +264,7 @@ const Settings: React.FC = () => {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
             <Database size={18} />
           </div>
-          <h3 className="text-sm font-bold text-slate-800 dark:text-slate-202 uppercase tracking-wider">Database Seeding</h3>
+          <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">Database Seeding</h3>
         </div>
         <p className="text-xs text-slate-500 dark:text-slate-400 mb-5 leading-relaxed">
           If your database has been reset or is currently empty, you can seed it with TaskFlow's premium mock data models. This automatically creates workspaces, custom teams, demo projects, checklist items, activity logs, and pre-seeded team files directly linked to your current authentication profile.

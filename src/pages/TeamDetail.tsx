@@ -131,7 +131,7 @@ const TeamDetail: React.FC = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto transition-colors duration-200">
       {/* Welcome header widget */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-slate-200/60 dark:border-slate-805/85 pb-5">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-slate-200/60 dark:border-slate-800/85 pb-5">
         <div className="flex items-center gap-3">
           <div 
             className="flex h-12 w-12 items-center justify-center rounded-xl text-white shadow-md shadow-brand-500/10"
@@ -272,23 +272,23 @@ const TeamDetail: React.FC = () => {
               <div
                 key={project.id}
                 onClick={() => navigate(`/project/${project.id}`)}
-                className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-850 bg-slate-50/50 dark:bg-slate-950/20 p-3 hover:border-brand-500/30 hover:bg-white dark:hover:bg-slate-905 transition-all cursor-pointer shadow-xs"
+                className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20 p-3 hover:border-brand-500/30 hover:bg-white dark:hover:bg-slate-900 transition-all cursor-pointer shadow-xs"
               >
                 <div className="overflow-hidden">
                   <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{project.name}</p>
-                  <p className="text-[9px] text-slate-455 dark:text-slate-500 truncate font-semibold uppercase mt-0.5">{project.status}</p>
+                  <p className="text-[9px] text-slate-400 dark:text-slate-500 truncate font-semibold uppercase mt-0.5">{project.status}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-slate-705 dark:text-slate-400">{project.progress}%</span>
+                  <span className="text-[10px] font-bold text-slate-700 dark:text-slate-400">{project.progress}%</span>
                   <ChevronRight size={12} className="text-slate-400" />
                 </div>
               </div>
             ))}
 
             {tProjects.length === 0 && (
-              <div className="py-8 text-center text-slate-550">
+              <div className="py-8 text-center text-slate-500">
                 <p className="text-xs font-semibold">No projects connected.</p>
-                <p className="text-[10px] text-slate-450 mt-0.5">Assign team_id to projects to display them in this panel.</p>
+                <p className="text-[10px] text-slate-400 mt-0.5">Assign team_id to projects to display them in this panel.</p>
               </div>
             )}
           </div>
@@ -349,7 +349,7 @@ const TeamDetail: React.FC = () => {
                   <select
                     value={inviteRole}
                     onChange={(e) => setInviteRole(e.target.value as any)}
-                    className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-905 p-2.5 text-sm text-slate-800 dark:text-slate-200 focus:border-brand-500 focus:outline-none cursor-pointer"
+                    className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-2.5 text-sm text-slate-800 dark:text-slate-200 focus:border-brand-500 focus:outline-none cursor-pointer"
                   >
                     <option value="member">Team Member</option>
                     <option value="lead">Team Lead</option>
@@ -360,7 +360,7 @@ const TeamDetail: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setIsInviteOpen(false)}
-                    className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-550 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                   >
                     Cancel
                   </button>

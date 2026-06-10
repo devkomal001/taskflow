@@ -400,7 +400,7 @@ const Tasks: React.FC = () => {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-2xl font-extrabold tracking-tight text-slate-800 dark:text-white md:text-3xl">Workspace Tasks Board</h2>
-          <p className="text-sm text-slate-550 dark:text-slate-400">View and organize all tasks across workspace projects and teams.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">View and organize all tasks across workspace projects and teams.</p>
         </div>
         <div className="flex items-center gap-3">
           {/* Toggle board vs list view */}
@@ -555,7 +555,7 @@ const Tasks: React.FC = () => {
                         draggable
                         onDragStart={(e) => handleDragStart(e, task.id)}
                         onClick={() => handleOpenTaskDetails(task)}
-                        className="group rounded-xl border border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-900/30 p-4 shadow-xs hover:border-brand-500/40 dark:hover:border-brand-500/30 hover:bg-white dark:hover:bg-slate-900/50 transition-all duration-200 cursor-grab active:cursor-grabbing"
+                        className="group hover-lift rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/30 p-4 shadow-xs hover:border-brand-500/40 dark:hover:border-brand-500/30 hover:bg-white dark:hover:bg-slate-900 transition-all duration-200 cursor-grab active:cursor-grabbing"
                       >
                         <div className="flex items-center justify-between gap-2 mb-2">
                           <span className={`rounded px-1.5 py-0.5 text-[8px] font-extrabold uppercase border ${getPriorityBadgeColor(task.priority)}`}>
@@ -640,11 +640,11 @@ const Tasks: React.FC = () => {
         </div>
       ) : (
         // List View (Table layout)
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-805 bg-white dark:bg-slate-900/20 overflow-hidden shadow-xs">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/20 overflow-hidden shadow-xs">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-550 dark:text-slate-400 uppercase tracking-wider font-semibold">
+                <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">
                   <th className="px-5 py-3.5">Task Title</th>
                   <th className="px-5 py-3.5">Project</th>
                   <th className="px-5 py-3.5">Team</th>
@@ -766,7 +766,7 @@ const Tasks: React.FC = () => {
                   placeholder="e.g. Build API integration handlers"
                   value={taskTitle}
                   onChange={(e) => setTaskTitle(e.target.value)}
-                  className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-955 p-2.5 text-sm focus:border-brand-500 focus:outline-none"
+                  className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-900 p-2.5 text-sm text-slate-850 dark:text-slate-200 focus:border-brand-500 focus:outline-none"
                 />
               </div>
 
@@ -777,7 +777,7 @@ const Tasks: React.FC = () => {
                   value={taskDesc}
                   onChange={(e) => setTaskDesc(e.target.value)}
                   rows={2}
-                  className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-955 p-2.5 text-sm focus:border-brand-500 focus:outline-none resize-none"
+                  className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-900 p-2.5 text-sm text-slate-850 dark:text-slate-200 focus:border-brand-500 focus:outline-none resize-none"
                 />
               </div>
 
@@ -816,7 +816,7 @@ const Tasks: React.FC = () => {
                   <select
                     value={taskPriority}
                     onChange={(e) => setTaskPriority(e.target.value as any)}
-                    className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-955 p-2.5 text-sm focus:border-brand-500 focus:outline-none cursor-pointer"
+                    className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-900 p-2.5 text-sm text-slate-850 dark:text-slate-200 focus:border-brand-500 focus:outline-none cursor-pointer"
                   >
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
@@ -830,7 +830,7 @@ const Tasks: React.FC = () => {
                     type="date"
                     value={taskDueDate}
                     onChange={(e) => setTaskDueDate(e.target.value)}
-                    className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-955 p-2.5 text-sm focus:border-brand-500 focus:outline-none [color-scheme:dark]"
+                    className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-900 p-2.5 text-sm text-slate-850 dark:text-slate-200 focus:border-brand-500 focus:outline-none [color-scheme:dark]"
                   />
                 </div>
               </div>
@@ -842,7 +842,7 @@ const Tasks: React.FC = () => {
                   placeholder="Design, Frontend, Bug"
                   value={taskLabels}
                   onChange={(e) => setTaskLabels(e.target.value)}
-                  className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-955 p-2.5 text-sm focus:border-brand-500 focus:outline-none"
+                  className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-900 p-2.5 text-sm text-slate-850 dark:text-slate-200 focus:border-brand-500 focus:outline-none"
                 />
               </div>
 
@@ -850,7 +850,7 @@ const Tasks: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsNewTaskOpen(false)}
-                  className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-550 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 >
                   Cancel
                 </button>
@@ -963,7 +963,7 @@ const Tasks: React.FC = () => {
                       value={editDesc}
                       onChange={(e) => setEditDesc(e.target.value)}
                       rows={3}
-                      className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-955 p-2 text-xs focus:border-brand-500 focus:outline-none resize-none"
+                      className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 text-xs text-slate-850 dark:text-slate-200 focus:border-brand-500 focus:outline-none resize-none"
                     />
                   </div>
 
@@ -1070,7 +1070,7 @@ const Tasks: React.FC = () => {
                 </div>
                 <div className="space-y-2">
                   {taskAttachments.map(file => (
-                    <div key={file.id} className="flex items-center justify-between rounded-lg bg-slate-50 dark:bg-slate-900/30 p-2 border border-slate-202 dark:border-slate-850/50 shadow-xs">
+                    <div key={file.id} className="flex items-center justify-between rounded-lg bg-slate-50 dark:bg-slate-900/30 p-2 border border-slate-200 dark:border-slate-800/50 shadow-xs">
                       <div className="flex items-center gap-2 overflow-hidden">
                         {file.file_type?.startsWith('image/') ? (
                           <img src={file.url} alt="" className="h-8 w-8 rounded object-cover" />

@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useWorkspace } from '../../context/WorkspaceContext';
-import { Bell, Search, CheckCheck, Inbox, Menu, KanbanSquare, CheckSquare, User, Loader2 } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
+import { Bell, Search, CheckCheck, Inbox, Menu, KanbanSquare, CheckSquare, User, Loader2, Sun, Moon } from 'lucide-react';
 import { supabase } from '../../supabaseClient';
 
 interface TopbarProps {
@@ -11,6 +12,7 @@ interface TopbarProps {
 const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
   const { 
     notifications, 
     markNotificationRead, 
@@ -179,7 +181,7 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
 
           {/* Search Results Dropdown */}
           {showSearchResults && (
-            <div className="absolute left-0 mt-2 w-80 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-2 shadow-2xl shadow-slate-200 dark:shadow-black/60 animate-in fade-in slide-in-from-top-2 duration-150 max-h-96 overflow-y-auto z-50">
+            <div className="absolute left-0 mt-2 w-80 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-2 shadow-2xl shadow-slate-200 dark:shadow-black/60 animate-dropdown max-h-96 overflow-y-auto z-50">
               <div className="border-b border-slate-100 dark:border-slate-800 px-3 py-2 flex items-center justify-between">
                 <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Search Results</span>
                 {isSearching && <Loader2 className="animate-spin text-brand-500" size={14} />}
@@ -271,6 +273,21 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
 
 
 
+        {/* Theme Toggle Button */}
+        <button
+          onClick={toggleTheme}
+          className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-700 dark:hover:text-slate-200 hover:scale-105 active:scale-95 transition-all duration-200 shrink-0"
+          title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+        >
+          <div className="relative h-4.5 w-4.5 flex items-center justify-center">
+            {theme === 'dark' ? (
+              <Sun size={18} className="text-amber-500 transition-all duration-300 hover:rotate-45" />
+            ) : (
+              <Moon size={18} className="text-indigo-500 transition-all duration-300 hover:-rotate-12" />
+            )}
+          </div>
+        </button>
+
         {/* Notifications Icon Tray */}
         <div className="relative" ref={dropdownRef}>
           <button
@@ -287,7 +304,7 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
 
           {/* Notifications Flyout Drawer */}
           {isNotifOpen && (
-            <div className="absolute right-0 z-50 mt-2 w-80 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-2 shadow-2xl shadow-slate-200 dark:shadow-black/60 animate-in fade-in slide-in-from-top-2 duration-150">
+            <div className="absolute right-0 z-50 mt-2 w-80 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-2 shadow-2xl shadow-slate-200 dark:shadow-black/60 animate-dropdown">
               <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-3 py-2">
                 <span className="text-sm font-bold text-slate-800 dark:text-slate-200">Notifications</span>
                 {unreadCount > 0 && (

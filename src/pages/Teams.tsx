@@ -46,8 +46,8 @@ const Teams: React.FC = () => {
 
   if (!activeWorkspace) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] p-6 max-w-md mx-auto text-center text-slate-805 dark:text-white">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-105 dark:bg-slate-900 text-slate-400 dark:text-slate-500 mb-4 border border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-6 max-w-md mx-auto text-center text-slate-800 dark:text-white">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-400 dark:text-slate-500 mb-4 border border-slate-200 dark:border-slate-800">
           <Users size={24} />
         </div>
         <h3 className="text-lg font-bold">Workspace Required</h3>
@@ -128,7 +128,7 @@ const Teams: React.FC = () => {
               <div
                 key={team.id}
                 onClick={() => navigate(`/team/${team.id}`)}
-                className="group relative flex flex-col justify-between rounded-2xl border border-slate-205 dark:border-slate-800/80 bg-white dark:bg-slate-900/30 p-5 shadow-xs cursor-pointer hover:border-brand-500/40 dark:hover:border-brand-500/30 hover:bg-slate-50/20 dark:hover:bg-slate-900/40 transition-all duration-300"
+                className="group hover-lift relative flex flex-col justify-between rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/30 p-5 shadow-xs cursor-pointer hover:border-brand-500/40 dark:hover:border-brand-500/30 hover:bg-slate-50/20 dark:hover:bg-slate-900/40 transition-all duration-300"
               >
                 {/* Header Icon & Dot details */}
                 <div className="flex items-center justify-between gap-4">
@@ -155,15 +155,15 @@ const Teams: React.FC = () => {
                 <div className="mt-6 grid grid-cols-3 gap-2 border-t border-slate-100 dark:border-slate-850 pt-4 text-center">
                   <div>
                     <span className="block text-xs font-extrabold text-slate-800 dark:text-slate-100">{membersCount}</span>
-                    <span className="text-[10px] text-slate-455 dark:text-slate-500">Members</span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500">Members</span>
                   </div>
                   <div>
-                    <span className="block text-xs font-extrabold text-slate-805 dark:text-slate-100">{activeProjectsCount}</span>
-                    <span className="text-[10px] text-slate-455 dark:text-slate-500">Projects</span>
+                    <span className="block text-xs font-extrabold text-slate-800 dark:text-slate-100">{activeProjectsCount}</span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500">Projects</span>
                   </div>
                   <div>
-                    <span className="block text-xs font-extrabold text-slate-805 dark:text-slate-100">{avgProgress}%</span>
-                    <span className="text-[10px] text-slate-455 dark:text-slate-500">Progress</span>
+                    <span className="block text-xs font-extrabold text-slate-800 dark:text-slate-100">{avgProgress}%</span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500">Progress</span>
                   </div>
                 </div>
 
@@ -235,7 +235,7 @@ const Teams: React.FC = () => {
 
               {/* Color Presets */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-550 dark:text-slate-400">Theme Color</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Theme Color</label>
                 <div className="mt-2 flex flex-wrap gap-2.5">
                   {TEAM_COLORS.map(c => (
                     <button
@@ -251,14 +251,18 @@ const Teams: React.FC = () => {
 
               {/* Icon Presets */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-550 dark:text-slate-400 font-bold">Team Icon</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">Team Icon</label>
                 <div className="mt-2 grid grid-cols-4 gap-2">
                   {TEAM_ICONS.map(i => (
                     <button
                       key={i.name}
                       type="button"
                       onClick={() => setIcon(i.name)}
-                      className={`flex flex-col items-center gap-1 p-2 rounded-xl border transition-all text-xs ${icon === i.name ? 'border-brand-500 bg-brand-500/5 text-brand-600 dark:text-brand-400 font-bold' : 'border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-905 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500'}`}
+                      className={`flex flex-col items-center gap-1 p-2 rounded-xl border transition-all text-xs ${
+                        icon === i.name 
+                          ? 'border-brand-500 bg-brand-500/5 text-brand-605 dark:text-brand-400 font-bold' 
+                          : 'border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500'
+                      }`}
                     >
                       {renderIcon(i.name, 16)}
                       <span className="text-[9px] tracking-tight">{i.label}</span>
@@ -271,7 +275,7 @@ const Teams: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-550 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 >
                   Cancel
                 </button>

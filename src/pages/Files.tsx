@@ -106,12 +106,12 @@ const Files: React.FC = () => {
 
   if (!activeWorkspace) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] p-6 max-w-md mx-auto text-center text-slate-805 dark:text-white">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-105 dark:bg-slate-900 text-slate-400 dark:text-slate-500 mb-4 border border-slate-205 dark:border-slate-800">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-6 max-w-md mx-auto text-center text-slate-800 dark:text-white">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-400 dark:text-slate-500 mb-4 border border-slate-200 dark:border-slate-800">
           <FileText size={24} />
         </div>
         <h3 className="text-lg font-bold">Workspace Required</h3>
-        <p className="text-xs text-slate-555 mt-2 leading-relaxed">
+        <p className="text-xs text-slate-500 mt-2 leading-relaxed">
           Please select or create a workspace first to view workspace files.
         </p>
       </div>
@@ -130,8 +130,8 @@ const Files: React.FC = () => {
           <p className="text-sm font-semibold">Loading repository files...</p>
         </div>
       ) : attachments.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-slate-200 dark:border-slate-805 bg-white dark:bg-slate-900/10 py-16 text-center shadow-xs">
-          <FolderClosed className="mx-auto text-slate-400 dark:text-slate-605 mb-3 animate-pulse" size={36} />
+        <div className="rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/10 py-16 text-center shadow-xs">
+          <FolderClosed className="mx-auto text-slate-400 dark:text-slate-600 mb-3 animate-pulse" size={36} />
           <h4 className="text-sm font-bold text-slate-700 dark:text-slate-300">File Directory Empty</h4>
           <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">Upload documents or images under any project task's resource list to build your workspace library.</p>
         </div>
@@ -146,10 +146,10 @@ const Files: React.FC = () => {
             return (
               <div 
                 key={file.id} 
-                className="group relative flex flex-col justify-between rounded-2xl border border-slate-200 dark:border-slate-850 bg-white dark:bg-slate-900/20 p-4 hover:border-brand-500/40 dark:hover:border-brand-500/30 hover:bg-slate-50/10 dark:hover:bg-slate-900/30 transition-all duration-300 shadow-xs"
+                className="group hover-lift relative flex flex-col justify-between rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/20 p-4 hover:border-brand-500/40 dark:hover:border-brand-500/30 hover:bg-slate-50/10 dark:hover:bg-slate-900/30 transition-all duration-300 shadow-xs"
               >
                 {/* Image or Icon Preview */}
-                <div className="flex h-32 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-950 overflow-hidden relative border border-slate-200/50 dark:border-slate-900 shadow-inner">
+                <div className="flex h-32 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-955 overflow-hidden relative border border-slate-200/50 dark:border-slate-900 shadow-inner">
                   {isImage && file.url !== '#' ? (
                     <img 
                       src={file.url} 
@@ -159,7 +159,7 @@ const Files: React.FC = () => {
                   ) : (
                     <div className="text-slate-400 dark:text-slate-650 flex flex-col items-center gap-1">
                       <FileText size={32} className="stroke-[1.5]" />
-                      <span className="text-[8px] font-extrabold tracking-widest uppercase text-slate-455">
+                      <span className="text-[8px] font-extrabold tracking-widest uppercase text-slate-400">
                         {file.name.split('.').pop() || 'File'}
                       </span>
                     </div>
@@ -171,12 +171,12 @@ const Files: React.FC = () => {
                   <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate" title={file.name}>
                     {file.name}
                   </p>
-                  <p className="text-[9px] text-slate-500 dark:text-slate-450 mt-0.5 font-bold uppercase">{sizeKb} KB • {file.file_type?.split('/')[1] || 'Document'}</p>
+                  <p className="text-[9px] text-slate-500 dark:text-slate-400 mt-0.5 font-bold uppercase">{sizeKb} KB • {file.file_type?.split('/')[1] || 'Document'}</p>
                   
                   {connectedTask && (
                     <div 
                       onClick={() => navigate(`/project/${connectedTask.project_id}?task=${connectedTask.id}`)}
-                      className="mt-3 flex items-center justify-between gap-1 text-[9px] font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 cursor-pointer border-t border-slate-100 dark:border-slate-850 pt-2.5"
+                      className="mt-3 flex items-center justify-between gap-1 text-[9px] font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 cursor-pointer border-t border-slate-100 dark:border-slate-800 pt-2.5"
                     >
                       <span className="truncate">Task: {connectedTask.title}</span>
                       <ExternalLink size={8} className="shrink-0" />
@@ -198,7 +198,7 @@ const Files: React.FC = () => {
                   )}
                   <button
                     onClick={() => handleDeleteAttachment(file.id)}
-                    className="flex h-6 w-6 items-center justify-center rounded-lg bg-white dark:bg-slate-900 text-slate-400 hover:text-rose-500 border border-slate-202 dark:border-slate-805 hover:border-rose-200 shadow-md"
+                    className="flex h-6 w-6 items-center justify-center rounded-lg bg-white dark:bg-slate-900 text-slate-400 hover:text-rose-500 border border-slate-200 dark:border-slate-800 hover:border-rose-200 shadow-md"
                     title="Delete File"
                   >
                     <Trash2 size={11} />
