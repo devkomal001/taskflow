@@ -1423,7 +1423,7 @@ const ProjectDetail: React.FC = () => {
                       <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-455">Due Date</span>
                       <div className="mt-1.5 flex items-center gap-1.5 text-xs text-slate-655 dark:text-slate-300 font-semibold">
                         <Calendar size={13} className="text-slate-400" />
-                        <span className={isOverdue ? 'text-rose-500 font-bold' : ''}>
+                        <span className={(selectedTask.due_date && new Date(selectedTask.due_date) < now && selectedTask.status !== 'completed') ? 'text-rose-500 font-bold' : ''}>
                           {selectedTask.due_date ? new Date(selectedTask.due_date).toLocaleDateString() : 'No due date'}
                         </span>
                       </div>
