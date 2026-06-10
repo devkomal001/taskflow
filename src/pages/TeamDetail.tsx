@@ -181,8 +181,8 @@ const TeamDetail: React.FC = () => {
               <>
                 <img src={teamLead.profile?.avatar_url} alt="" className="h-7 w-7 rounded-full object-cover border border-slate-200" />
                 <div className="overflow-hidden">
-                  <span className="block text-xs font-bold text-slate-850 dark:text-slate-200 truncate">{teamLead.profile?.full_name}</span>
-                  <span className="text-[9px] text-slate-455 dark:text-slate-500 truncate block leading-none mt-0.5">Manager</span>
+                  <span className="block text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{teamLead.profile?.full_name}</span>
+                  <span className="text-[9px] text-slate-400 dark:text-slate-500 truncate block leading-none mt-0.5">Manager</span>
                 </div>
               </>
             ) : (

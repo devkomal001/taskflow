@@ -52,6 +52,39 @@ const Tasks: React.FC = () => {
   const [viewType, setViewType] = useState<'board' | 'list'>('board');
   const now = new Date();
 
+  // Monday.com style interactive cell selectors
+  const [activeStatusSelector, setActiveStatusSelector] = useState<string | null>(null);
+  const [activePrioritySelector, setActivePrioritySelector] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleGlobalClick = () => {
+      setActiveStatusSelector(null);
+      setActivePrioritySelector(null);
+    };
+    document.addEventListener('click', handleGlobalClick);
+    return () => document.removeEventListener('click', handleGlobalClick);
+  }, []);
+
+  const getStatusColorMonday = (status: string) => {
+    switch (status) {
+      case 'completed': return 'monday-bg-completed';
+      case 'review': return 'monday-bg-review';
+      case 'in_progress': return 'monday-bg-in_progress';
+      case 'todo': return 'monday-bg-todo';
+      default: return 'monday-bg-backlog';
+    }
+  };
+
+  const getPriorityColorMonday = (prio: string) => {
+    switch (prio) {
+      case 'low': return 'monday-bg-low';
+      case 'medium': return 'monday-bg-medium';
+      case 'high': return 'monday-bg-high';
+      case 'critical': return 'monday-bg-critical';
+      default: return 'monday-bg-todo';
+    }
+  };
+
   // Filter states
   const [searchQuery, setSearchQuery] = useState('');
   const [filterTeam, setFilterTeam] = useState('all');
@@ -686,15 +719,65 @@ const Tasks: React.FC = () => {
                           <span className="text-slate-400">-</span>
                         )}
                       </td>
-                      <td className="px-5 py-3.5">
-                        <span className={`rounded border px-2 py-0.5 text-[9px] font-extrabold uppercase ${getPriorityBadgeColor(task.priority)}`}>
+                      <td className="px-5 py-3.5 relative min-w-[125px]">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActivePrioritySelector(activePrioritySelector === task.id ? null : task.id);
+                            setActiveStatusSelector(null);
+                          }}
+                          className={`monday-cell ${getPriorityColorMonday(task.priority)}`}
+                        >
                           {task.priority}
-                        </span>
+                        </button>
+                        {activePrioritySelector === task.id && (
+                          <div className="absolute left-1/2 -translate-x-1/2 mt-1.5 z-30 w-32 rounded-xl border border-slate-200 dark:border-slate-850 bg-white dark:bg-slate-900 p-1.5 shadow-2xl animate-dropdown">
+                            {['low', 'medium', 'high', 'critical'].map(prio => (
+                              <button
+                                key={prio}
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  setActivePrioritySelector(null);
+                                  await updateTask(task.id, { priority: prio as any });
+                                  loadAllTasks();
+                                }}
+                                className={`w-full text-center text-[10px] font-bold uppercase py-2 px-1.5 my-0.5 rounded transition-all ${getPriorityColorMonday(prio)}`}
+                              >
+                                {prio}
+                              </button>
+                            ))}
+                          </div>
+                        )}
                       </td>
-                      <td className="px-5 py-3.5">
-                        <span className="rounded bg-slate-100 dark:bg-slate-850 px-2 py-0.5 text-[9px] font-bold uppercase text-slate-500 dark:text-slate-450 border border-slate-200 dark:border-transparent">
+                      <td className="px-5 py-3.5 relative min-w-[135px]">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveStatusSelector(activeStatusSelector === task.id ? null : task.id);
+                            setActivePrioritySelector(null);
+                          }}
+                          className={`monday-cell ${getStatusColorMonday(task.status)}`}
+                        >
                           {task.status.replace('_', ' ')}
-                        </span>
+                        </button>
+                        {activeStatusSelector === task.id && (
+                          <div className="absolute left-1/2 -translate-x-1/2 mt-1.5 z-30 w-32 rounded-xl border border-slate-200 dark:border-slate-850 bg-white dark:bg-slate-900 p-1.5 shadow-2xl animate-dropdown">
+                            {['backlog', 'todo', 'in_progress', 'review', 'completed'].map(st => (
+                              <button
+                                key={st}
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  setActiveStatusSelector(null);
+                                  await updateTask(task.id, { status: st as any });
+                                  loadAllTasks();
+                                }}
+                                className={`w-full text-center text-[10px] font-bold uppercase py-2 px-1.5 my-0.5 rounded transition-all ${getStatusColorMonday(st)}`}
+                              >
+                                {st.replace('_', ' ')}
+                              </button>
+                            ))}
+                          </div>
+                        )}
                       </td>
                       <td className="px-5 py-3.5">
                         <span className={`font-semibold ${isOverdue ? 'text-rose-505 dark:text-rose-400 font-bold' : 'text-slate-500 dark:text-slate-400'}`}>

@@ -104,3 +104,65 @@
   @apply shadow-lg shadow-slate-200/50 dark:shadow-slate-950/50 border-slate-300 dark:border-slate-700/80;
 }
 
+/* Monday.com Cell & Color Tokens */
+.monday-cell {
+  @apply h-8 flex items-center justify-center font-bold text-[10px] uppercase text-white shadow-sm select-none transition-all duration-150 py-1.5 px-3 rounded-md cursor-pointer w-full text-center hover:brightness-95 active:scale-95 duration-100;
+}
+
+.monday-bg-completed {
+  background-color: #00c875 !important;
+  color: #ffffff !important;
+}
+
+.monday-bg-review {
+  background-color: #784bd1 !important;
+  color: #ffffff !important;
+}
+
+.monday-bg-in_progress {
+  background-color: #fdab3d !important;
+  color: #ffffff !important;
+}
+
+.monday-bg-todo {
+  background-color: #c4c4c4 !important;
+  color: #ffffff !important;
+}
+
+.monday-bg-backlog {
+  background-color: #94a3b8 !important;
+  color: #ffffff !important;
+}
+
+.monday-bg-low {
+  background-color: #579bfc !important;
+  color: #ffffff !important;
+}
+
+.monday-bg-medium {
+  background-color: #0085ff !important;
+  color: #ffffff !important;
+}
+
+.monday-bg-high {
+  background-color: #ff5f00 !important;
+  color: #ffffff !important;
+}
+
+.monday-bg-critical {
+  background-color: #e2445c !important;
+  color: #ffffff !important;
+}
+
+.monday-grid-table {
+  @apply border-collapse w-full;
+}
+
+.monday-grid-table th {
+  @apply bg-slate-50 dark:bg-slate-900/60 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider py-2.5 px-4 border border-slate-200/50 dark:border-slate-800;
+}
+
+.monday-grid-table td {
+  @apply py-2 px-4 border border-slate-100 dark:border-slate-800/60 text-xs text-slate-800 dark:text-slate-200;
+}
+

@@ -29,7 +29,8 @@ import {
   FolderKanban,
   ExternalLink,
   ShieldCheck,
-  ChevronDown
+  ChevronDown,
+  List
 } from 'lucide-react';
 
 const ProjectDetail: React.FC = () => {
@@ -64,9 +65,42 @@ const ProjectDetail: React.FC = () => {
   const [project, setProject] = useState<Project | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [projectAttachments, setProjectAttachments] = useState<any[]>([]);
-  const [activeTab, setActiveTab] = useState<'kanban' | 'files' | 'activity'>('kanban');
+  const [activeTab, setActiveTab] = useState<'table' | 'kanban' | 'files' | 'activity'>('table');
   const [loading, setLoading] = useState(true);
   const now = new Date();
+
+  // Monday.com style interactive cell selectors
+  const [activeStatusSelector, setActiveStatusSelector] = useState<string | null>(null);
+  const [activePrioritySelector, setActivePrioritySelector] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleGlobalClick = () => {
+      setActiveStatusSelector(null);
+      setActivePrioritySelector(null);
+    };
+    document.addEventListener('click', handleGlobalClick);
+    return () => document.removeEventListener('click', handleGlobalClick);
+  }, []);
+
+  const getStatusColorMonday = (status: string) => {
+    switch (status) {
+      case 'completed': return 'monday-bg-completed';
+      case 'review': return 'monday-bg-review';
+      case 'in_progress': return 'monday-bg-in_progress';
+      case 'todo': return 'monday-bg-todo';
+      default: return 'monday-bg-backlog';
+    }
+  };
+
+  const getPriorityColorMonday = (prio: string) => {
+    switch (prio) {
+      case 'low': return 'monday-bg-low';
+      case 'medium': return 'monday-bg-medium';
+      case 'high': return 'monday-bg-high';
+      case 'critical': return 'monday-bg-critical';
+      default: return 'monday-bg-todo';
+    }
+  };
 
   // Mentions state
   const [mentionSuggestions, setMentionSuggestions] = useState<WorkspaceMember[]>([]);
@@ -476,6 +510,17 @@ const ProjectDetail: React.FC = () => {
       {/* Tabs */}
       <div className="flex items-center gap-4 border-b border-slate-200 dark:border-slate-850 shrink-0">
         <button
+          onClick={() => setActiveTab('table')}
+          className={`flex items-center gap-2 border-b-2 py-3 text-sm font-semibold transition-all ${
+            activeTab === 'table' 
+              ? 'border-brand-500 text-brand-600 dark:text-brand-400 font-bold' 
+              : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+          }`}
+        >
+          <List size={16} />
+          <span>Main Table</span>
+        </button>
+        <button
           onClick={() => setActiveTab('kanban')}
           className={`flex items-center gap-2 border-b-2 py-3 text-sm font-semibold transition-all ${
             activeTab === 'kanban' 
@@ -515,6 +560,194 @@ const ProjectDetail: React.FC = () => {
           </span>
         </button>
       </div>
+
+      {activeTab === 'table' && (
+        <div className="flex-1 flex flex-col space-y-4 overflow-hidden animate-fade-in">
+          {/* Filters */}
+          <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/10 p-3 sm:flex-row sm:items-center shadow-xs shrink-0">
+            <div className="relative flex-1">
+              <Search size={14} className="absolute left-3 top-2.5 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search table tasks..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-955/40 py-2.5 pl-9 pr-4 text-xs focus:border-brand-500/80 focus:bg-white focus:outline-none"
+              />
+            </div>
+            
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              <select
+                value={filterAssignee}
+                onChange={(e) => setFilterAssignee(e.target.value)}
+                className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950/40 py-2 px-3 text-xs text-slate-700 dark:text-slate-350 focus:outline-none cursor-pointer"
+              >
+                <option value="all">All Assignees</option>
+                {members.map(m => (
+                  <option key={m.user_id} value={m.user_id}>{m.profile.full_name}</option>
+                ))}
+              </select>
+
+              <select
+                value={filterPriority}
+                onChange={(e) => setFilterPriority(e.target.value)}
+                className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-955/40 py-2 px-3 text-xs text-slate-700 dark:text-slate-350 focus:outline-none cursor-pointer"
+              >
+                <option value="all">All Priorities</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+                <option value="critical">Critical</option>
+              </select>
+
+              <button
+                onClick={() => {
+                  setNewTasksCol('todo');
+                  setIsNewTaskModalOpen(true);
+                }}
+                className="flex items-center gap-1.5 rounded-xl bg-brand-600 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-500 transition-all shadow-md shadow-brand-500/10 active:scale-95 shrink-0"
+              >
+                <Plus size={14} />
+                <span>Create Task</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Main Table view */}
+          <div className="flex-1 overflow-y-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/20 overflow-hidden shadow-xs">
+            <div className="overflow-x-auto h-full">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">
+                    <th className="px-5 py-3">Task Title</th>
+                    <th className="px-5 py-3 text-center">Team</th>
+                    <th className="px-5 py-3 text-center">Priority</th>
+                    <th className="px-5 py-3 text-center">Status</th>
+                    <th className="px-5 py-3 text-center">Due Date</th>
+                    <th className="px-5 py-3 text-center">Assignee</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-850">
+                  {filteredTasks.map(task => {
+                    const assignee = members.find(m => m.user_id === task.assignee_id);
+                    const taskTeamId = task.team_id || (project && project.team_id);
+                    const team = teams.find(t => t.id === taskTeamId);
+                    const isOverdue = task.due_date && new Date(task.due_date) < now && task.status !== 'completed';
+
+                    return (
+                      <tr 
+                        key={task.id}
+                        onClick={() => handleOpenTaskDetails(task)}
+                        className="hover:bg-slate-50/40 dark:hover:bg-slate-900/20 cursor-pointer transition-colors"
+                      >
+                        <td className="px-5 py-3">
+                          <span className="font-bold text-slate-800 dark:text-slate-200 text-xs hover:text-brand-500 transition-colors">{task.title}</span>
+                        </td>
+                        <td className="px-5 py-3 text-center">
+                          {team ? (
+                            <span 
+                              className="rounded px-2 py-0.5 text-[10px] font-bold uppercase"
+                              style={{ backgroundColor: `${team.color}15`, color: team.color }}
+                            >
+                              {team.name}
+                            </span>
+                          ) : (
+                            <span className="text-slate-400">-</span>
+                          )}
+                        </td>
+                        <td className="px-5 py-3 relative min-w-[125px]">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActivePrioritySelector(activePrioritySelector === task.id ? null : task.id);
+                              setActiveStatusSelector(null);
+                            }}
+                            className={`monday-cell ${getPriorityColorMonday(task.priority)}`}
+                          >
+                            {task.priority}
+                          </button>
+                          {activePrioritySelector === task.id && (
+                            <div className="absolute left-1/2 -translate-x-1/2 mt-1.5 z-30 w-32 rounded-xl border border-slate-200 dark:border-slate-850 bg-white dark:bg-slate-900 p-1.5 shadow-2xl animate-dropdown">
+                              {['low', 'medium', 'high', 'critical'].map(prio => (
+                                <button
+                                  key={prio}
+                                  onClick={async (e) => {
+                                    e.stopPropagation();
+                                    setActivePrioritySelector(null);
+                                    await updateTask(task.id, { priority: prio as any });
+                                    loadTasks();
+                                  }}
+                                  className={`w-full text-center text-[10px] font-bold uppercase py-2 px-1.5 my-0.5 rounded transition-all ${getPriorityColorMonday(prio)}`}
+                                >
+                                  {prio}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-5 py-3 relative min-w-[135px]">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveStatusSelector(activeStatusSelector === task.id ? null : task.id);
+                              setActivePrioritySelector(null);
+                            }}
+                            className={`monday-cell ${getStatusColorMonday(task.status)}`}
+                          >
+                            {task.status.replace('_', ' ')}
+                          </button>
+                          {activeStatusSelector === task.id && (
+                            <div className="absolute left-1/2 -translate-x-1/2 mt-1.5 z-30 w-32 rounded-xl border border-slate-200 dark:border-slate-850 bg-white dark:bg-slate-900 p-1.5 shadow-2xl animate-dropdown">
+                              {['backlog', 'todo', 'in_progress', 'review', 'completed'].map(st => (
+                                <button
+                                  key={st}
+                                  onClick={async (e) => {
+                                    e.stopPropagation();
+                                    setActiveStatusSelector(null);
+                                    await updateTask(task.id, { status: st as any });
+                                    loadTasks();
+                                  }}
+                                  className={`w-full text-center text-[10px] font-bold uppercase py-2 px-1.5 my-0.5 rounded transition-all ${getStatusColorMonday(st)}`}
+                                >
+                                  {st.replace('_', ' ')}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-5 py-3 text-center">
+                          <span className={`font-semibold ${isOverdue ? 'text-rose-505 dark:text-rose-400 font-bold' : 'text-slate-500 dark:text-slate-400'}`}>
+                            {task.due_date ? new Date(task.due_date).toLocaleDateString() : 'No due date'}
+                          </span>
+                        </td>
+                        <td className="px-5 py-3 text-center">
+                          <div className="flex items-center justify-center gap-2">
+                            {assignee ? (
+                              <>
+                                <img src={assignee.profile.avatar_url} alt="" className="h-6 w-6 rounded-full object-cover border border-slate-200" />
+                                <span className="font-semibold text-slate-700 dark:text-slate-300">{assignee.profile.full_name}</span>
+                              </>
+                            ) : (
+                              <span className="text-slate-400 font-semibold">Unassigned</span>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  {filteredTasks.length === 0 && (
+                    <tr>
+                      <td colSpan={6} className="py-16 text-center text-slate-400 dark:text-slate-500">
+                        No tasks found matching current filters.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
 
       {activeTab === 'kanban' && (
         <div className="flex-1 flex flex-col space-y-4 overflow-hidden">

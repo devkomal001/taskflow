@@ -102,7 +102,7 @@ const Teams: React.FC = () => {
       {teams.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/10 py-16 text-center shadow-xs">
           <Users className="mx-auto text-slate-400 dark:text-slate-600 mb-3" size={36} />
-          <h4 className="text-sm font-bold text-slate-700 dark:text-slate-305">No Teams Configured</h4>
+          <h4 className="text-sm font-bold text-slate-700 dark:text-slate-300">No Teams Configured</h4>
           <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto mb-4">Introduce team spaces to divide workspace projects, members, and targets.</p>
           <button
             onClick={() => setIsModalOpen(true)}
@@ -188,7 +188,7 @@ const Teams: React.FC = () => {
       {/* Create Team Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-2xl animate-in zoom-in-95 duration-200 text-slate-850 dark:text-slate-100">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-2xl animate-in zoom-in-95 duration-200 text-slate-800 dark:text-slate-100">
             <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
               <div className="flex items-center gap-2">
                 <Users className="text-brand-500" size={20} />

@@ -100,12 +100,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
       <aside 
         className={`fixed inset-y-0 left-0 z-50 flex h-full flex-col border-r border-slate-200/60 dark:border-slate-800/80 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md p-3 transition-all duration-300 md:relative md:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
-        } ${isCollapsed ? 'w-18' : 'w-64'}`}
+        } ${isCollapsed ? 'w-20' : 'w-64'}`}
       >
         {/* Toggle Collapse Button for Desktop */}
         <button 
           onClick={toggleCollapse}
-          className="absolute -right-3 top-5 z-20 hidden h-6 w-6 items-center justify-center rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-400 hover:text-slate-650 dark:hover:text-slate-200 shadow-md hover:scale-105 transition-all md:flex"
+          className="absolute -right-3 top-5 z-20 hidden h-6 w-6 items-center justify-center rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 shadow-md hover:scale-105 transition-all md:flex"
         >
           {isCollapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
         </button>
@@ -270,7 +270,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                       `flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition-all ${
                         isActive 
                           ? 'bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-white font-bold' 
-                          : 'text-slate-650 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900/30 hover:text-slate-800 dark:hover:text-slate-205'
+                          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900/30 hover:text-slate-800 dark:hover:text-slate-200'
                       }`
                     }
                   >
@@ -300,7 +300,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
             {!isCollapsed && (
               <div className="flex-1 overflow-hidden animate-in fade-in duration-200">
                 <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{user?.full_name}</h4>
-                <p className="text-[9px] text-slate-455 dark:text-slate-500 truncate leading-none mt-0.5">{user?.email}</p>
+                <p className="text-[9px] text-slate-400 dark:text-slate-500 truncate leading-none mt-0.5">{user?.email}</p>
               </div>
             )}
             {!isCollapsed && (
