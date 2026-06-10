@@ -410,3 +410,74 @@ CREATE POLICY "Enable insert for all on audit_logs" ON audit_logs
 -- ==========================================
 -- Enable real-time for the notifications table so users receive pop-ups instantly
 ALTER PUBLICATION supabase_realtime ADD TABLE notifications;
+
+
+-- ==========================================
+-- 6. TEAMS & TEAM MEMBERSHIP SYSTEM
+-- ==========================================
+
+-- Teams Table
+CREATE TABLE IF NOT EXISTS teams (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  workspace_id UUID REFERENCES workspaces(id) ON DELETE CASCADE NOT NULL,
+  name TEXT NOT NULL,
+  description TEXT,
+  color TEXT DEFAULT '#6366F1' NOT NULL,
+  icon TEXT DEFAULT 'Users' NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+-- Team Members Table
+CREATE TABLE IF NOT EXISTS team_members (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  team_id UUID REFERENCES teams(id) ON DELETE CASCADE NOT NULL,
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
+  role TEXT DEFAULT 'member' CHECK (role IN ('lead', 'member')) NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+  UNIQUE (team_id, user_id)
+);
+
+-- Add team_id columns to projects and tasks tables
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS team_id UUID REFERENCES teams(id) ON DELETE SET NULL;
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS team_id UUID REFERENCES teams(id) ON DELETE SET NULL;
+
+-- Enable RLS
+ALTER TABLE teams ENABLE ROW LEVEL SECURITY;
+ALTER TABLE team_members ENABLE ROW LEVEL SECURITY;
+
+-- Teams Policies
+CREATE POLICY "Workspace members can view teams" ON teams
+  FOR SELECT USING (
+    public.is_workspace_member(workspace_id) OR
+    public.is_workspace_owner(workspace_id)
+  );
+
+CREATE POLICY "Workspace managers/owners can manage teams" ON teams
+  FOR ALL USING (
+    public.has_workspace_role(workspace_id, ARRAY['owner', 'manager']) OR
+    public.is_workspace_owner(workspace_id)
+  );
+
+-- Team Members Policies
+CREATE POLICY "Workspace members can view team memberships" ON team_members
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM teams t
+      WHERE t.id = team_members.team_id AND (
+        public.is_workspace_member(t.workspace_id) OR
+        public.is_workspace_owner(t.workspace_id)
+      )
+    )
+  );
+
+CREATE POLICY "Workspace managers/owners can manage team memberships" ON team_members
+  FOR ALL USING (
+    EXISTS (
+      SELECT 1 FROM teams t
+      WHERE t.id = team_members.team_id AND (
+        public.has_workspace_role(t.workspace_id, ARRAY['owner', 'manager']) OR
+        public.is_workspace_owner(t.workspace_id)
+      )
+    )
+  );
+

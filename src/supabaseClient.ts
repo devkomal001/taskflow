@@ -88,10 +88,51 @@ const defaultWorkspaceMembers = [
   { id: 'wm4', workspace_id: 'w2', user_id: 'user1', role: 'owner', status: 'active', created_at: new Date().toISOString() }
 ];
 
+const defaultTeams = [
+  {
+    id: 'team1',
+    workspace_id: 'w1',
+    name: 'Design Team',
+    description: 'Focuses on visual identity, UI/UX designs, mockups, design systems and brand assets.',
+    color: '#8B5CF6',
+    icon: 'Palette',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'team2',
+    workspace_id: 'w1',
+    name: 'Development Team',
+    description: 'Responsible for building the core SaaS application, security features, database clients and deployment pipelines.',
+    color: '#6366F1',
+    icon: 'Code',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'team3',
+    workspace_id: 'w1',
+    name: 'Marketing Team',
+    description: 'Promotional site content, SaaS pricing strategy, email campaigns, SEO and analytics growth.',
+    color: '#06B6D4',
+    icon: 'Megaphone',
+    created_at: new Date().toISOString()
+  }
+];
+
+const defaultTeamMembers = [
+  { id: 'tm1', team_id: 'team1', user_id: 'user2', role: 'lead', created_at: new Date().toISOString() },
+  { id: 'tm2', team_id: 'team1', user_id: 'user1', role: 'member', created_at: new Date().toISOString() },
+  { id: 'tm3', team_id: 'team1', user_id: 'user3', role: 'member', created_at: new Date().toISOString() },
+  { id: 'tm4', team_id: 'team2', user_id: 'user3', role: 'lead', created_at: new Date().toISOString() },
+  { id: 'tm5', team_id: 'team2', user_id: 'user1', role: 'member', created_at: new Date().toISOString() },
+  { id: 'tm6', team_id: 'team2', user_id: 'user2', role: 'member', created_at: new Date().toISOString() },
+  { id: 'tm7', team_id: 'team3', user_id: 'user1', role: 'lead', created_at: new Date().toISOString() }
+];
+
 const defaultProjects = [
   {
     id: 'p1',
     workspace_id: 'w1',
+    team_id: 'team1',
     name: 'TaskFlow Website Redesign',
     description: 'Revamping the core promotional site and client onboarding portals to drive SaaS signups.',
     start_date: '2026-06-01',
@@ -103,6 +144,7 @@ const defaultProjects = [
   {
     id: 'p2',
     workspace_id: 'w1',
+    team_id: 'team2',
     name: 'Mobile App Beta Launch',
     description: 'Publishing iOS and Android builds to TestFlight and Google Beta, getting feedback from first 100 beta testers.',
     start_date: '2026-06-10',
@@ -114,6 +156,7 @@ const defaultProjects = [
   {
     id: 'p3',
     workspace_id: 'w1',
+    team_id: 'team2',
     name: 'Annual Security Review',
     description: 'Conducting standard penetration tests, upgrading RLS roles, and renewing SOC 2 compliance reports.',
     start_date: '2026-05-15',
@@ -136,6 +179,7 @@ const defaultTasks = [
   {
     id: 't1',
     project_id: 'p1',
+    team_id: 'team1',
     title: 'Design high-fidelity homepage mockups',
     description: 'Design dark mode home layouts focusing on pricing card details and the interactive product carousel widgets.',
     assignee_id: 'user2',
@@ -148,6 +192,7 @@ const defaultTasks = [
   {
     id: 't2',
     project_id: 'p1',
+    team_id: 'team2',
     title: 'Setup routing framework in React App',
     description: 'Define routes using React Router DOM, create sidebar bindings, and protect dashboards with auth checks.',
     assignee_id: 'user3',
@@ -160,6 +205,7 @@ const defaultTasks = [
   {
     id: 't3',
     project_id: 'p1',
+    team_id: 'team2',
     title: 'Configure local storage hybrid database clients',
     description: 'Provide query fallback interceptors for developer testing when offline or missing Supabase keys.',
     assignee_id: 'user1',
@@ -172,6 +218,7 @@ const defaultTasks = [
   {
     id: 't4',
     project_id: 'p1',
+    team_id: 'team3',
     title: 'Review landing copy writing',
     description: 'Confirm tagline headings, objectives, user value propositions, and success metrics wording.',
     assignee_id: 'user2',
@@ -184,6 +231,7 @@ const defaultTasks = [
   {
     id: 't5',
     project_id: 'p2',
+    team_id: 'team2',
     title: 'Prepare App Store deployment configs',
     description: 'Compile developer certificates, write description summaries, upload screenshots of active workspaces.',
     assignee_id: 'user3',
@@ -252,7 +300,9 @@ function loadDb() {
       project_messages: [],
       firewall_blocked_ips: [],
       firewall_rate_limits: [],
-      audit_logs: []
+      audit_logs: [],
+      teams: defaultTeams,
+      team_members: defaultTeamMembers
     };
     saveDb(db);
   } else {
@@ -261,6 +311,26 @@ function loadDb() {
     if (!db.firewall_rate_limits) db.firewall_rate_limits = [];
     if (!db.audit_logs) db.audit_logs = [];
     if (!db.project_messages) db.project_messages = [];
+    if (!db.teams) db.teams = defaultTeams;
+    if (!db.team_members) db.team_members = defaultTeamMembers;
+    
+    // Support retroactively assigning team_ids to existing project/task seeds
+    if (db.projects && db.projects.length > 0 && !db.projects.some((p: any) => p.hasOwnProperty('team_id'))) {
+      db.projects = db.projects.map((p: any) => {
+        if (p.id === 'p1') return { ...p, team_id: 'team1' };
+        if (p.id === 'p2' || p.id === 'p3') return { ...p, team_id: 'team2' };
+        return p;
+      });
+    }
+    if (db.tasks && db.tasks.length > 0 && !db.tasks.some((t: any) => t.hasOwnProperty('team_id'))) {
+      db.tasks = db.tasks.map((t: any) => {
+        if (t.id === 't1') return { ...t, team_id: 'team1' };
+        if (t.id === 't2' || t.id === 't3' || t.id === 't5') return { ...t, team_id: 'team2' };
+        if (t.id === 't4') return { ...t, team_id: 'team3' };
+        return t;
+      });
+    }
+
     if (db.profiles) {
       db.profiles = db.profiles.map((p: any) => ({
         ...p,

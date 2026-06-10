@@ -26,9 +26,34 @@ export interface WorkspaceMember {
   };
 }
 
+export interface Team {
+  id: string;
+  workspace_id: string;
+  name: string;
+  description: string;
+  color: string;
+  icon: string;
+  created_at: string;
+}
+
+export interface TeamMember {
+  id: string;
+  team_id: string;
+  user_id: string;
+  role: 'lead' | 'member';
+  created_at: string;
+  profile: {
+    id: string;
+    email: string;
+    full_name: string;
+    avatar_url: string;
+  };
+}
+
 export interface Project {
   id: string;
   workspace_id: string;
+  team_id?: string | null;
   name: string;
   description: string;
   start_date: string;
@@ -42,6 +67,7 @@ export interface Project {
 export interface Task {
   id: string;
   project_id: string;
+  team_id?: string | null;
   title: string;
   description: string;
   assignee_id: string | null;
@@ -127,6 +153,8 @@ interface WorkspaceContextType {
   activeWorkspace: Workspace | null;
   projects: Project[];
   members: WorkspaceMember[];
+  teams: Team[];
+  teamMembers: TeamMember[];
   notifications: Notification[];
   activities: ActivityLog[];
   loading: boolean;
@@ -141,6 +169,12 @@ interface WorkspaceContextType {
   changeMemberRole: (memberId: string, role: 'manager' | 'member') => Promise<{ error: any }>;
   acceptInvitation: (memberId: string) => Promise<{ error: any }>;
   declineInvitation: (memberId: string) => Promise<{ error: any }>;
+  createTeam: (name: string, description: string, color: string, icon: string) => Promise<{ team: Team | null; error: any }>;
+  updateTeam: (teamId: string, updates: Partial<Team>) => Promise<{ team: Team | null; error: any }>;
+  deleteTeam: (teamId: string) => Promise<{ error: any }>;
+  addTeamMember: (teamId: string, email: string, role: 'lead' | 'member') => Promise<{ member: TeamMember | null; error: any }>;
+  removeTeamMember: (teamMemberId: string) => Promise<{ error: any }>;
+  changeTeamMemberRole: (teamMemberId: string, role: 'lead' | 'member') => Promise<{ error: any }>;
   getProjectTasks: (projectId: string) => Promise<{ tasks: Task[]; error: any }>;
   createTask: (projectId: string, taskData: Omit<Task, 'id' | 'project_id' | 'created_at'>) => Promise<{ task: Task | null; error: any }>;
   updateTask: (taskId: string, updates: Partial<Task>) => Promise<{ task: Task | null; error: any }>;
@@ -171,6 +205,8 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [activeWorkspace, setActiveWorkspace] = useState<Workspace | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [members, setMembers] = useState<WorkspaceMember[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [activities, setActivities] = useState<ActivityLog[]>([]);
   const [loading, setLoading] = useState(true);
@@ -183,6 +219,8 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setActiveWorkspace(null);
       setProjects([]);
       setMembers([]);
+      setTeams([]);
+      setTeamMembers([]);
       setNotifications([]);
       setActivities([]);
       setLoading(false);
@@ -261,6 +299,8 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         setActiveWorkspace(null);
         setProjects([]);
         setMembers([]);
+        setTeams([]);
+        setTeamMembers([]);
         setLoading(false);
       }
 
@@ -339,6 +379,40 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         return { ...member, profile };
       });
       setMembers(memberList);
+
+      // 2.5 Fetch teams
+      const { data: teamData } = await supabase
+        .from('teams')
+        .select('*')
+        .eq('workspace_id', workspaceId);
+      
+      const teamList = teamData || [];
+      setTeams(teamList);
+
+      // 2.6 Fetch team members
+      let teamMembersList: any[] = [];
+      const teamIds = teamList.map((t: any) => t.id);
+      if (teamIds.length > 0) {
+        const { data: tMembersData } = await supabase
+          .from('team_members')
+          .select('*, profiles(*)')
+          .in('team_id', teamIds);
+        
+        teamMembersList = (tMembersData || []).map((tm: any) => {
+          let profile = tm.profiles;
+          if (!profile) {
+            const dbState = JSON.parse(localStorage.getItem('taskflow_mock_db') || '{}');
+            profile = (dbState.profiles || []).find((p: any) => p.id === tm.user_id) || {
+              id: tm.user_id,
+              email: 'unknown@taskflow.com',
+              full_name: 'Unknown Member',
+              avatar_url: ''
+            };
+          }
+          return { ...tm, profile };
+        });
+      }
+      setTeamMembers(teamMembersList);
 
       // 3. Fetch activity logs
       const { data: activityData } = await supabase
@@ -655,6 +729,171 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       return { error: null };
     } catch (error: any) {
       console.error('Error declining invitation:', error);
+      return { error };
+    }
+  };
+
+  const createTeam = async (name: string, description: string, color: string, icon: string) => {
+    try {
+      if (!activeWorkspace) throw new Error('No active workspace');
+      
+      const { data, error } = await supabase
+        .from('teams')
+        .insert({
+          workspace_id: activeWorkspace.id,
+          name,
+          description,
+          color,
+          icon
+        })
+        .select()
+        .single();
+      
+      if (error) throw error;
+      
+      await logActivity('created team', 'team', name);
+      await refreshWorkspaceData();
+      return { team: data, error: null };
+    } catch (error: any) {
+      console.error('Error creating team:', error);
+      return { team: null, error };
+    }
+  };
+
+  const updateTeam = async (teamId: string, updates: Partial<Team>) => {
+    try {
+      const { data, error } = await supabase
+        .from('teams')
+        .update(updates)
+        .eq('id', teamId)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      
+      await logActivity('updated team details for', 'team', data.name);
+      await refreshWorkspaceData();
+      return { team: data, error: null };
+    } catch (error: any) {
+      console.error('Error updating team:', error);
+      return { team: null, error };
+    }
+  };
+
+  const deleteTeam = async (teamId: string) => {
+    try {
+      const team = teams.find(t => t.id === teamId);
+      const name = team ? team.name : 'Unknown';
+      
+      const { error } = await supabase
+        .from('teams')
+        .delete()
+        .eq('id', teamId);
+      
+      if (error) throw error;
+      
+      await logActivity('deleted team', 'team', name);
+      await refreshWorkspaceData();
+      return { error: null };
+    } catch (error: any) {
+      console.error('Error deleting team:', error);
+      return { error };
+    }
+  };
+
+  const addTeamMember = async (teamId: string, email: string, role: 'lead' | 'member') => {
+    try {
+      // Find user profile by email
+      let profile = null;
+      const { data: supabaseProfile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('email', email.toLowerCase())
+        .maybeSingle();
+      
+      if (supabaseProfile) {
+        profile = supabaseProfile;
+      } else if (isUsingMock) {
+        const dbState = JSON.parse(localStorage.getItem('taskflow_mock_db') || '{}');
+        profile = (dbState.profiles || []).find((p: any) => p.email.toLowerCase() === email.toLowerCase());
+      }
+      
+      if (!profile) {
+        throw new Error('This email is not registered. Please ask them to sign up to TaskFlow first.');
+      }
+      
+      // Check if already in team
+      const existing = teamMembers.find(tm => tm.team_id === teamId && tm.user_id === profile.id);
+      if (existing) {
+        throw new Error('This user is already a member of the team.');
+      }
+      
+      const { data, error } = await supabase
+        .from('team_members')
+        .insert({
+          team_id: teamId,
+          user_id: profile.id,
+          role
+        })
+        .select()
+        .single();
+      
+      if (error) throw error;
+      
+      const team = teams.find(t => t.id === teamId);
+      await triggerNotification(profile.id, `Added to Team: ${team?.name || 'Team'}`, `You have been added as a ${role} to ${team?.name || 'the team'}.`);
+      await logActivity('added ' + profile.full_name + ' to', 'team', team?.name || 'team');
+      await refreshWorkspaceData();
+      return { member: { ...data, profile }, error: null };
+    } catch (error: any) {
+      console.error('Error adding team member:', error);
+      return { member: null, error };
+    }
+  };
+
+  const removeTeamMember = async (teamMemberId: string) => {
+    try {
+      const tm = teamMembers.find(m => m.id === teamMemberId);
+      const name = tm?.profile?.full_name || 'Unknown';
+      const team = teams.find(t => t.id === tm?.team_id);
+      
+      const { error } = await supabase
+        .from('team_members')
+        .delete()
+        .eq('id', teamMemberId);
+      
+      if (error) throw error;
+      
+      if (tm) {
+        await triggerNotification(tm.user_id, `Removed from Team: ${team?.name || 'Team'}`, `You have been removed from ${team?.name || 'the team'}.`);
+      }
+      await logActivity('removed ' + name + ' from', 'team', team?.name || 'team');
+      await refreshWorkspaceData();
+      return { error: null };
+    } catch (error: any) {
+      console.error('Error removing team member:', error);
+      return { error };
+    }
+  };
+
+  const changeTeamMemberRole = async (teamMemberId: string, role: 'lead' | 'member') => {
+    try {
+      const { error } = await supabase
+        .from('team_members')
+        .update({ role })
+        .eq('id', teamMemberId);
+      
+      if (error) throw error;
+      
+      const tm = teamMembers.find(m => m.id === teamMemberId);
+      const team = teams.find(t => t.id === tm?.team_id);
+      if (tm) {
+        await logActivity('changed role to ' + role + ' for ' + tm.profile?.full_name + ' in', 'team', team?.name || 'team');
+      }
+      await refreshWorkspaceData();
+      return { error: null };
+    } catch (error: any) {
+      console.error('Error changing team member role:', error);
       return { error };
     }
   };
@@ -1437,6 +1676,8 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       activeWorkspace,
       projects,
       members,
+      teams,
+      teamMembers,
       notifications,
       activities,
       loading,
@@ -1451,6 +1692,12 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       changeMemberRole,
       acceptInvitation,
       declineInvitation,
+      createTeam,
+      updateTeam,
+      deleteTeam,
+      addTeamMember,
+      removeTeamMember,
+      changeTeamMemberRole,
       getProjectTasks,
       createTask,
       updateTask,

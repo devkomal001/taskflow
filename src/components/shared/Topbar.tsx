@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useWorkspace } from '../../context/WorkspaceContext';
-import { useTheme } from '../../context/ThemeContext';
-import { Bell, Search, CheckCheck, Inbox, Menu, Sun, Moon, KanbanSquare, CheckSquare, User, Loader2 } from 'lucide-react';
+import { Bell, Search, CheckCheck, Inbox, Menu, KanbanSquare, CheckSquare, User, Loader2 } from 'lucide-react';
 import { supabase } from '../../supabaseClient';
 
 interface TopbarProps {
@@ -12,14 +11,14 @@ interface TopbarProps {
 const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme();
   const { 
     notifications, 
     markNotificationRead, 
     markAllNotificationsRead,
     activeWorkspace,
     projects,
-    members
+    members,
+    teams
   } = useWorkspace();
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -125,6 +124,15 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
     if (path.startsWith('/project/')) return 'Project Workspace';
     if (path === '/members') return 'Member Directory';
     if (path === '/settings') return 'Workspace Settings';
+    if (path === '/teams') return 'Teams Management';
+    if (path.startsWith('/team/')) {
+      const teamId = path.split('/')[2];
+      const team = teams?.find(t => t.id === teamId);
+      return team ? `${team.name} Dashboard` : 'Team Dashboard';
+    }
+    if (path === '/tasks') return 'Workspace Tasks Board';
+    if (path === '/files') return 'File Repository';
+    if (path === '/activity') return 'Workspace Activity Log';
     return 'TaskFlow';
   };
 
@@ -261,14 +269,7 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
           )}
         </div>
 
-        {/* Theme Toggle Button */}
-        <button
-          onClick={toggleTheme}
-          className="relative rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
-          title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-        >
-          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-        </button>
+
 
         {/* Notifications Icon Tray */}
         <div className="relative" ref={dropdownRef}>

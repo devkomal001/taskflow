@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,9 +6,26 @@
 
 @layer base {
   body {
-    @apply font-sans bg-slate-900 text-slate-100 antialiased;
+    @apply font-sans bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased transition-colors duration-300;
     font-family: 'Inter', sans-serif;
   }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', 'Inter', sans-serif;
+  }
+}
+
+/* Glassmorphism Presets */
+.glass-panel {
+  @apply bg-white/70 dark:bg-slate-950/60 backdrop-blur-md border border-slate-200/50 dark:border-slate-800/60;
+}
+
+.glass-card {
+  @apply bg-white/80 dark:bg-slate-900/40 backdrop-blur-md border border-slate-200/50 dark:border-slate-800/40 shadow-sm hover:shadow-md transition-all duration-300;
+}
+
+.glass-input {
+  @apply bg-slate-100/50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 focus:border-brand-500/80 focus:bg-white dark:focus:bg-slate-950 focus:outline-none transition-all duration-200;
 }
 
 /* Custom styles for scrollbars and glassy effects */
@@ -18,7 +35,7 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.5);
+  @apply bg-slate-100 dark:bg-slate-950/40;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -34,3 +51,18 @@
 .transition-all-200 {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Custom Premium animations */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+

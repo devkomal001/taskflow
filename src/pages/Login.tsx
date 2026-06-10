@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useFirewall } from '../context/FirewallContext';
-import { Briefcase, Mail, Lock, ShieldAlert, Sparkles } from 'lucide-react';
+import { Briefcase, Mail, Lock, ShieldAlert, Sparkles, ArrowRight } from 'lucide-react';
 import { TurnstileCaptcha } from '../components/shared/TurnstileCaptcha';
 
 const Login: React.FC = () => {
@@ -84,37 +84,44 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="relative flex min-h-screen w-screen items-center justify-center bg-slate-950 px-4 py-12 overflow-hidden">
-      {/* Background Gradient Orbs */}
-      <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-brand-500/10 blur-[120px] pointer-events-none"></div>
-      <div className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-violet-600/10 blur-[120px] pointer-events-none"></div>
+    <div className="relative flex min-h-screen w-screen items-center justify-center bg-slate-950 px-4 py-16 overflow-hidden">
+      {/* Background Ambient Lights */}
+      <div className="absolute top-[-10%] left-[-10%] h-[50%] w-[50%] rounded-full bg-brand-500/10 blur-[140px] pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] h-[50%] w-[50%] rounded-full bg-violet-600/10 blur-[140px] pointer-events-none"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-cyan-500/5 blur-[120px] pointer-events-none"></div>
 
-      <div className="z-10 w-full max-w-md animate-in fade-in zoom-in-95 duration-300">
+      {/* Grid Pattern Overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(transparent_1px,#020617_1px)] bg-[size:20px_20px] opacity-40 pointer-events-none"></div>
+
+      <div className="z-10 w-full max-w-md animate-in fade-in zoom-in-95 duration-500">
         {/* Brand Header */}
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-brand-600 to-violet-500 text-white shadow-xl shadow-brand-500/20">
-            <Briefcase size={26} className="stroke-[2.5]" />
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-brand-600 via-brand-500 to-violet-500 text-white shadow-xl shadow-brand-500/20 ring-1 ring-white/10">
+            <Briefcase size={28} className="stroke-[2.2] animate-pulse" />
           </div>
           <h2 className="text-3xl font-extrabold tracking-tight text-white bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
             Welcome to TaskFlow
           </h2>
-          <p className="mt-2 text-sm text-slate-400">Streamline projects and track team progress in real time.</p>
+          <p className="mt-2 text-sm text-slate-400 font-medium">Streamline projects and track team progress in real time.</p>
         </div>
 
         {/* Login Card */}
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/40 p-8 shadow-2xl backdrop-blur-md">
+        <div className="relative rounded-3xl border border-slate-800/80 bg-slate-900/40 p-8 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-slate-700/60 group overflow-hidden">
+          {/* Card Border Glow */}
+          <div className="absolute -inset-px bg-gradient-to-r from-brand-500/20 to-violet-500/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
           {errorMsg && (
-            <div className="mb-4 flex items-center gap-2.5 rounded-xl border border-rose-500/20 bg-rose-500/5 p-3.5 text-xs font-semibold text-rose-400 leading-relaxed">
-              <ShieldAlert size={18} className="shrink-0 text-rose-400" />
+            <div className="relative mb-5 flex items-start gap-2.5 rounded-2xl border border-rose-500/20 bg-rose-500/5 p-4 text-xs font-semibold text-rose-400 leading-relaxed animate-in slide-in-from-top-2 duration-300">
+              <ShieldAlert size={18} className="shrink-0 text-rose-400 mt-0.5" />
               <span>{errorMsg}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="relative space-y-6">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">Email Address</label>
-              <div className="relative mt-1.5">
-                <Mail className="absolute left-3 top-3.5 text-slate-500" size={16} />
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Email Address</label>
+              <div className="relative mt-2">
+                <Mail className="absolute left-4 top-3.5 text-slate-500 transition-colors group-focus-within:text-brand-400" size={16} />
                 <input
                   id="login-email"
                   type="email"
@@ -122,20 +129,20 @@ const Login: React.FC = () => {
                   placeholder="name@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-xl border border-slate-800 bg-slate-950 py-3 pl-10 pr-4 text-sm text-slate-200 placeholder-slate-600 focus:border-brand-500/80 focus:outline-none transition-colors"
+                  className="w-full rounded-2xl border border-slate-800 bg-slate-950/80 py-3.5 pl-11 pr-4 text-sm text-slate-200 placeholder-slate-600 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 focus:outline-none transition-all duration-200"
                 />
               </div>
             </div>
 
             <div>
               <div className="flex items-center justify-between">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">Password</label>
-                <Link to="/forgot-password" id="forgot-password-link" className="text-xs font-semibold text-brand-400 hover:text-brand-300">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Password</label>
+                <Link to="/forgot-password" id="forgot-password-link" className="text-xs font-semibold text-brand-400 hover:text-brand-300 transition-colors">
                   Forgot Password?
                 </Link>
               </div>
-              <div className="relative mt-1.5">
-                <Lock className="absolute left-3 top-3.5 text-slate-500" size={16} />
+              <div className="relative mt-2">
+                <Lock className="absolute left-4 top-3.5 text-slate-500 transition-colors group-focus-within:text-brand-400" size={16} />
                 <input
                   id="login-password"
                   type="password"
@@ -143,13 +150,13 @@ const Login: React.FC = () => {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-xl border border-slate-800 bg-slate-950 py-3 pl-10 pr-4 text-sm text-slate-200 placeholder-slate-600 focus:border-brand-500/80 focus:outline-none transition-colors"
+                  className="w-full rounded-2xl border border-slate-800 bg-slate-950/80 py-3.5 pl-11 pr-4 text-sm text-slate-200 placeholder-slate-600 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 focus:outline-none transition-all duration-200"
                 />
               </div>
             </div>
 
             {/* Firewall Security Bot Protection CAPTCHA */}
-            <div className="py-1">
+            <div className="py-1 relative z-20">
               <TurnstileCaptcha 
                 action="login" 
                 onVerify={(token) => setCaptchaToken(token)} 
@@ -159,47 +166,49 @@ const Login: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full items-center justify-center rounded-xl bg-brand-600 py-3 text-sm font-semibold text-white hover:bg-brand-500 transition-colors shadow-lg shadow-brand-500/25 disabled:opacity-50"
+              className="relative flex w-full items-center justify-center rounded-2xl bg-brand-600 py-3.5 text-sm font-semibold text-white hover:bg-brand-500 transition-all duration-200 shadow-xl shadow-brand-500/20 hover:shadow-brand-500/30 active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 disabled:hover:shadow-none"
             >
               {loading ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
               ) : (
-                'Sign In'
+                <span className="flex items-center gap-1.5">
+                  Sign In <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-0.5" />
+                </span>
               )}
             </button>
           </form>
 
           {/* Quick Demo Sign Ins */}
-          <div className="mt-6 border-t border-slate-800/80 pt-5">
-            <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
-              <Sparkles size={12} className="text-brand-400" />
+          <div className="relative mt-8 border-t border-slate-800/80 pt-6">
+            <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">
+              <Sparkles size={14} className="text-brand-400 animate-pulse" />
               <span>Developer Quick Logins</span>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               <button
                 id="quick-login-owner"
                 onClick={() => handleQuickLogin('owner')}
-                className="flex flex-col items-center justify-center rounded-xl border border-slate-850 bg-slate-900/50 p-2.5 hover:bg-slate-900 hover:border-slate-800 text-left transition-colors"
+                className="flex flex-col items-center justify-center rounded-2xl border border-slate-800/50 bg-slate-950/40 p-3 hover:bg-slate-900/60 hover:border-slate-700/60 hover:shadow-md transition-all duration-200 active:scale-[0.97]"
               >
-                <span className="text-[10px] font-bold text-slate-400">Workspace Owner</span>
-                <span className="text-[9px] font-semibold text-brand-400 mt-0.5 truncate max-w-full">owner@taskflow.com</span>
+                <span className="text-[11px] font-bold text-slate-300">Workspace Owner</span>
+                <span className="text-[10px] font-semibold text-brand-400 mt-1 truncate max-w-full">owner@taskflow.com</span>
               </button>
               <button
                 id="quick-login-member"
                 onClick={() => handleQuickLogin('developer')}
-                className="flex flex-col items-center justify-center rounded-xl border border-slate-850 bg-slate-900/50 p-2.5 hover:bg-slate-900 hover:border-slate-800 text-left transition-colors"
+                className="flex flex-col items-center justify-center rounded-2xl border border-slate-800/50 bg-slate-950/40 p-3 hover:bg-slate-900/60 hover:border-slate-700/60 hover:shadow-md transition-all duration-200 active:scale-[0.97]"
               >
-                <span className="text-[10px] font-bold text-slate-400">Team Member</span>
-                <span className="text-[9px] font-semibold text-brand-400 mt-0.5 truncate max-w-full">developer@taskflow.com</span>
+                <span className="text-[11px] font-bold text-slate-300">Team Member</span>
+                <span className="text-[10px] font-semibold text-brand-400 mt-1 truncate max-w-full">developer@taskflow.com</span>
               </button>
             </div>
           </div>
         </div>
 
         {/* Footer Link */}
-        <p className="mt-6 text-center text-sm text-slate-400">
+        <p className="mt-8 text-center text-sm text-slate-400 font-medium">
           Don't have an account?{' '}
-          <Link to="/register" id="create-account-link" className="font-semibold text-brand-400 hover:text-brand-300">
+          <Link to="/register" id="create-account-link" className="font-semibold text-brand-400 hover:text-brand-300 transition-colors">
             Create Account
           </Link>
         </p>

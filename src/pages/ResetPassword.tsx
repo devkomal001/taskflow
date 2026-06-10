@@ -90,38 +90,45 @@ const ResetPassword: React.FC = () => {
   };
 
   return (
-    <div className="relative flex min-h-screen w-screen items-center justify-center bg-slate-950 px-4 py-12 overflow-hidden">
-      {/* Background Orbs */}
-      <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-brand-500/10 blur-[120px] pointer-events-none"></div>
-      <div className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-violet-600/10 blur-[120px] pointer-events-none"></div>
+    <div className="relative flex min-h-screen w-screen items-center justify-center bg-slate-950 px-4 py-16 overflow-hidden">
+      {/* Background Ambient Lights */}
+      <div className="absolute top-[-10%] left-[-10%] h-[50%] w-[50%] rounded-full bg-brand-500/10 blur-[140px] pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] h-[50%] w-[50%] rounded-full bg-violet-600/10 blur-[140px] pointer-events-none"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-cyan-500/5 blur-[120px] pointer-events-none"></div>
 
-      <div className="z-10 w-full max-w-md animate-in fade-in zoom-in-95 duration-300">
+      {/* Grid Pattern Overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(transparent_1px,#020617_1px)] bg-[size:20px_20px] opacity-40 pointer-events-none"></div>
+
+      <div className="z-10 w-full max-w-md animate-in fade-in zoom-in-95 duration-500">
         {/* Brand Header */}
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-brand-600 to-violet-500 text-white shadow-xl shadow-brand-500/20">
-            <Briefcase size={26} className="stroke-[2.5]" />
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-brand-600 via-brand-500 to-violet-500 text-white shadow-xl shadow-brand-500/20 ring-1 ring-white/10">
+            <Briefcase size={28} className="stroke-[2.2] animate-pulse" />
           </div>
           <h2 className="text-3xl font-extrabold tracking-tight text-white bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
             Choose New Password
           </h2>
-          <p className="mt-2 text-sm text-slate-400">Secure your account with a strong, private password.</p>
+          <p className="mt-2 text-sm text-slate-400 font-medium">Secure your account with a strong, private password.</p>
         </div>
 
         {/* Card */}
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/40 p-8 shadow-2xl backdrop-blur-md">
+        <div className="relative rounded-3xl border border-slate-800/80 bg-slate-900/40 p-8 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-slate-700/60 group overflow-hidden">
+          {/* Card Border Glow */}
+          <div className="absolute -inset-px bg-gradient-to-r from-brand-500/20 to-violet-500/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
           {errorMsg && (
-            <div className="mb-5 flex items-center gap-2.5 rounded-xl border border-rose-500/20 bg-rose-500/5 p-3.5 text-xs font-semibold text-rose-400 leading-relaxed">
-              <ShieldAlert size={18} className="shrink-0 text-rose-400" />
+            <div className="relative mb-5 flex items-start gap-2.5 rounded-2xl border border-rose-500/20 bg-rose-500/5 p-4 text-xs font-semibold text-rose-400 leading-relaxed animate-in slide-in-from-top-2 duration-300">
+              <ShieldAlert size={18} className="shrink-0 text-rose-400 mt-0.5" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           {!success ? (
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="relative space-y-6">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">New Password</label>
-                <div className="relative mt-1.5">
-                  <Lock className="absolute left-3 top-3.5 text-slate-500" size={16} />
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400">New Password</label>
+                <div className="relative mt-2">
+                  <Lock className="absolute left-4 top-3.5 text-slate-500 transition-colors group-focus-within:text-brand-400" size={16} />
                   <input
                     id="reset-password-input"
                     type="password"
@@ -129,20 +136,20 @@ const ResetPassword: React.FC = () => {
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 py-3 pl-10 pr-4 text-sm text-slate-200 placeholder-slate-600 focus:border-brand-500/80 focus:outline-none transition-colors"
+                    className="w-full rounded-2xl border border-slate-800 bg-slate-950/80 py-3.5 pl-11 pr-4 text-sm text-slate-200 placeholder-slate-605 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 focus:outline-none transition-all duration-200"
                   />
                 </div>
 
                 {/* Password Strength Indicator */}
                 {password && (
-                  <div className="mt-3 space-y-1.5">
+                  <div className="mt-3.5 space-y-2 animate-in fade-in duration-200">
                     <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider">
-                      <span className="text-slate-500">Security Strength:</span>
+                      <span className="text-slate-550">Security Strength:</span>
                       <span className={strength.percentage >= 75 ? 'text-emerald-400' : strength.percentage >= 50 ? 'text-amber-400' : 'text-rose-400'}>
                         {strength.label}
                       </span>
                     </div>
-                    <div className="h-1.5 w-full rounded-full bg-slate-950 overflow-hidden">
+                    <div className="h-1.5 w-full rounded-full bg-slate-950 overflow-hidden ring-1 ring-white/5">
                       <div className={`h-full transition-all duration-300 ${strength.color}`} style={{ width: `${strength.percentage}%` }}></div>
                     </div>
                   </div>
@@ -150,9 +157,9 @@ const ResetPassword: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">Confirm Password</label>
-                <div className="relative mt-1.5">
-                  <Lock className="absolute left-3 top-3.5 text-slate-500" size={16} />
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Confirm Password</label>
+                <div className="relative mt-2">
+                  <Lock className="absolute left-4 top-3.5 text-slate-500 transition-colors group-focus-within:text-brand-400" size={16} />
                   <input
                     id="reset-password-confirm"
                     type="password"
@@ -160,36 +167,36 @@ const ResetPassword: React.FC = () => {
                     placeholder="••••••••"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 py-3 pl-10 pr-4 text-sm text-slate-200 placeholder-slate-600 focus:border-brand-500/80 focus:outline-none transition-colors"
+                    className="w-full rounded-2xl border border-slate-800 bg-slate-950/80 py-3.5 pl-11 pr-4 text-sm text-slate-200 placeholder-slate-605 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 focus:outline-none transition-all duration-200"
                   />
                 </div>
               </div>
 
               {/* Password Requirements Checklist */}
-              <div className="rounded-xl bg-slate-950/50 p-4 border border-slate-800/40 space-y-2">
+              <div className="rounded-2xl bg-slate-950/40 p-4.5 border border-slate-800/60 space-y-2.5">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Password Rules</p>
-                <div className="flex items-center gap-2 text-xs">
-                  <CheckCircle2 size={14} className={hasMinLength ? 'text-emerald-400' : 'text-slate-600'} />
-                  <span className={hasMinLength ? 'text-slate-300' : 'text-slate-500'}>Minimum 8 characters</span>
+                <div className="flex items-center gap-2.5 text-xs font-medium">
+                  <CheckCircle2 size={15} className={hasMinLength ? 'text-emerald-400 fill-emerald-500/10' : 'text-slate-600'} />
+                  <span className={hasMinLength ? 'text-slate-200' : 'text-slate-500'}>Minimum 8 characters</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs">
-                  <CheckCircle2 size={14} className={hasLetter ? 'text-emerald-400' : 'text-slate-600'} />
-                  <span className={hasLetter ? 'text-slate-300' : 'text-slate-500'}>Contains at least one letter</span>
+                <div className="flex items-center gap-2.5 text-xs font-medium">
+                  <CheckCircle2 size={15} className={hasLetter ? 'text-emerald-400 fill-emerald-500/10' : 'text-slate-600'} />
+                  <span className={hasLetter ? 'text-slate-200' : 'text-slate-500'}>Contains at least one letter</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs">
-                  <CheckCircle2 size={14} className={hasNumber ? 'text-emerald-400' : 'text-slate-600'} />
-                  <span className={hasNumber ? 'text-slate-300' : 'text-slate-500'}>Contains at least one number</span>
+                <div className="flex items-center gap-2.5 text-xs font-medium">
+                  <CheckCircle2 size={15} className={hasNumber ? 'text-emerald-400 fill-emerald-500/10' : 'text-slate-600'} />
+                  <span className={hasNumber ? 'text-slate-200' : 'text-slate-500'}>Contains at least one number</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs">
-                  <CheckCircle2 size={14} className={passwordsMatch ? 'text-emerald-400' : 'text-slate-600'} />
-                  <span className={passwordsMatch ? 'text-slate-300' : 'text-slate-500'}>Passwords match</span>
+                <div className="flex items-center gap-2.5 text-xs font-medium">
+                  <CheckCircle2 size={15} className={passwordsMatch ? 'text-emerald-400 fill-emerald-500/10' : 'text-slate-600'} />
+                  <span className={passwordsMatch ? 'text-slate-200' : 'text-slate-500'}>Passwords match</span>
                 </div>
               </div>
 
               <button
                 type="submit"
                 disabled={loading || !hasMinLength || !hasLetter || !hasNumber || !passwordsMatch}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-600 py-3 text-sm font-semibold text-white hover:bg-brand-500 transition-colors shadow-lg shadow-brand-500/25 disabled:opacity-50"
+                className="relative flex w-full items-center justify-center gap-2 rounded-2xl bg-brand-600 py-3.5 text-sm font-semibold text-white hover:bg-brand-500 transition-all duration-200 shadow-xl shadow-brand-500/20 hover:shadow-brand-500/30 active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 disabled:hover:shadow-none"
               >
                 {loading ? (
                   <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
@@ -202,20 +209,20 @@ const ResetPassword: React.FC = () => {
               </button>
             </form>
           ) : (
-            <div className="text-center space-y-4">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                <ShieldCheck size={24} />
+            <div className="relative text-center space-y-5 py-2">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-lg shadow-emerald-500/5">
+                <ShieldCheck size={26} className="stroke-[2.2]" />
               </div>
-              <div>
-                <h4 className="text-sm font-bold text-slate-200">Password Saved Successfully</h4>
-                <p className="mt-1.5 text-xs leading-relaxed text-slate-400">
+              <div className="space-y-2">
+                <h4 className="text-base font-bold text-slate-200">Password Saved Successfully</h4>
+                <p className="text-xs leading-relaxed text-slate-400 font-medium">
                   Your identity has been re-verified and password updated. You can now log back into TaskFlow.
                 </p>
               </div>
               <button
                 id="reset-password-login-btn"
                 onClick={() => navigate('/login')}
-                className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-brand-600 py-3 text-sm font-semibold text-white hover:bg-brand-500 transition-colors"
+                className="flex w-full items-center justify-center gap-1.5 rounded-2xl bg-brand-605 py-3.5 text-sm font-semibold text-white hover:bg-brand-500 transition-colors shadow-lg shadow-brand-500/20"
               >
                 <span>Continue to login</span>
               </button>

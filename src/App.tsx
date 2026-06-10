@@ -15,7 +15,11 @@ import Projects from './pages/Projects';
 import ProjectDetail from './pages/ProjectDetail';
 import Members from './pages/Members';
 import Settings from './pages/Settings';
-import FirewallDashboard from './pages/FirewallDashboard';
+import Teams from './pages/Teams';
+import TeamDetail from './pages/TeamDetail';
+import Tasks from './pages/Tasks';
+import Files from './pages/Files';
+import ActivityLogs from './pages/ActivityLogs';
 
 // Layout
 import Sidebar from './components/shared/Sidebar';
@@ -75,17 +79,12 @@ const DashboardLayout: React.FC = () => {
             <Route path="/project/:projectId" element={<ProjectDetail />} />
             <Route path="/members" element={<Members />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/teams" element={<Teams />} />
+            <Route path="/team/:teamId" element={<TeamDetail />} />
+            <Route path="/tasks" element={<Tasks />} />
+            <Route path="/files" element={<Files />} />
+            <Route path="/activity" element={<ActivityLogs />} />
             
-            {/* Admin Firewall Page */}
-            <Route 
-              path="/admin/firewall" 
-              element={
-                <AdminRoute>
-                  <FirewallDashboard />
-                </AdminRoute>
-              } 
-            />
-
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
