@@ -420,110 +420,155 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
 
         {/* Create Workspace Modal */}
         {isCreateModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" style={{ background: 'rgba(15, 7, 32, 0.75)', backdropFilter: 'blur(8px)' }}>
+          <div 
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4" 
+            style={{ 
+              background: theme === 'dark' ? 'rgba(15, 7, 32, 0.75)' : 'rgba(30, 20, 60, 0.4)', 
+              backdropFilter: 'blur(8px)' 
+            }}
+          >
             <div 
               className="w-full max-w-md rounded-2xl p-6 shadow-2xl animate-in zoom-in-95 duration-200"
               style={{
-                background: '#1a0e35',
-                border: '1px solid rgba(139, 92, 246, 0.25)',
-                boxShadow: '0 24px 80px rgba(0, 0, 0, 0.6)',
+                background: theme === 'dark' ? '#1a0e35' : '#ffffff',
+                border: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.25)' : '1px solid rgba(139, 92, 246, 0.2)',
+                boxShadow: theme === 'dark'
+                  ? '0 24px 80px rgba(0, 0, 0, 0.6)'
+                  : '0 24px 80px rgba(109, 40, 217, 0.12), 0 4px 24px rgba(0,0,0,0.08)',
               }}
             >
-              <div className="flex items-center justify-between pb-4 mb-4" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.15)' }}>
-                <div className="flex items-center gap-2.5 text-white">
-                  <div className="rounded-lg p-1.5" style={{ background: 'rgba(139, 92, 246, 0.2)' }}>
-                    <FolderPlus className="text-violet-400" size={16} />
+              <div 
+                className="flex items-center justify-between pb-4 mb-4" 
+                style={{ borderBottom: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.15)' : '1px solid rgba(139, 92, 246, 0.12)' }}
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="rounded-lg p-1.5" style={{ background: 'rgba(139, 92, 246, 0.12)' }}>
+                    <FolderPlus className="text-violet-500" size={16} />
                   </div>
-                  <h3 className="text-base font-bold">Create Workspace</h3>
+                  <h3 className="text-base font-bold" style={{ color: theme === 'dark' ? '#ffffff' : '#1e1b4b' }}>Create Workspace</h3>
                 </div>
                 <button
                   onClick={() => setIsCreateModalOpen(false)}
-                  className="rounded-lg p-1.5 text-violet-400/60 hover:text-violet-300 transition-colors"
-                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.1)'}
-                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
+                  className="rounded-lg p-1.5 transition-colors"
+                  style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.6)' : 'rgba(109, 40, 217, 0.5)' }}
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.1)' : 'rgba(139, 92, 246, 0.08)';
+                    (e.currentTarget as HTMLElement).style.color = theme === 'dark' ? '#c4b5fd' : '#6d28d9';
+                  }}
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLElement).style.background = 'transparent';
+                    (e.currentTarget as HTMLElement).style.color = theme === 'dark' ? 'rgba(167, 139, 250, 0.6)' : 'rgba(109, 40, 217, 0.5)';
+                  }}
                 >
                   <X size={16} />
                 </button>
               </div>
               
-               <form onSubmit={handleCreateWorkspace} className="space-y-4">
+              <form onSubmit={handleCreateWorkspace} className="space-y-4">
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5" style={{ color: 'rgba(167, 139, 250, 0.7)' }}>Workspace Name *</label>
+                  <label 
+                    className="block text-[11px] font-bold uppercase tracking-wider mb-1.5" 
+                    style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.7)' : 'rgba(109, 40, 217, 0.65)' }}
+                  >
+                    Workspace Name *
+                  </label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Creative Labs"
                     value={newWsName}
                     onChange={(e) => setNewWsName(e.target.value)}
-                    className="w-full rounded-xl p-3 text-sm text-white placeholder-violet-700 focus:outline-none transition-all duration-200"
+                    className="w-full rounded-xl p-3 text-sm focus:outline-none transition-all duration-200"
                     style={{
-                      background: 'rgba(139, 92, 246, 0.08)',
-                      border: '1px solid rgba(139, 92, 246, 0.2)',
+                      background: theme === 'dark' ? 'rgba(139, 92, 246, 0.08)' : 'rgba(139, 92, 246, 0.05)',
+                      border: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.2)' : '1px solid rgba(139, 92, 246, 0.18)',
+                      color: theme === 'dark' ? '#e2e0ff' : '#1e1b4b',
                     }}
                     onFocus={e => {
                       (e.target as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.5)';
                       (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(139, 92, 246, 0.1)';
+                      (e.target as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.12)' : 'rgba(139, 92, 246, 0.07)';
                     }}
                     onBlur={e => {
-                      (e.target as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.2)';
+                      (e.target as HTMLElement).style.borderColor = theme === 'dark' ? 'rgba(139, 92, 246, 0.2)' : 'rgba(139, 92, 246, 0.18)';
                       (e.target as HTMLElement).style.boxShadow = 'none';
+                      (e.target as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.08)' : 'rgba(139, 92, 246, 0.05)';
                     }}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5" style={{ color: 'rgba(167, 139, 250, 0.7)' }}>Description</label>
+                  <label 
+                    className="block text-[11px] font-bold uppercase tracking-wider mb-1.5" 
+                    style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.7)' : 'rgba(109, 40, 217, 0.65)' }}
+                  >
+                    Description
+                  </label>
                   <textarea
                     placeholder="Short description of this workspace..."
                     value={newWsDesc}
                     onChange={(e) => setNewWsDesc(e.target.value)}
                     rows={3}
-                    className="w-full rounded-xl p-3 text-sm text-white placeholder-violet-700 focus:outline-none transition-all duration-200 resize-none"
+                    className="w-full rounded-xl p-3 text-sm focus:outline-none transition-all duration-200 resize-none"
                     style={{
-                      background: 'rgba(139, 92, 246, 0.08)',
-                      border: '1px solid rgba(139, 92, 246, 0.2)',
+                      background: theme === 'dark' ? 'rgba(139, 92, 246, 0.08)' : 'rgba(139, 92, 246, 0.05)',
+                      border: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.2)' : '1px solid rgba(139, 92, 246, 0.18)',
+                      color: theme === 'dark' ? '#e2e0ff' : '#1e1b4b',
                     }}
                     onFocus={e => {
                       (e.target as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.5)';
                       (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(139, 92, 246, 0.1)';
+                      (e.target as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.12)' : 'rgba(139, 92, 246, 0.07)';
                     }}
                     onBlur={e => {
-                      (e.target as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.2)';
+                      (e.target as HTMLElement).style.borderColor = theme === 'dark' ? 'rgba(139, 92, 246, 0.2)' : 'rgba(139, 92, 246, 0.18)';
                       (e.target as HTMLElement).style.boxShadow = 'none';
+                      (e.target as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.08)' : 'rgba(139, 92, 246, 0.05)';
                     }}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5" style={{ color: 'rgba(167, 139, 250, 0.7)' }}>Logo URL</label>
+                  <label 
+                    className="block text-[11px] font-bold uppercase tracking-wider mb-1.5" 
+                    style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.7)' : 'rgba(109, 40, 217, 0.65)' }}
+                  >
+                    Logo URL
+                  </label>
                   <input
                     type="text"
                     placeholder="https://example.com/logo.png"
                     value={newWsLogo}
                     onChange={(e) => setNewWsLogo(e.target.value)}
-                    className="w-full rounded-xl p-3 text-sm text-white placeholder-violet-700 focus:outline-none transition-all duration-200"
+                    className="w-full rounded-xl p-3 text-sm focus:outline-none transition-all duration-200"
                     style={{
-                      background: 'rgba(139, 92, 246, 0.08)',
-                      border: '1px solid rgba(139, 92, 246, 0.2)',
+                      background: theme === 'dark' ? 'rgba(139, 92, 246, 0.08)' : 'rgba(139, 92, 246, 0.05)',
+                      border: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.2)' : '1px solid rgba(139, 92, 246, 0.18)',
+                      color: theme === 'dark' ? '#e2e0ff' : '#1e1b4b',
                     }}
                     onFocus={e => {
                       (e.target as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.5)';
                       (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(139, 92, 246, 0.1)';
+                      (e.target as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.12)' : 'rgba(139, 92, 246, 0.07)';
                     }}
                     onBlur={e => {
-                      (e.target as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.2)';
+                      (e.target as HTMLElement).style.borderColor = theme === 'dark' ? 'rgba(139, 92, 246, 0.2)' : 'rgba(139, 92, 246, 0.18)';
                       (e.target as HTMLElement).style.boxShadow = 'none';
+                      (e.target as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.08)' : 'rgba(139, 92, 246, 0.05)';
                     }}
                   />
                 </div>
 
-                <div className="flex items-center justify-end gap-3 pt-3" style={{ borderTop: '1px solid rgba(139, 92, 246, 0.15)' }}>
+                <div 
+                  className="flex items-center justify-end gap-3 pt-3" 
+                  style={{ borderTop: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.15)' : '1px solid rgba(139, 92, 246, 0.1)' }}
+                >
                   <button
                     type="button"
                     onClick={() => setIsCreateModalOpen(false)}
                     className="rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200"
-                    style={{ color: 'rgba(167, 139, 250, 0.7)' }}
-                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.1)'}
+                    style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.7)' : 'rgba(109, 40, 217, 0.7)' }}
+                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.1)' : 'rgba(139, 92, 246, 0.07)'}
                     onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
                   >
                     Cancel
