@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useFirewall } from '../context/FirewallContext';
-import { Mail, Lock, ShieldAlert, ArrowRight, Zap } from 'lucide-react';
+import { Mail, Lock, ShieldAlert, ArrowRight } from 'lucide-react';
 import { TurnstileCaptcha } from '../components/shared/TurnstileCaptcha';
 import TaskFlowLogo from '../components/shared/TaskFlowLogo';
 
@@ -78,24 +78,7 @@ const Login: React.FC = () => {
     }
   };
 
-  // Quick dev login helper
-  const handleQuickLogin = async (role: 'owner' | 'developer') => {
-    setErrorMsg('');
-    setLoading(true);
-    const targetEmail = role === 'owner' ? 'owner@taskflow.com' : 'developer@taskflow.com';
-    const targetPassword = 'password123';
 
-    const { error } = await login(targetEmail, targetPassword);
-    if (error) {
-      setLoading(false);
-      setErrorMsg(error.message || 'Incorrect email or password.');
-      await logAuditEvent('Failed Login Attempt (Quick Login)', targetEmail);
-    } else {
-      await logAuditEvent('Login Success (Quick Login)', targetEmail);
-      setLoading(false);
-      navigate('/');
-    }
-  };
 
   return (
     <div 
@@ -330,59 +313,7 @@ const Login: React.FC = () => {
               </button>
             </form>
 
-            {/* Quick Demo Sign Ins */}
-            <div className="relative mt-7 pt-6" style={{ borderTop: '1px solid rgba(139, 92, 246, 0.12)' }}>
-              <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider mb-3" style={{ color: 'rgba(139, 92, 246, 0.5)' }}>
-                <Zap size={12} style={{ color: '#a78bfa' }} />
-                <span>Quick Demo Access</span>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  id="quick-login-owner"
-                  onClick={() => handleQuickLogin('owner')}
-                  className="flex flex-col items-center justify-center rounded-2xl p-3.5 transition-all duration-200 active:scale-[0.97]"
-                  style={{
-                    background: 'rgba(139, 92, 246, 0.08)',
-                    border: '1px solid rgba(139, 92, 246, 0.15)',
-                  }}
-                  onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.14)';
-                    (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.3)';
-                    (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)';
-                  }}
-                  onMouseLeave={e => {
-                    (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.08)';
-                    (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.15)';
-                    (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-                  }}
-                >
-                  <span className="text-[11px] font-bold" style={{ color: '#e2e0ff' }}>Workspace Owner</span>
-                  <span className="text-[10px] font-medium mt-1 truncate max-w-full" style={{ color: '#a78bfa' }}>owner@taskflow.com</span>
-                </button>
-                <button
-                  id="quick-login-member"
-                  onClick={() => handleQuickLogin('developer')}
-                  className="flex flex-col items-center justify-center rounded-2xl p-3.5 transition-all duration-200 active:scale-[0.97]"
-                  style={{
-                    background: 'rgba(139, 92, 246, 0.08)',
-                    border: '1px solid rgba(139, 92, 246, 0.15)',
-                  }}
-                  onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.14)';
-                    (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.3)';
-                    (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)';
-                  }}
-                  onMouseLeave={e => {
-                    (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.08)';
-                    (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.15)';
-                    (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-                  }}
-                >
-                  <span className="text-[11px] font-bold" style={{ color: '#e2e0ff' }}>Team Member</span>
-                  <span className="text-[10px] font-medium mt-1 truncate max-w-full" style={{ color: '#a78bfa' }}>developer@taskflow.com</span>
-                </button>
-              </div>
-            </div>
+
           </div>
         </div>
 
