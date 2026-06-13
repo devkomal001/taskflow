@@ -53,6 +53,31 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   return <>{children}</>;
 };
 
+// Root Route Handler (Landing page when logged out, Dashboard when logged in)
+const RootRoute: React.FC = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center" style={{ background: 'linear-gradient(135deg, #0f0720, #1e0f3d, #0f0720)' }}>
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative">
+            <div className="h-12 w-12 rounded-full" style={{ border: '3px solid rgba(139, 92, 246, 0.2)' }}></div>
+            <div className="absolute inset-0 h-12 w-12 animate-spin rounded-full" style={{ border: '3px solid transparent', borderTopColor: '#8b5cf6' }}></div>
+          </div>
+          <p className="text-sm font-semibold tracking-wide" style={{ color: 'rgba(167, 139, 250, 0.7)', fontFamily: "'Outfit', sans-serif" }}>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (user) {
+    return <DashboardLayout />;
+  }
+
+  return <Homepage />;
+};
+
 // Admin Protection Route Wrapper
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useAuth();
@@ -109,6 +134,7 @@ const App: React.FC = () => {
             <WorkspaceProvider>
               <Routes>
                 {/* Public Homepage */}
+                <Route path="/" element={<RootRoute />} />
                 <Route path="/home" element={<Homepage />} />
 
                 {/* Auth Portals */}
