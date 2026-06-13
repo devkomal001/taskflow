@@ -205,13 +205,23 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
       }}
     >
       <div className="flex items-center gap-4">
-        <button
-          onClick={onMenuClick}
-          className="rounded-xl p-2 md:hidden transition-all duration-200"
-          style={iconButtonStyle}
-        >
-          <Menu size={18} />
-        </button>
+        <div className="md:hidden">
+          <button
+            onClick={onMenuClick}
+            className="rounded-xl p-2 transition-all duration-200"
+            style={{
+              background: theme === 'dark' ? 'rgba(139, 92, 246, 0.08)' : 'rgba(255, 255, 255, 0.9)',
+              border: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.15)' : '1px solid rgba(139, 92, 246, 0.12)',
+              color: theme === 'dark' ? '#a78bfa' : '#7c3aed',
+              borderRadius: '12px',
+              padding: '8px',
+              cursor: 'pointer',
+              transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+            }}
+          >
+            <Menu size={18} />
+          </button>
+        </div>
 
         <div>
           <h1 className="text-base font-bold tracking-tight md:text-lg" style={{ 
