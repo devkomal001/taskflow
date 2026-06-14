@@ -245,7 +245,6 @@ async function sendInvitationEmail(
   inviteToken: string
 ) {
   const inviteUrl = `${window.location.origin}/invite?token=${inviteToken}`;
-  console.log('MOCK_INVITE_URL:', inviteUrl);
 
   const emailHtml = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 550px; margin: 0 auto; padding: 32px; border: 1px solid #e2e8f0; border-radius: 20px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
