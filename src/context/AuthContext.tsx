@@ -27,9 +27,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Initialize session and auth listener
   useEffect(() => {
+    let active = true;
+
     async function initializeAuth() {
+      // Safety timeout: if getSession takes more than 4 seconds, abort loading state
+      const timeout = setTimeout(() => {
+        if (active) {
+          console.warn('Auth initialization timed out after 4s. Falling back to non-blocking.');
+          setLoading(false);
+        }
+      }, 4000);
+
       try {
         const { data: { session: currentSession } } = await supabase.auth.getSession();
+        if (!active) return;
+        
+        clearTimeout(timeout);
         if (currentSession) {
           setSession(currentSession);
           
@@ -39,6 +52,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             .select('*')
             .eq('id', currentSession.user.id)
             .single();
+
+          if (!active) return;
 
           if (profile) {
             setUser(profile);
@@ -55,44 +70,59 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } catch (err) {
         console.error('Failed to initialize session:', err);
       } finally {
-        setLoading(false);
+        clearTimeout(timeout);
+        if (active) {
+          setLoading(false);
+        }
       }
     }
 
     initializeAuth();
 
     // Setup live listener if Supabase supports onAuthStateChange
-    if (supabase.auth.onAuthStateChange) {
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(
-        async (_event: string, sessionData: any) => {
-          setSession(sessionData);
-          if (sessionData?.user) {
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', sessionData.user.id)
-              .single();
-            
-            if (profile) {
-              setUser(profile);
+    let subscription: any = null;
+    try {
+      if (supabase && supabase.auth && supabase.auth.onAuthStateChange) {
+        const res = supabase.auth.onAuthStateChange(
+          async (_event: string, sessionData: any) => {
+            if (!active) return;
+            setSession(sessionData);
+            if (sessionData?.user) {
+              const { data: profile } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', sessionData.user.id)
+                .single();
+              
+              if (!active) return;
+              if (profile) {
+                setUser(profile);
+              } else {
+                setUser({
+                  id: sessionData.user.id,
+                  email: sessionData.user.email || '',
+                  full_name: sessionData.user.user_metadata?.full_name || '',
+                  avatar_url: sessionData.user.user_metadata?.avatar_url || ''
+                });
+              }
             } else {
-              setUser({
-                id: sessionData.user.id,
-                email: sessionData.user.email || '',
-                full_name: sessionData.user.user_metadata?.full_name || '',
-                avatar_url: sessionData.user.user_metadata?.avatar_url || ''
-              });
+              setUser(null);
             }
-          } else {
-            setUser(null);
+            setLoading(false);
           }
-          setLoading(false);
-        }
-      );
-      return () => {
-        subscription?.unsubscribe();
-      };
+        );
+        subscription = res?.data?.subscription || res?.subscription;
+      }
+    } catch (err) {
+      console.error('Failed to subscribe to auth state changes:', err);
     }
+
+    return () => {
+      active = false;
+      if (subscription && typeof subscription.unsubscribe === 'function') {
+        subscription.unsubscribe();
+      }
+    };
   }, []);
 
   const login = async (email: string, password: string) => {

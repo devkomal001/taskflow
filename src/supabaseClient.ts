@@ -357,4 +357,4 @@ export const mockSupabase = {
 };
 
 // Main export — automatically picks live Supabase or mock
-export const supabase = isLiveSupabase ? liveClient : mockSupabase;
+export const supabase = liveClient || mockSupabase;
