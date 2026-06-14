@@ -205,6 +205,62 @@ const Dashboard: React.FC = () => {
             </span>
           )}
         </div>
+
+        {/* Pending Invitation Modal Overlay */}
+        {pendingInvite && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
+            <div className="relative w-full max-w-md rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-7 shadow-2xl animate-in zoom-in-95 duration-200 text-slate-800 dark:text-slate-100 overflow-hidden">
+              {/* Ambient Modal Stripe */}
+              <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-brand-600 via-violet-500 to-cyan-500"></div>
+
+              <div className="flex flex-col items-center text-center space-y-4">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-brand-600 to-violet-500 text-white shadow-lg shadow-brand-500/20">
+                  <MailOpen size={28} />
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">Workspace Invitation</h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">You have a pending invitation to join a workspace.</p>
+                </div>
+
+                <div className="w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 p-4 space-y-2.5 text-left">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Workspace</span>
+                    <span className="text-sm font-bold text-slate-800 dark:text-white">{pendingInvite.profile?.inviter_name ? 'Invited Workspace' : 'Workspace'}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Email</span>
+                    <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">{pendingInvite.email}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Assigned Role</span>
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-500/20 bg-brand-500/5 px-2.5 py-0.5 text-[10px] font-bold text-brand-600 dark:text-brand-400 capitalize">
+                      <Shield size={10} />
+                      {pendingInvite.role}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 w-full pt-2">
+                  <button
+                    onClick={handleDeclinePendingInvite}
+                    disabled={inviteActionLoading}
+                    className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-2.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 hover:border-rose-300 transition-all disabled:opacity-50"
+                  >
+                    {inviteActionLoading ? <Loader2 size={14} className="animate-spin mx-auto" /> : 'Decline'}
+                  </button>
+                  <button
+                    onClick={handleAcceptPendingInvite}
+                    disabled={inviteActionLoading}
+                    className="rounded-xl bg-brand-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-brand-500 shadow-lg shadow-brand-500/15 transition-all active:scale-[0.98] disabled:opacity-50"
+                  >
+                    {inviteActionLoading ? <Loader2 size={14} className="animate-spin mx-auto" /> : 'Accept Invitation'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }

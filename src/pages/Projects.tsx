@@ -25,6 +25,7 @@ const Projects: React.FC = () => {
 
   const currentMemberRecord = (members || []).find(m => m.user_id === user?.id);
   const isWorkspaceOwner = activeWorkspace?.owner_id === user?.id || currentMemberRecord?.role === 'owner';
+  const isWorkspaceAdmin = isWorkspaceOwner || currentMemberRecord?.role === 'manager';
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [name, setName] = useState('');
@@ -136,13 +137,15 @@ const Projects: React.FC = () => {
           <h2 className="text-2xl font-extrabold tracking-tight text-slate-800 dark:text-white md:text-3xl">Projects Tracker</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400">Organize goals, align team members, and track dashboard progress.</p>
         </div>
-        <button
-          onClick={() => { setIsModalOpen(true); setCreateError(''); }}
-          className="flex items-center gap-2 rounded-xl btn-brand px-4 py-2.5 text-sm font-bold shadow-lg shadow-brand-primary/20"
-        >
-          <FolderPlus size={16} />
-          <span>New Project</span>
-        </button>
+        {isWorkspaceAdmin && (
+          <button
+            onClick={() => { setIsModalOpen(true); setCreateError(''); }}
+            className="flex items-center gap-2 rounded-xl btn-brand px-4 py-2.5 text-sm font-bold shadow-lg shadow-brand-primary/20"
+          >
+            <FolderPlus size={16} />
+            <span>New Project</span>
+          </button>
+        )}
       </div>
 
       {/* Filter and Search Bar */}
@@ -200,7 +203,7 @@ const Projects: React.FC = () => {
                   </span>
                 </div>
 
-                {isWorkspaceOwner && (
+                {isWorkspaceAdmin && (
                   <div className="relative">
                     <button
                       onClick={(e) => {

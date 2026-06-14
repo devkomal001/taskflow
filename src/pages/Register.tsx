@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useFirewall } from '../context/FirewallContext';
+import { useWorkspace } from '../context/WorkspaceContext';
 import { User, Mail, Lock, ShieldAlert, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { TurnstileCaptcha } from '../components/shared/TurnstileCaptcha';
 import TaskFlowLogo from '../components/shared/TaskFlowLogo';
@@ -10,6 +11,7 @@ const Register: React.FC = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
   const { checkAndIncrementRateLimit, logAuditEvent, sanitizeInput, validatePayload } = useFirewall();
+  const { createWorkspace } = useWorkspace();
 
   const [fullName, setFullName] = useState('');
   const [nameError, setNameError] = useState('');
@@ -83,7 +85,7 @@ const Register: React.FC = () => {
     const sanitizedPassword = password; // Validate complexity, preserve special symbols
 
     // 5. Submit Auth
-    const { error } = await register(sanitizedEmail, sanitizedPassword, sanitizedName);
+    const { user: newUser, error } = await register(sanitizedEmail, sanitizedPassword, sanitizedName);
     
     if (error) {
       setLoading(false);
@@ -93,6 +95,16 @@ const Register: React.FC = () => {
     } else {
       // 6. Log Success Signup
       await logAuditEvent('Signup Success', sanitizedEmail);
+      
+      // Auto-create workspace for direct registrations
+      if (!inviteToken && newUser) {
+        const wsName = `${sanitizedName}'s Workspace`;
+        const { error: wsError } = await createWorkspace(wsName, 'My default workspace', '', newUser.id);
+        if (wsError) {
+          console.error('Failed to create default workspace:', wsError);
+        }
+      }
+
       setLoading(false);
       // If invitation token exists, redirect to invite page to accept
       if (inviteToken) {

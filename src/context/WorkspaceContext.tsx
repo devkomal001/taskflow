@@ -185,7 +185,7 @@ interface WorkspaceContextType {
   notifications: Notification[];
   activities: ActivityLog[];
   loading: boolean;
-  createWorkspace: (name: string, description: string, logoUrl: string) => Promise<{ workspace: Workspace | null; error: any }>;
+  createWorkspace: (name: string, description: string, logoUrl: string, userId?: string) => Promise<{ workspace: Workspace | null; error: any }>;
   updateWorkspace: (workspaceId: string, updates: Partial<Workspace>) => Promise<{ workspace: Workspace | null; error: any }>;
   deleteWorkspace: (workspaceId: string) => Promise<{ error: any }>;
   switchWorkspace: (workspaceId: string) => Promise<void>;
@@ -245,6 +245,7 @@ async function sendInvitationEmail(
   inviteToken: string
 ) {
   const inviteUrl = `${window.location.origin}/invite?token=${inviteToken}`;
+  console.log('MOCK_INVITE_URL:', inviteUrl);
 
   const emailHtml = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 550px; margin: 0 auto; padding: 32px; border: 1px solid #e2e8f0; border-radius: 20px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
@@ -606,9 +607,10 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   };
 
-  const createWorkspace = async (name: string, description: string, logoUrl: string) => {
+  const createWorkspace = async (name: string, description: string, logoUrl: string, userId?: string) => {
     try {
-      if (!user) throw new Error('Not authenticated');
+      const activeUserId = userId || user?.id;
+      if (!activeUserId) throw new Error('Not authenticated');
 
       if (workspaces.length > 0) {
         const currentPlan = activeWorkspace?.plan || 'Free';
@@ -624,7 +626,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           name,
           description,
           logo_url: logoUrl || `https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop&q=60`,
-          owner_id: user.id
+          owner_id: activeUserId
         })
         .select()
         .single();
@@ -634,7 +636,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       // Add workspace owner member role
       await supabase.from('workspace_members').insert({
         workspace_id: data.id,
-        user_id: user.id,
+        user_id: activeUserId,
         role: 'owner',
         status: 'active'
       });
@@ -671,6 +673,15 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const createProject = async (projectData: Omit<Project, 'id' | 'workspace_id' | 'created_at'>) => {
     try {
       if (!activeWorkspace || !user) throw new Error('No active workspace or user');
+
+      // Security check: only workspace owners and managers can create projects
+      const currentMemberRecord = members.find(m => m.user_id === user.id);
+      const isAuthorized = activeWorkspace.owner_id === user.id || 
+                           currentMemberRecord?.role === 'owner' || 
+                           currentMemberRecord?.role === 'manager';
+      if (!isAuthorized) {
+        throw new Error('Unauthorized: Only the workspace owner or a manager can create projects.');
+      }
 
       const currentPlan = activeWorkspace.plan || 'Free';
       const limits = PLAN_LIMITS[currentPlan as keyof typeof PLAN_LIMITS] || PLAN_LIMITS.Free;
@@ -734,12 +745,14 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       const project = projects.find(p => p.id === projectId);
       const name = project ? project.name : 'Unknown';
 
-      // Security check: only the workspace owner is allowed to delete projects
+      // Security check: only workspace owners and managers are allowed to delete projects
       const currentMemberRecord = members.find(m => m.user_id === user?.id);
-      const isWorkspaceOwner = activeWorkspace?.owner_id === user?.id || currentMemberRecord?.role === 'owner';
+      const isAuthorized = activeWorkspace?.owner_id === user?.id || 
+                           currentMemberRecord?.role === 'owner' || 
+                           currentMemberRecord?.role === 'manager';
 
-      if (!isWorkspaceOwner) {
-        throw new Error('Unauthorized: Only the workspace owner can delete projects.');
+      if (!isAuthorized) {
+        throw new Error('Unauthorized: Only the workspace owner or a manager can delete projects.');
       }
 
       if (isUsingMock) {
@@ -790,8 +803,17 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const deleteWorkspace = async (workspaceId: string) => {
     try {
+      if (!user) throw new Error('Not authenticated');
       const workspace = workspaces.find(w => w.id === workspaceId);
-      const name = workspace ? workspace.name : 'Unknown';
+      if (!workspace) throw new Error('Workspace not found');
+
+      // Security check: only workspace owner can delete a workspace
+      const isWorkspaceOwner = workspace.owner_id === user.id;
+      if (!isWorkspaceOwner) {
+        throw new Error('Unauthorized: Only the workspace owner can delete workspaces.');
+      }
+
+      const name = workspace.name;
 
       // If we are using mock database, perform local CASCADE delete
       if (isUsingMock) {
@@ -1296,7 +1318,16 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const createTeam = async (name: string, description: string, color: string, icon: string) => {
     try {
-      if (!activeWorkspace) throw new Error('No active workspace');
+      if (!activeWorkspace || !user) throw new Error('No active workspace or user');
+
+      // Security check: only workspace owners and managers can create teams
+      const currentMemberRecord = members.find(m => m.user_id === user.id);
+      const isAuthorized = activeWorkspace.owner_id === user.id || 
+                           currentMemberRecord?.role === 'owner' || 
+                           currentMemberRecord?.role === 'manager';
+      if (!isAuthorized) {
+        throw new Error('Unauthorized: Only the workspace owner or a manager can create teams.');
+      }
       
       const { data, error } = await supabase
         .from('teams')

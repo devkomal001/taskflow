@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWorkspace } from '../context/WorkspaceContext';
+import { useAuth } from '../context/AuthContext';
 import * as LucideIcons from 'lucide-react';
 import { 
   Users, 
@@ -35,7 +36,12 @@ const TEAM_ICONS = [
 
 const Teams: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { activeWorkspace, teams, teamMembers, projects, createTeam, members } = useWorkspace();
+  
+  const currentMemberRecord = (members || []).find(m => m.user_id === user?.id);
+  const isWorkspaceOwner = activeWorkspace?.owner_id === user?.id || currentMemberRecord?.role === 'owner';
+  const isWorkspaceAdmin = isWorkspaceOwner || currentMemberRecord?.role === 'manager';
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [name, setName] = useState('');
@@ -95,13 +101,15 @@ const Teams: React.FC = () => {
           <h2 className="text-2xl font-extrabold tracking-tight text-slate-800 dark:text-white md:text-3xl">Teams Management</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400">Add team layers inside workspaces, align priorities, and track collective outputs.</p>
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 rounded-xl btn-brand px-4 py-2.5 text-sm font-bold shadow-lg shadow-brand-primary/20"
-        >
-          <Plus size={16} />
-          <span>Create Team</span>
-        </button>
+        {isWorkspaceAdmin && (
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-2 rounded-xl btn-brand px-4 py-2.5 text-sm font-bold shadow-lg shadow-brand-primary/20"
+          >
+            <Plus size={16} />
+            <span>Create Team</span>
+          </button>
+        )}
       </div>
 
       {/* Teams Grid */}
@@ -110,12 +118,14 @@ const Teams: React.FC = () => {
           <Users className="mx-auto text-slate-450 dark:text-slate-655 mb-3" size={36} />
           <h4 className="text-sm font-bold text-slate-700 dark:text-slate-300">No Teams Configured</h4>
           <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto mb-4">Introduce team spaces to divide workspace projects, members, and targets.</p>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="rounded-xl glass-input px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none"
-          >
-            Create Your First Team
-          </button>
+          {isWorkspaceAdmin && (
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="rounded-xl glass-input px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none"
+            >
+              Create Your First Team
+            </button>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">

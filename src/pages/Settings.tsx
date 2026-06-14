@@ -149,6 +149,7 @@ const Settings: React.FC = () => {
   // Authorization checks
   const currentMemberRecord = members.find(m => m.user_id === user?.id);
   const isWorkspaceAdmin = currentMemberRecord?.role === 'owner' || currentMemberRecord?.role === 'manager';
+  const isWorkspaceOwner = activeWorkspace?.owner_id === user?.id || currentMemberRecord?.role === 'owner';
   const pendingInvites = members.filter(m => m.status === 'pending');
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
@@ -490,11 +491,11 @@ const Settings: React.FC = () => {
                   <p className="text-sm font-semibold">Workspace Required</p>
                   <p className="text-xs text-slate-500 dark:text-slate-650 max-w-xs mt-1.5 leading-relaxed">Please select or create a workspace using the sidebar selector first.</p>
                 </div>
-              ) : !isWorkspaceAdmin ? (
+              ) : !isWorkspaceOwner ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center text-slate-400 dark:text-slate-500">
                   <ShieldCheck size={32} className="stroke-[1.5] mb-3 text-slate-350 dark:text-slate-700" />
-                  <p className="text-sm font-semibold">Admin Privileges Required</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-650 max-w-xs mt-1.5 leading-relaxed">Only workspace owners and project managers can edit this workspace details.</p>
+                  <p className="text-sm font-semibold">Owner Privileges Required</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-650 max-w-xs mt-1.5 leading-relaxed">Only the workspace owner can edit this workspace details.</p>
                 </div>
               ) : (
                 <form onSubmit={handleUpdateWorkspace} className="space-y-5 text-slate-800 dark:text-slate-100">
@@ -630,7 +631,7 @@ const Settings: React.FC = () => {
           </div>
 
           {/* Danger Zone */}
-          {activeWorkspace && isWorkspaceAdmin && (
+          {activeWorkspace && isWorkspaceOwner && (
             <div className="rounded-3xl border border-rose-500/20 bg-rose-500/5 dark:bg-rose-950/5 p-6 animate-fade-in-up">
               <div className="mb-5 flex items-center gap-3 border-b border-rose-500/10 pb-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400">

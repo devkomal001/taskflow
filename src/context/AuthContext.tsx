@@ -13,7 +13,7 @@ interface AuthContextType {
   session: any | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<{ error: any }>;
-  register: (email: string, password: string, fullName: string) => Promise<{ error: any }>;
+  register: (email: string, password: string, fullName: string) => Promise<{ user: any | null; error: any }>;
   logout: () => Promise<{ error: any }>;
   updateProfile: (fullName: string, avatarUrl: string) => Promise<{ error: any }>;
 }
@@ -166,10 +166,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           });
         }
       }
-      return { error: null };
+      return { user: data?.user || null, error: null };
     } catch (error: any) {
       console.error('Registration error:', error);
-      return { error };
+      return { user: null, error };
     }
   };
 
