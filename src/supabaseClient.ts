@@ -278,6 +278,7 @@ export const mockSupabase = {
 
       insert(rowData: any) { this.operation = { type: 'insert', args: rowData }; return this; },
       update(updateData: any) { this.operation = { type: 'update', args: updateData }; return this; },
+      upsert(rowData: any, options?: any) { this.operation = { type: 'upsert', args: rowData }; return this; },
       delete() { this.operation = { type: 'delete', args: null }; return this; },
 
       execute() {
@@ -309,6 +310,38 @@ export const mockSupabase = {
           (dbState as any)[this.table] = all;
           saveDb(dbState);
           resultData = isArray ? inserted : inserted[0];
+
+        } else if (this.operation.type === 'upsert') {
+          const rowData = this.operation.args;
+          const isArray = Array.isArray(rowData);
+          const rows = isArray ? rowData : [rowData];
+          const all: any[] = (dbState[this.table as keyof typeof dbState] as any[]) || [];
+
+          const upserted = rows.map((row: any) => {
+            let existingIdx = -1;
+            if (this.table === 'firewall_rate_limits') {
+              existingIdx = all.findIndex((rec: any) => rec.ip_address === row.ip_address && rec.action === row.action);
+            } else {
+              existingIdx = all.findIndex((rec: any) => rec.id === row.id);
+            }
+
+            const item = {
+              id: row.id || (existingIdx !== -1 ? all[existingIdx].id : 'id_' + Math.random().toString(36).substr(2, 9)),
+              created_at: existingIdx !== -1 ? all[existingIdx].created_at : new Date().toISOString(),
+              ...row,
+            };
+
+            if (existingIdx !== -1) {
+              all[existingIdx] = item;
+            } else {
+              all.push(item);
+            }
+            return item;
+          });
+
+          (dbState as any)[this.table] = all;
+          saveDb(dbState);
+          resultData = isArray ? upserted : upserted[0];
 
         } else if (this.operation.type === 'update') {
           const all: any[] = (dbState[this.table as keyof typeof dbState] as any[]) || [];

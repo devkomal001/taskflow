@@ -165,20 +165,20 @@ export const FirewallProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       const now = new Date();
 
       if (!rateData) {
-        // First attempt for this IP + action
+        // First attempt for this IP + action - use upsert with onConflict to avoid 409 console error in live Supabase
         const { error: insertError } = await supabase
           .from('firewall_rate_limits')
-          .insert({
+          .upsert({
             ip_address: clientIp,
             action,
             attempt_count: 1,
             last_attempt_at: now.toISOString()
+          }, {
+            onConflict: 'ip_address,action'
           });
 
-        if (insertError && insertError.code === '23505') {
-            // 23505 is unique violation code in Postgres. Meaning someone just inserted it concurrently.
-            // Let's just pretend we incremented it, or it will be handled on next request.
-            console.warn('Concurrent rate limit insert handled.');
+        if (insertError) {
+          console.error('Failed to upsert rate limit:', insertError);
         }
 
         return { allowed: true, attemptsRemaining: config.max - 1 };
