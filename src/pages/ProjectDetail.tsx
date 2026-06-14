@@ -207,7 +207,12 @@ const ProjectDetail: React.FC = () => {
       team_id: taskTeamId || null
     } as any);
 
-    if (!error && task) {
+    if (error) {
+      alert(error.message || 'Failed to create task.');
+      return;
+    }
+
+    if (task) {
       setIsNewTaskModalOpen(false);
       setTaskTitle('');
       setTaskDesc('');
@@ -233,7 +238,12 @@ const ProjectDetail: React.FC = () => {
       team_id: editTeamId || null
     } as any);
 
-    if (!error && task) {
+    if (error) {
+      alert(error.message || 'Failed to update task.');
+      return;
+    }
+
+    if (task) {
       setSelectedTask(task);
       setIsEditingTask(false);
       loadTasks();
@@ -252,7 +262,11 @@ const ProjectDetail: React.FC = () => {
 
   const handleDeleteTask = async (taskId: string) => {
     if (confirm('Delete this task permanently?')) {
-      await deleteTask(taskId);
+      const { error } = await deleteTask(taskId);
+      if (error) {
+        alert(error.message || 'Failed to delete task.');
+        return;
+      }
       handleCloseTaskDetails();
       loadTasks();
       refreshWorkspaceData();
@@ -282,11 +296,12 @@ const ProjectDetail: React.FC = () => {
     setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: targetStatus } : t));
 
     const { error } = await updateTask(taskId, { status: targetStatus });
-    if (!error) {
+    if (error) {
+      alert(error.message || 'Failed to update task status.');
       loadTasks();
-      refreshWorkspaceData();
     } else {
       loadTasks();
+      refreshWorkspaceData();
     }
   };
 

@@ -1550,8 +1550,68 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   };
 
+  const checkTaskPermission = async (projectId: string) => {
+    if (!user || !activeWorkspace) return false;
+    
+    // 1. Check if Workspace Owner or Manager
+    const currentMemberRecord = members.find(m => m.user_id === user.id);
+    const isWorkspaceAdmin = activeWorkspace.owner_id === user.id || 
+                             currentMemberRecord?.role === 'owner' || 
+                             currentMemberRecord?.role === 'manager';
+    
+    if (isWorkspaceAdmin) return true;
+
+    // 2. Check if Project Member
+    if (isUsingMock) {
+      const dbState = JSON.parse(localStorage.getItem('taskflow_mock_db') || '{}');
+      const project = (dbState.projects || []).find((p: any) => p.id === projectId);
+      
+      const isProjectMember = (dbState.project_members || []).some(
+        (pm: any) => pm.project_id === projectId && pm.user_id === user.id
+      );
+      
+      let isTeamMember = false;
+      if (project?.team_id) {
+        isTeamMember = (dbState.team_members || []).some(
+          (tm: any) => tm.team_id === project.team_id && tm.user_id === user.id
+        );
+      }
+      return isProjectMember || isTeamMember;
+    } else {
+      const { data: project } = await supabase
+        .from('projects')
+        .select('team_id')
+        .eq('id', projectId)
+        .maybeSingle();
+
+      const { data: pmCheck } = await supabase
+        .from('project_members')
+        .select('*')
+        .eq('project_id', projectId)
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      let isTeamMember = false;
+      if (project?.team_id) {
+        const { data: tmCheck } = await supabase
+          .from('team_members')
+          .select('*')
+          .eq('team_id', project.team_id)
+          .eq('user_id', user.id)
+          .maybeSingle();
+        isTeamMember = !!tmCheck;
+      }
+      return !!pmCheck || isTeamMember;
+    }
+  };
+
   const createTask = async (projectId: string, taskData: Omit<Task, 'id' | 'project_id' | 'created_at'>) => {
     try {
+      const isAuthorized = await checkTaskPermission(projectId);
+      if (!isAuthorized) {
+        throw new Error('Unauthorized: You must be a project member, manager, or workspace owner to create tasks in this project.');
+      }
+
       const { data, error } = await supabase
         .from('tasks')
         .insert({
@@ -1578,6 +1638,29 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const updateTask = async (taskId: string, updates: Partial<Task>) => {
     try {
+      let projectId = '';
+      if (isUsingMock) {
+        const dbState = JSON.parse(localStorage.getItem('taskflow_mock_db') || '{}');
+        const task = (dbState.tasks || []).find((t: any) => t.id === taskId);
+        if (task) projectId = task.project_id;
+      } else {
+        const { data: task } = await supabase
+          .from('tasks')
+          .select('project_id')
+          .eq('id', taskId)
+          .maybeSingle();
+        if (task) projectId = task.project_id;
+      }
+
+      if (!projectId) {
+        throw new Error('Task or associated project not found.');
+      }
+
+      const isAuthorized = await checkTaskPermission(projectId);
+      if (!isAuthorized) {
+        throw new Error('Unauthorized: You must be a project member, manager, or workspace owner to edit tasks in this project.');
+      }
+
       const { data, error } = await supabase
         .from('tasks')
         .update(updates)
@@ -1603,6 +1686,29 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const deleteTask = async (taskId: string) => {
     try {
+      let projectId = '';
+      if (isUsingMock) {
+        const dbState = JSON.parse(localStorage.getItem('taskflow_mock_db') || '{}');
+        const task = (dbState.tasks || []).find((t: any) => t.id === taskId);
+        if (task) projectId = task.project_id;
+      } else {
+        const { data: task } = await supabase
+          .from('tasks')
+          .select('project_id')
+          .eq('id', taskId)
+          .maybeSingle();
+        if (task) projectId = task.project_id;
+      }
+
+      if (!projectId) {
+        throw new Error('Task or associated project not found.');
+      }
+
+      const isAuthorized = await checkTaskPermission(projectId);
+      if (!isAuthorized) {
+        throw new Error('Unauthorized: You must be a project member, manager, or workspace owner to delete tasks in this project.');
+      }
+
       const dbState = JSON.parse(localStorage.getItem('taskflow_mock_db') || '{}');
       const task = (dbState.tasks || []).find((t: any) => t.id === taskId);
       const name = task ? task.title : 'Unknown';
