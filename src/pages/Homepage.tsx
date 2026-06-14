@@ -26,6 +26,7 @@ import {
   Rocket,
   Building2,
   Crown,
+  Menu,
 } from 'lucide-react';
 import TaskFlowLogo from '../components/shared/TaskFlowLogo';
 
@@ -269,10 +270,10 @@ const Homepage: React.FC = () => {
           right: 0,
           zIndex: 100,
           transition: 'all 0.3s ease',
-          background: scrolled ? 'rgba(255,255,255,0.92)' : 'transparent',
-          backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none',
-          borderBottom: scrolled ? '1px solid rgba(139,92,246,0.12)' : '1px solid transparent',
-          boxShadow: scrolled ? '0 4px 30px rgba(109,40,217,0.08)' : 'none',
+          background: scrolled || mobileMenuOpen ? 'rgba(255,255,255,0.95)' : 'transparent',
+          backdropFilter: scrolled || mobileMenuOpen ? 'blur(20px) saturate(180%)' : 'none',
+          borderBottom: scrolled || mobileMenuOpen ? '1px solid rgba(139,92,246,0.12)' : '1px solid transparent',
+          boxShadow: scrolled || mobileMenuOpen ? '0 4px 30px rgba(109,40,217,0.08)' : 'none',
         }}
       >
         <div
@@ -311,8 +312,8 @@ const Homepage: React.FC = () => {
             ))}
           </div>
 
-          {/* CTA Buttons */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          {/* Desktop CTA Buttons */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }} className="hidden md:flex">
             <Link
               to="/login"
               style={{
@@ -358,10 +359,94 @@ const Homepage: React.FC = () => {
                 (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 20px rgba(139,92,246,0.4)';
               }}
             >
-              Get Start <ArrowRight size={14} />
+              Get Started <ArrowRight size={14} />
             </Link>
           </div>
+
+          {/* Mobile Hamburger Menu Toggle */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="flex md:hidden rounded-xl p-2 transition-all duration-200"
+            style={{
+              background: 'rgba(139, 92, 246, 0.08)',
+              border: '1px solid rgba(139, 92, 246, 0.15)',
+              color: '#7c3aed',
+              cursor: 'pointer',
+            }}
+          >
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
+
+        {/* Mobile Dropdown Panel */}
+        {mobileMenuOpen && (
+          <div 
+            className="md:hidden animate-fade-in"
+            style={{
+              background: 'white',
+              borderBottom: '1px solid rgba(139,92,246,0.12)',
+              boxShadow: '0 10px 30px rgba(109,40,217,0.08)',
+              padding: '16px 24px 24px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 16,
+            }}
+          >
+            {navLinks.map((link) => (
+              <a
+                key={link}
+                href={`#${link.toLowerCase().replace(/\s+/g, '-')}`}
+                onClick={() => setMobileMenuOpen(false)}
+                style={{
+                  fontSize: 15,
+                  fontWeight: 600,
+                  color: '#4c1d95',
+                  textDecoration: 'none',
+                  padding: '8px 0',
+                  borderBottom: '1px solid rgba(139,92,246,0.06)',
+                }}
+              >
+                {link}
+              </a>
+            ))}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 8 }}>
+              <Link
+                to="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                style={{
+                  fontSize: 15,
+                  fontWeight: 600,
+                  color: '#6d28d9',
+                  textDecoration: 'none',
+                  textAlign: 'center',
+                  padding: '12px',
+                  borderRadius: 12,
+                  background: 'rgba(139,92,246,0.05)',
+                  border: '1px solid rgba(139,92,246,0.12)',
+                }}
+              >
+                Log In
+              </Link>
+              <Link
+                to="/register"
+                onClick={() => setMobileMenuOpen(false)}
+                style={{
+                  fontSize: 15,
+                  fontWeight: 700,
+                  color: 'white',
+                  textDecoration: 'none',
+                  textAlign: 'center',
+                  padding: '12px',
+                  borderRadius: 12,
+                  background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
+                  boxShadow: '0 4px 15px rgba(139,92,246,0.3)',
+                }}
+              >
+                Get Started
+              </Link>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* ── HERO ── */}
@@ -405,7 +490,7 @@ const Homepage: React.FC = () => {
         />
 
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1, width: '100%' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 60, alignItems: 'center' }}>
+          <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: 60, alignItems: 'center' }}>
             {/* Left: copy */}
             <div>
               {/* Badge */}
@@ -695,7 +780,7 @@ const Homepage: React.FC = () => {
           </div>
 
           {/* Feature grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 24 }}>
             {features.map((f, i) => (
               <div
                 key={f.title}
@@ -818,7 +903,7 @@ const Homepage: React.FC = () => {
 
       {/* ── FEATURE HIGHLIGHT ── */}
       <section style={{ padding: '100px 24px', background: '#faf8ff' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2" style={{ maxWidth: 1100, margin: '0 auto', gap: 64, alignItems: 'center' }}>
           {/* Left: visual mockup */}
           <div style={{ position: 'relative' }}>
             <div
@@ -943,7 +1028,7 @@ const Homepage: React.FC = () => {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
+          <div className="grid grid-cols-1 md:grid-cols-3" style={{ gap: 24 }}>
             {testimonials.map((t, i) => (
               <div
                 key={t.name}
@@ -1081,9 +1166,9 @@ const Homepage: React.FC = () => {
       {/* ── FOOTER ── */}
       <footer style={{ background: '#1e0f3d', padding: '60px 24px 32px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 40, marginBottom: 48 }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5" style={{ gap: 40, marginBottom: 48 }}>
             {/* Brand */}
-            <div>
+            <div className="md:col-span-2">
               <TaskFlowLogo variant="full" iconSize={30} textSize={18} />
               <p style={{ fontSize: 14, color: 'rgba(167,139,250,0.6)', marginTop: 16, lineHeight: 1.65, maxWidth: 280 }}>
                 The modern project management platform for high-performing teams. Collaborate, track, and ship faster.
