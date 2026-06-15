@@ -22,7 +22,8 @@ import {
   Upload,
   Download,
   Image as ImageIcon,
-  FolderOpen
+  FolderOpen,
+  Calendar
 } from 'lucide-react';
 
 const formatDateDisplay = (dateStr: string | null | undefined, fallback: string = 'DD/MM/YYYY') => {
