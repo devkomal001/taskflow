@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWorkspace } from '../context/WorkspaceContext';
 import { useTheme } from '../context/ThemeContext';
@@ -17,6 +17,16 @@ import {
   AlertCircle
 } from 'lucide-react';
 
+const formatDateDisplay = (dateStr: string | null | undefined, fallback: string = 'DD/MM/YYYY') => {
+  if (!dateStr) return fallback;
+  const parts = dateStr.split('-');
+  if (parts.length === 3) {
+    const [year, month, day] = parts;
+    return `${day}/${month}/${year}`;
+  }
+  return dateStr;
+};
+
 const Projects: React.FC = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
@@ -32,6 +42,8 @@ const Projects: React.FC = () => {
   const [description, setDescription] = useState('');
   const [startDate, setStartDate] = useState('');
   const [dueDate, setDueDate] = useState('');
+  const startDateInputRef = useRef<HTMLInputElement>(null);
+  const dueDateInputRef = useRef<HTMLInputElement>(null);
   const [priority, setPriority] = useState<'low' | 'medium' | 'high' | 'critical'>('medium');
   const [status, setStatus] = useState<'active' | 'on hold' | 'completed' | 'archived'>('active');
 
@@ -244,11 +256,11 @@ const Projects: React.FC = () => {
               <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-violet-100/60 dark:border-slate-800/40 pt-4 text-[10px] text-slate-500 dark:text-slate-450 font-semibold">
                 <div className="flex items-center gap-1">
                   <Calendar size={12} />
-                  <span>Start: {project.start_date || 'N/A'}</span>
+                  <span>Start: {formatDateDisplay(project.start_date, 'N/A')}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Clock size={12} />
-                  <span>Due: {project.due_date || 'N/A'}</span>
+                  <span>Due: {formatDateDisplay(project.due_date, 'N/A')}</span>
                 </div>
               </div>
 
@@ -334,23 +346,49 @@ const Projects: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-550 dark:text-slate-400">Start Date</label>
-                  <input
-                    type="date"
-                    value={startDate}
-                    max={dueDate || undefined}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="mt-1.5 w-full rounded-xl glass-input p-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none [color-scheme:dark]"
-                  />
+                  <div 
+                    onClick={() => {
+                      try { startDateInputRef.current?.showPicker(); } catch (e) { startDateInputRef.current?.click(); }
+                    }} 
+                    className="relative mt-1.5 cursor-pointer"
+                  >
+                    <div className="w-full rounded-xl glass-input p-2.5 text-sm text-slate-850 dark:text-slate-200 flex items-center justify-between">
+                      <span>{formatDateDisplay(startDate)}</span>
+                      <Calendar size={14} className="text-slate-400 dark:text-slate-500" />
+                    </div>
+                    <input
+                      ref={startDateInputRef}
+                      type="date"
+                      value={startDate}
+                      max={dueDate || undefined}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
+                      style={{ colorScheme: 'dark' }}
+                    />
+                  </div>
                 </div>
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-550 dark:text-slate-400">Due Date</label>
-                  <input
-                    type="date"
-                    value={dueDate}
-                    min={startDate || undefined}
-                    onChange={(e) => setDueDate(e.target.value)}
-                    className="mt-1.5 w-full rounded-xl glass-input p-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none [color-scheme:dark]"
-                  />
+                  <div 
+                    onClick={() => {
+                      try { dueDateInputRef.current?.showPicker(); } catch (e) { dueDateInputRef.current?.click(); }
+                    }} 
+                    className="relative mt-1.5 cursor-pointer"
+                  >
+                    <div className="w-full rounded-xl glass-input p-2.5 text-sm text-slate-850 dark:text-slate-200 flex items-center justify-between">
+                      <span>{formatDateDisplay(dueDate)}</span>
+                      <Calendar size={14} className="text-slate-400 dark:text-slate-500" />
+                    </div>
+                    <input
+                      ref={dueDateInputRef}
+                      type="date"
+                      value={dueDate}
+                      min={startDate || undefined}
+                      onChange={(e) => setDueDate(e.target.value)}
+                      className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
+                      style={{ colorScheme: 'dark' }}
+                    />
+                  </div>
                 </div>
               </div>
 

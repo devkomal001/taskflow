@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useWorkspace } from '../context/WorkspaceContext';
 import { useTheme } from '../context/ThemeContext';
@@ -32,6 +32,16 @@ import {
   ChevronDown,
   List
 } from 'lucide-react';
+
+const formatDateDisplay = (dateStr: string | null | undefined, fallback: string = 'DD/MM/YYYY') => {
+  if (!dateStr) return fallback;
+  const parts = dateStr.split('-');
+  if (parts.length === 3) {
+    const [year, month, day] = parts;
+    return `${day}/${month}/${year}`;
+  }
+  return dateStr;
+};
 
 const ProjectDetail: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -125,6 +135,8 @@ const ProjectDetail: React.FC = () => {
   const [taskPriority, setTaskPriority] = useState<'low' | 'medium' | 'high' | 'critical'>('medium');
   const [taskDueDate, setTaskDueDate] = useState('');
   const [taskLabels, setTaskLabels] = useState('');
+  const taskDueDateInputRef = useRef<HTMLInputElement>(null);
+  const editDueDateInputRef = useRef<HTMLInputElement>(null);
 
   // Active Task Detail Modal states
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -732,7 +744,7 @@ const ProjectDetail: React.FC = () => {
                         </td>
                         <td className="px-5 py-3.5 text-center">
                           <span className={`font-semibold ${isOverdue ? 'text-rose-505 dark:text-rose-450 font-bold' : 'text-slate-500 dark:text-slate-400'}`}>
-                            {task.due_date ? new Date(task.due_date).toLocaleDateString() : 'No due date'}
+                            {task.due_date ? formatDateDisplay(task.due_date, 'No due date') : 'No due date'}
                           </span>
                         </td>
                         <td className="px-5 py-3.5 text-center">
@@ -1108,13 +1120,26 @@ const ProjectDetail: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Due Date</label>
-                  <input
-                    type="date"
-                    value={taskDueDate}
-                    onChange={(e) => setTaskDueDate(e.target.value)}
-                    className="mt-1.5 w-full rounded-xl p-2.5 text-sm focus:outline-none cursor-pointer glass-input [color-scheme:dark]"
-                  />
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-550 dark:text-slate-400">Due Date</label>
+                  <div 
+                    onClick={() => {
+                      try { taskDueDateInputRef.current?.showPicker(); } catch (e) { taskDueDateInputRef.current?.click(); }
+                    }} 
+                    className="relative mt-1.5 cursor-pointer"
+                  >
+                    <div className="w-full rounded-xl glass-input p-2.5 text-sm text-slate-805 dark:text-slate-200 flex items-center justify-between">
+                      <span>{formatDateDisplay(taskDueDate)}</span>
+                      <Calendar size={14} className="text-slate-400 dark:text-slate-500" />
+                    </div>
+                    <input
+                      ref={taskDueDateInputRef}
+                      type="date"
+                      value={taskDueDate}
+                      onChange={(e) => setTaskDueDate(e.target.value)}
+                      className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
+                      style={{ colorScheme: 'dark' }}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -1450,10 +1475,10 @@ const ProjectDetail: React.FC = () => {
 
                     <div>
                       <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Due Date</span>
-                      <div className="mt-1.5 flex items-center gap-1.5 text-xs text-slate-650 dark:text-slate-350 font-semibold">
+                      <div className="mt-1.5 flex items-center gap-1.5 text-xs text-slate-655 dark:text-slate-355 font-semibold">
                         <Calendar size={13} className="text-violet-500" />
                         <span className={(selectedTask.due_date && new Date(selectedTask.due_date) < now && selectedTask.status !== 'completed') ? 'text-rose-500 font-bold' : ''}>
-                          {selectedTask.due_date ? new Date(selectedTask.due_date).toLocaleDateString() : 'No due date'}
+                          {selectedTask.due_date ? formatDateDisplay(selectedTask.due_date, 'No due date') : 'No due date'}
                         </span>
                       </div>
                     </div>
@@ -1514,12 +1539,25 @@ const ProjectDetail: React.FC = () => {
 
                     <div>
                       <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Due Date</label>
-                      <input
-                        type="date"
-                        value={editDueDate}
-                        onChange={(e) => setEditDueDate(e.target.value)}
-                        className="mt-1.5 w-full rounded-xl p-2 text-xs focus:outline-none glass-input [color-scheme:dark]"
-                      />
+                      <div 
+                        onClick={() => {
+                          try { editDueDateInputRef.current?.showPicker(); } catch (e) { editDueDateInputRef.current?.click(); }
+                        }} 
+                        className="relative mt-1.5 cursor-pointer"
+                      >
+                        <div className="w-full rounded-xl glass-input p-2.5 text-xs text-slate-805 dark:text-slate-200 flex items-center justify-between">
+                          <span>{formatDateDisplay(editDueDate)}</span>
+                          <Calendar size={12} className="text-slate-400 dark:text-slate-500" />
+                        </div>
+                        <input
+                          ref={editDueDateInputRef}
+                          type="date"
+                          value={editDueDate}
+                          onChange={(e) => setEditDueDate(e.target.value)}
+                          className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
+                          style={{ colorScheme: 'dark' }}
+                        />
+                      </div>
                     </div>
                   </div>
                 )}

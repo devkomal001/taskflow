@@ -291,7 +291,7 @@ const Homepage: React.FC = () => {
           <TaskFlowLogo variant="full" iconSize={32} textSize={20} />
 
           {/* Desktop Nav Links */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 36 }} className="hidden md:flex">
+          <div className="hidden md:flex items-center" style={{ gap: 36 }}>
             {navLinks.map((link) => (
               <a
                 key={link}
@@ -313,7 +313,7 @@ const Homepage: React.FC = () => {
           </div>
 
           {/* Desktop CTA Buttons */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }} className="hidden md:flex">
+          <div className="hidden md:flex items-center" style={{ gap: 12 }}>
             <Link
               to="/login"
               style={{
@@ -490,7 +490,7 @@ const Homepage: React.FC = () => {
         />
 
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1, width: '100%' }}>
-          <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: 60, alignItems: 'center' }}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-[60px]" style={{ alignItems: 'center' }}>
             {/* Left: copy */}
             <div>
               {/* Badge */}
@@ -511,10 +511,10 @@ const Homepage: React.FC = () => {
               {/* Headline */}
               <h1
                 style={{
-                  fontSize: 'clamp(36px, 5vw, 60px)',
+                  fontSize: 'clamp(32px, 6vw, 60px)',
                   fontFamily: "'Outfit', sans-serif",
                   fontWeight: 800,
-                  lineHeight: 1.1,
+                  lineHeight: 1.15,
                   letterSpacing: '-0.03em',
                   color: '#1e1b4b',
                   marginBottom: 22,
@@ -536,9 +536,9 @@ const Homepage: React.FC = () => {
               {/* Sub */}
               <p
                 style={{
-                  fontSize: 18,
+                  fontSize: 'clamp(15px, 2.5vw, 18px)',
                   color: 'rgba(109,40,217,0.65)',
-                  lineHeight: 1.7,
+                  lineHeight: 1.6,
                   marginBottom: 36,
                   fontWeight: 500,
                   animation: 'fadeInUp 0.7s 0.2s ease both',
@@ -669,12 +669,13 @@ const Homepage: React.FC = () => {
 
               {/* Floating badges */}
               <div
+                className="hidden sm:flex"
                 style={{
                   position: 'absolute', bottom: -16, right: -16,
                   background: 'white', borderRadius: 14, padding: '12px 20px',
                   boxShadow: '0 8px 32px rgba(109,40,217,0.18)',
                   border: '1px solid rgba(139,92,246,0.15)',
-                  display: 'flex', alignItems: 'center', gap: 10,
+                  alignItems: 'center', gap: 10,
                 }}
               >
                 <TrendingUp size={20} style={{ color: '#10b981' }} />
@@ -685,12 +686,13 @@ const Homepage: React.FC = () => {
               </div>
 
               <div
+                className="hidden sm:flex"
                 style={{
                   position: 'absolute', top: -16, left: -16,
                   background: 'white', borderRadius: 14, padding: '10px 16px',
                   boxShadow: '0 8px 32px rgba(109,40,217,0.18)',
                   border: '1px solid rgba(139,92,246,0.15)',
-                  display: 'flex', alignItems: 'center', gap: 8,
+                  alignItems: 'center', gap: 8,
                 }}
               >
                 <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 6px #10b981' }} />
@@ -704,15 +706,15 @@ const Homepage: React.FC = () => {
       {/* ── STATS ── */}
       <section style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)', padding: '60px 24px' }}>
         <div
+          className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10"
           style={{
             maxWidth: 1100, margin: '0 auto',
-            display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 40,
             textAlign: 'center',
           }}
         >
           {stats.map((s) => (
             <div key={s.label}>
-              <div style={{ fontSize: 44, fontWeight: 800, color: 'white', fontFamily: "'Outfit', sans-serif", letterSpacing: '-0.03em' }}>
+              <div style={{ fontSize: 'clamp(32px, 5vw, 44px)', fontWeight: 800, color: 'white', fontFamily: "'Outfit', sans-serif", letterSpacing: '-0.03em' }}>
                 <Counter end={s.value} suffix={s.suffix} />
               </div>
               <div style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.72)', marginTop: 4 }}>{s.label}</div>
@@ -847,7 +849,7 @@ const Homepage: React.FC = () => {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 32 }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             {steps.map((step, i) => (
               <div
                 key={step.step}
@@ -903,7 +905,7 @@ const Homepage: React.FC = () => {
 
       {/* ── FEATURE HIGHLIGHT ── */}
       <section style={{ padding: '100px 24px', background: '#faf8ff' }}>
-        <div className="grid grid-cols-1 lg:grid-cols-2" style={{ maxWidth: 1100, margin: '0 auto', gap: 64, alignItems: 'center' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-[64px]" style={{ maxWidth: 1100, margin: '0 auto', alignItems: 'center' }}>
           {/* Left: visual mockup */}
           <div style={{ position: 'relative' }}>
             <div
@@ -952,12 +954,13 @@ const Homepage: React.FC = () => {
 
             {/* Floating badge */}
             <div
+              className="hidden sm:flex"
               style={{
                 position: 'absolute', bottom: -16, right: -16,
                 background: 'white', borderRadius: 14, padding: '12px 20px',
                 boxShadow: '0 8px 32px rgba(109,40,217,0.18)',
                 border: '1px solid rgba(139,92,246,0.15)',
-                display: 'flex', alignItems: 'center', gap: 10,
+                alignItems: 'center', gap: 10,
               }}
             >
               <TrendingUp size={20} style={{ color: '#10b981' }} />
@@ -1088,10 +1091,11 @@ const Homepage: React.FC = () => {
       {/* ── CTA BANNER ── */}
       <section style={{ padding: '80px 24px', background: 'linear-gradient(135deg, #f0ecff 0%, #ede9fe 100%)' }}>
         <div
+          className="px-6 py-12 sm:px-10 sm:py-16"
           style={{
             maxWidth: 800, margin: '0 auto', textAlign: 'center',
             background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
-            borderRadius: 28, padding: '60px 40px',
+            borderRadius: 28,
             boxShadow: '0 24px 80px rgba(139,92,246,0.4)',
             position: 'relative', overflow: 'hidden',
           }}
@@ -1111,7 +1115,7 @@ const Homepage: React.FC = () => {
             >
               <Rocket size={26} style={{ color: 'rgba(255,255,255,0.9)' }} />
             </div>
-            <h2 style={{ fontSize: 'clamp(26px, 4vw, 44px)', fontFamily: "'Outfit', sans-serif", fontWeight: 800, color: 'white', letterSpacing: '-0.03em', marginBottom: 16 }}>
+            <h2 style={{ fontSize: 'clamp(24px, 5vw, 40px)', fontFamily: "'Outfit', sans-serif", fontWeight: 800, color: 'white', letterSpacing: '-0.03em', marginBottom: 16 }}>
               Ready to transform your workflow?
             </h2>
             <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.75)', marginBottom: 36, maxWidth: 480, margin: '0 auto 36px', lineHeight: 1.6 }}>
@@ -1166,7 +1170,7 @@ const Homepage: React.FC = () => {
       {/* ── FOOTER ── */}
       <footer style={{ background: '#1e0f3d', padding: '60px 24px 32px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5" style={{ gap: 40, marginBottom: 48 }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 md:gap-10" style={{ marginBottom: 48 }}>
             {/* Brand */}
             <div className="md:col-span-2">
               <TaskFlowLogo variant="full" iconSize={30} textSize={18} />
