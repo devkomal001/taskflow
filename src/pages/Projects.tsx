@@ -14,7 +14,8 @@ import {
   MoreVertical,
   Trash2,
   Clock,
-  AlertCircle
+  AlertCircle,
+  Edit2
 } from 'lucide-react';
 
 const formatDateDisplay = (dateStr: string | null | undefined, fallback: string = 'DD/MM/YYYY') => {
@@ -31,7 +32,7 @@ const Projects: React.FC = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { user } = useAuth();
-  const { activeWorkspace, projects, createProject, deleteProject, members } = useWorkspace();
+  const { activeWorkspace, projects, createProject, updateProject, deleteProject, members } = useWorkspace();
 
   const currentMemberRecord = (members || []).find(m => m.user_id === user?.id);
   const isWorkspaceOwner = activeWorkspace?.owner_id === user?.id || currentMemberRecord?.role === 'owner';
@@ -46,6 +47,9 @@ const Projects: React.FC = () => {
   const dueDateInputRef = useRef<HTMLInputElement>(null);
   const [priority, setPriority] = useState<'low' | 'medium' | 'high' | 'critical'>('medium');
   const [status, setStatus] = useState<'active' | 'on hold' | 'completed' | 'archived'>('active');
+
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [submitAttempted, setSubmitAttempted] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
@@ -72,37 +76,87 @@ const Projects: React.FC = () => {
     );
   }
 
-  const handleCreateProject = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim()) return;
+  const handleStartEdit = (project: Project, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEditingProject(project);
+    setName(project.name);
+    setDescription(project.description || '');
+    setStartDate(project.start_date || '');
+    setDueDate(project.due_date || '');
+    setPriority(project.priority);
+    setStatus(project.status);
+    setSubmitAttempted(false);
+    setCreateError('');
+    setIsModalOpen(true);
+    setActiveProjectMenu(null);
+  };
 
+  const handleSubmitProject = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitAttempted(true);
     setCreateError('');
 
-    // Validate date logic
-    if (startDate && dueDate && new Date(dueDate) < new Date(startDate)) {
-      setCreateError('Due Date cannot be before Start Date.');
+    if (!name.trim()) {
+      return;
+    }
+    if (!startDate) {
+      setCreateError('Start Date is required.');
+      return;
+    }
+    if (!dueDate) {
+      setCreateError('Due Date is required.');
+      return;
+    }
+    if (new Date(dueDate) < new Date(startDate)) {
+      setCreateError('Due Date cannot be earlier than Start Date.');
       return;
     }
 
-    const { project, error } = await createProject({
-      name,
-      description,
-      start_date: startDate,
-      due_date: dueDate,
-      priority,
-      status
-    });
+    if (editingProject) {
+      const { project, error } = await updateProject(editingProject.id, {
+        name,
+        description,
+        start_date: startDate,
+        due_date: dueDate,
+        priority,
+        status
+      });
 
-    if (error) {
-      setCreateError(error.message || 'Failed to create project.');
-    } else if (project) {
-      setIsModalOpen(false);
-      setName('');
-      setDescription('');
-      setStartDate('');
-      setDueDate('');
-      setPriority('medium');
-      setStatus('active');
+      if (error) {
+        setCreateError(error.message || 'Failed to update project.');
+      } else if (project) {
+        setIsModalOpen(false);
+        setEditingProject(null);
+        setName('');
+        setDescription('');
+        setStartDate('');
+        setDueDate('');
+        setPriority('medium');
+        setStatus('active');
+        setSubmitAttempted(false);
+      }
+    } else {
+      const { project, error } = await createProject({
+        name,
+        description,
+        start_date: startDate,
+        due_date: dueDate,
+        priority,
+        status
+      });
+
+      if (error) {
+        setCreateError(error.message || 'Failed to create project.');
+      } else if (project) {
+        setIsModalOpen(false);
+        setName('');
+        setDescription('');
+        setStartDate('');
+        setDueDate('');
+        setPriority('medium');
+        setStatus('active');
+        setSubmitAttempted(false);
+      }
     }
   };
 
@@ -151,7 +205,18 @@ const Projects: React.FC = () => {
         </div>
         {isWorkspaceAdmin && (
           <button
-            onClick={() => { setIsModalOpen(true); setCreateError(''); }}
+            onClick={() => {
+              setEditingProject(null);
+              setName('');
+              setDescription('');
+              setStartDate('');
+              setDueDate('');
+              setPriority('medium');
+              setStatus('active');
+              setSubmitAttempted(false);
+              setCreateError('');
+              setIsModalOpen(true);
+            }}
             className="flex items-center gap-2 rounded-xl btn-brand px-4 py-2.5 text-sm font-bold shadow-lg shadow-brand-primary/20"
           >
             <FolderPlus size={16} />
@@ -230,8 +295,15 @@ const Projects: React.FC = () => {
                     {activeProjectMenu === project.id && (
                       <div className="absolute right-0 z-20 mt-1 w-32 rounded-lg border border-violet-100 dark:border-slate-800 bg-white dark:bg-slate-950 p-1 shadow-2xl animate-dropdown">
                         <button
+                          onClick={(e) => handleStartEdit(project, e)}
+                          className="flex w-full items-center gap-1.5 rounded px-2.5 py-1.5 text-left text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-900"
+                        >
+                          <Edit2 size={12} />
+                          <span>Edit Project</span>
+                        </button>
+                        <button
                           onClick={(e) => handleDelete(project.id, e)}
-                          className="flex w-full items-center gap-1.5 rounded px-2.5 py-1.5 text-left text-xs font-semibold text-rose-500 hover:bg-slate-50 dark:hover:bg-slate-900"
+                          className="flex w-full items-center gap-1.5 rounded px-2.5 py-1.5 text-left text-xs font-semibold text-rose-500 hover:bg-slate-50 dark:hover:bg-slate-900 border-t border-violet-100/50 dark:border-slate-800/50"
                         >
                           <Trash2 size={12} />
                           <span>Delete Project</span>
@@ -291,8 +363,12 @@ const Projects: React.FC = () => {
 
             <div className="flex items-center justify-between border-b border-violet-100 dark:border-slate-800 pb-4">
               <div className="flex items-center gap-2">
-                <FolderPlus className="text-brand-primary dark:text-brand-primary" size={20} />
-                <h3 className="text-lg font-bold">Create New Project</h3>
+                {editingProject ? (
+                  <Edit2 className="text-brand-primary dark:text-brand-primary" size={20} />
+                ) : (
+                  <FolderPlus className="text-brand-primary dark:text-brand-primary" size={20} />
+                )}
+                <h3 className="text-lg font-bold">{editingProject ? 'Edit Project' : 'Create New Project'}</h3>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -302,7 +378,7 @@ const Projects: React.FC = () => {
               </button>
             </div>
             
-            <form onSubmit={handleCreateProject} className="mt-4 space-y-4">
+            <form onSubmit={handleSubmitProject} className="mt-4 space-y-4">
               {createError && (
                 <div className="flex flex-col gap-3 rounded-2xl border border-rose-500/20 bg-rose-500/5 p-4 text-xs font-semibold text-rose-600 dark:text-rose-400">
                   <div className="flex items-start gap-2.5">
@@ -321,14 +397,16 @@ const Projects: React.FC = () => {
                 </div>
               )}
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-550 dark:text-slate-400">Project Name *</label>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-550 dark:text-slate-400">
+                  Project Name <span className="text-rose-500 dark:text-rose-400">*</span>
+                </label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Q3 Roadmap Campaign"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="mt-1.5 w-full rounded-xl glass-input p-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none"
+                  className={`mt-1.5 w-full rounded-xl glass-input p-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none ${submitAttempted && !name.trim() ? 'border-rose-500/50 dark:border-rose-500/50 ring-1 ring-rose-500/20' : ''}`}
                 />
               </div>
 
@@ -343,54 +421,66 @@ const Projects: React.FC = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-550 dark:text-slate-400">Start Date</label>
-                  <div 
-                    onClick={() => {
-                      try { startDateInputRef.current?.showPicker(); } catch (e) { startDateInputRef.current?.click(); }
-                    }} 
-                    className="relative mt-1.5 cursor-pointer"
-                  >
-                    <div className="w-full rounded-xl glass-input p-2.5 text-sm text-slate-850 dark:text-slate-200 flex items-center justify-between">
-                      <span>{formatDateDisplay(startDate)}</span>
-                      <Calendar size={14} className="text-slate-400 dark:text-slate-500" />
+              {(() => {
+                const isDateRangeInvalid = startDate && dueDate && new Date(dueDate) < new Date(startDate);
+                const isStartDateInvalid = (submitAttempted && !startDate) || isDateRangeInvalid;
+                const isDueDateInvalid = (submitAttempted && !dueDate) || isDateRangeInvalid;
+
+                return (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-550 dark:text-slate-400">
+                        Start Date <span className="text-rose-500 dark:text-rose-400">*</span>
+                      </label>
+                      <div 
+                        onClick={() => {
+                          try { startDateInputRef.current?.showPicker(); } catch (e) { startDateInputRef.current?.click(); }
+                        }} 
+                        className="relative mt-1.5 cursor-pointer"
+                      >
+                        <div className={`w-full rounded-xl glass-input p-2.5 text-sm text-slate-850 dark:text-slate-200 flex items-center justify-between ${isStartDateInvalid ? 'border-rose-500/50 dark:border-rose-500/50 ring-1 ring-rose-500/20' : ''}`}>
+                          <span>{formatDateDisplay(startDate)}</span>
+                          <Calendar size={14} className="text-slate-400 dark:text-slate-500" />
+                        </div>
+                        <input
+                          ref={startDateInputRef}
+                          type="date"
+                          value={startDate}
+                          max={dueDate || undefined}
+                          onChange={(e) => setStartDate(e.target.value)}
+                          className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
+                          style={{ colorScheme: 'dark' }}
+                        />
+                      </div>
                     </div>
-                    <input
-                      ref={startDateInputRef}
-                      type="date"
-                      value={startDate}
-                      max={dueDate || undefined}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
-                      style={{ colorScheme: 'dark' }}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-550 dark:text-slate-400">Due Date</label>
-                  <div 
-                    onClick={() => {
-                      try { dueDateInputRef.current?.showPicker(); } catch (e) { dueDateInputRef.current?.click(); }
-                    }} 
-                    className="relative mt-1.5 cursor-pointer"
-                  >
-                    <div className="w-full rounded-xl glass-input p-2.5 text-sm text-slate-850 dark:text-slate-200 flex items-center justify-between">
-                      <span>{formatDateDisplay(dueDate)}</span>
-                      <Calendar size={14} className="text-slate-400 dark:text-slate-500" />
+                    <div>
+                      <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-550 dark:text-slate-400">
+                        Due Date <span className="text-rose-500 dark:text-rose-400">*</span>
+                      </label>
+                      <div 
+                        onClick={() => {
+                          try { dueDateInputRef.current?.showPicker(); } catch (e) { dueDateInputRef.current?.click(); }
+                        }} 
+                        className="relative mt-1.5 cursor-pointer"
+                      >
+                        <div className={`w-full rounded-xl glass-input p-2.5 text-sm text-slate-850 dark:text-slate-200 flex items-center justify-between ${isDueDateInvalid ? 'border-rose-500/50 dark:border-rose-500/50 ring-1 ring-rose-500/20' : ''}`}>
+                          <span>{formatDateDisplay(dueDate)}</span>
+                          <Calendar size={14} className="text-slate-400 dark:text-slate-500" />
+                        </div>
+                        <input
+                          ref={dueDateInputRef}
+                          type="date"
+                          value={dueDate}
+                          min={startDate || undefined}
+                          onChange={(e) => setDueDate(e.target.value)}
+                          className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
+                          style={{ colorScheme: 'dark' }}
+                        />
+                      </div>
                     </div>
-                    <input
-                      ref={dueDateInputRef}
-                      type="date"
-                      value={dueDate}
-                      min={startDate || undefined}
-                      onChange={(e) => setDueDate(e.target.value)}
-                      className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
-                      style={{ colorScheme: 'dark' }}
-                    />
                   </div>
-                </div>
-              </div>
+                );
+              })()}
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -433,7 +523,7 @@ const Projects: React.FC = () => {
                   type="submit"
                   className="rounded-xl btn-brand px-5 py-2.5 text-xs font-bold shadow-lg shadow-brand-primary/20"
                 >
-                  Create Project
+                  {editingProject ? 'Save Changes' : 'Create Project'}
                 </button>
               </div>
             </form>

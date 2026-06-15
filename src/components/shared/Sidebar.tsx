@@ -4,14 +4,14 @@ import { useAuth } from '../../context/AuthContext';
 import { useWorkspace } from '../../context/WorkspaceContext';
 import { useTheme } from '../../context/ThemeContext';
 import * as LucideIcons from 'lucide-react';
-import { 
-  LayoutDashboard, 
-  FolderKanban, 
-  Users, 
-  Settings, 
-  LogOut, 
-  ChevronDown, 
-  Plus, 
+import {
+  LayoutDashboard,
+  FolderKanban,
+  Users,
+  Settings,
+  LogOut,
+  ChevronDown,
+  Plus,
   FolderPlus,
   X,
   Briefcase,
@@ -36,7 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
   const { theme } = useTheme();
   const { logout, user } = useAuth();
   const { workspaces, activeWorkspace, switchWorkspace, createWorkspace, projects, teams } = useWorkspace();
-  
+
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = useState(false);
   const workspaceDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -71,7 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
   const handleCreateWorkspace = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newWsName.trim()) return;
-    
+
     setCreateError('');
     const { workspace, error } = await createWorkspace(newWsName, newWsDesc, newWsLogo);
     if (error) {
@@ -100,8 +100,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
   const renderTeamIcon = (iconName: string, color: string) => {
     const IconComp = (LucideIcons as any)[iconName] || LucideIcons.Users;
     return (
-      <div 
-        className="flex h-5 w-5 items-center justify-center rounded-md" 
+      <div
+        className="flex h-5 w-5 items-center justify-center rounded-md"
         style={{ backgroundColor: `${color}20`, color: color }}
       >
         <IconComp size={12} className="stroke-[2.5]" />
@@ -113,16 +113,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
     <>
       {/* Mobile Backdrop Overlay */}
       {isOpen && (
-        <div 
-          onClick={onClose} 
+        <div
+          onClick={onClose}
           className="fixed inset-0 z-40 bg-violet-950/40 backdrop-blur-sm transition-all duration-300 md:hidden"
         />
       )}
 
-      <aside 
-        className={`fixed inset-y-0 left-0 z-50 flex h-full flex-col p-3 transition-all duration-300 md:relative md:translate-x-0 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        } ${isCollapsed ? 'w-[72px]' : 'w-[240px]'}`}
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 flex h-full flex-col p-3 transition-all duration-300 md:relative md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'
+          } ${isCollapsed ? 'w-[72px]' : 'w-[240px]'}`}
         style={{
           background: theme === 'dark'
             ? 'linear-gradient(180deg, #1e0f3d 0%, #160c2e 50%, #0f0720 100%)'
@@ -133,7 +132,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
         }}
       >
         {/* Subtle background glow */}
-        <div 
+        <div
           className="absolute top-0 left-0 w-full h-48 pointer-events-none"
           style={{
             background: theme === 'dark'
@@ -143,7 +142,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
         />
 
         {/* Toggle Collapse Button for Desktop */}
-        <button 
+        <button
           onClick={toggleCollapse}
           className="absolute -right-3.5 top-6 z-20 hidden h-7 w-7 items-center justify-center rounded-full border shadow-lg md:flex transition-all duration-200 hover:scale-110"
           style={{
@@ -201,14 +200,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                   style={{ borderColor: 'rgba(139, 92, 246, 0.3)' }}
                 />
               ) : (
-                <div 
+                <div
                   className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
                   style={{ background: 'rgba(139, 92, 246, 0.2)', color: '#a78bfa' }}
                 >
                   <Briefcase size={13} />
                 </div>
               )}
-                {!isCollapsed && (
+              {!isCollapsed && (
                 <div className="truncate animate-in fade-in duration-200">
                   <p className={`text-xs font-bold truncate ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>{activeWorkspace?.name || 'No Workspace'}</p>
                   <div className="flex items-center gap-1.5 mt-0.5">
@@ -221,7 +220,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
           </button>
 
           {isWorkspaceMenuOpen && (
-            <div 
+            <div
               className={`absolute mt-1.5 rounded-xl p-1.5 shadow-2xl animate-dropdown ${isCollapsed ? 'left-16 top-0' : 'left-0 right-0'}`}
               style={{
                 zIndex: 300,
@@ -242,11 +241,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                       switchWorkspace(ws.id);
                       setIsWorkspaceMenuOpen(false);
                     }}
-                    className={`flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-xs transition-colors ${
-                      activeWorkspace?.id === ws.id 
-                        ? 'font-bold' 
+                    className={`flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-xs transition-colors ${activeWorkspace?.id === ws.id
+                        ? 'font-bold'
                         : 'font-medium'
-                    }`}
+                      }`}
                     style={{
                       background: activeWorkspace?.id === ws.id
                         ? (theme === 'dark' ? 'rgba(139, 92, 246, 0.2)' : 'rgba(139, 92, 246, 0.08)')
@@ -315,20 +313,19 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
               end={item.path === '/'}
               onClick={onClose}
               className={({ isActive }) =>
-                `flex items-center rounded-xl transition-all duration-200 group ${
-                  isActive
-                    ? 'font-bold'
-                    : 'font-medium'
+                `flex items-center rounded-xl transition-all duration-200 group ${isActive
+                  ? 'font-bold'
+                  : 'font-medium'
                 } ${isCollapsed ? 'justify-center p-2.5' : 'px-3 py-2.5 text-xs'}`
               }
               style={({ isActive }) => ({
                 background: isActive
-                  ? (theme === 'dark' 
-                      ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.22), rgba(109, 40, 217, 0.12))' 
-                      : 'linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(109, 40, 217, 0.06))')
+                  ? (theme === 'dark'
+                    ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.22), rgba(109, 40, 217, 0.12))'
+                    : 'linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(109, 40, 217, 0.06))')
                   : 'transparent',
-                color: isActive 
-                  ? (theme === 'dark' ? '#c4b5fd' : '#6d28d9') 
+                color: isActive
+                  ? (theme === 'dark' ? '#c4b5fd' : '#6d28d9')
                   : (theme === 'dark' ? 'rgba(167, 139, 250, 0.65)' : 'rgba(79, 70, 229, 0.7)'),
                 borderLeft: isActive ? '3px solid rgba(139, 92, 246, 0.8)' : '3px solid transparent',
               })}
@@ -351,18 +348,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                     to={`/team/${team.id}`}
                     onClick={onClose}
                     className={({ isActive }) =>
-                      `flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition-all ${
-                        isActive 
-                          ? 'font-bold' 
-                          : ''
+                      `flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition-all ${isActive
+                        ? 'font-bold'
+                        : ''
                       }`
                     }
                     style={({ isActive }) => ({
                       background: isActive
                         ? (theme === 'dark' ? 'rgba(139, 92, 246, 0.15)' : 'rgba(139, 92, 246, 0.08)')
                         : 'transparent',
-                      color: isActive 
-                        ? (theme === 'dark' ? '#c4b5fd' : '#6d28d9') 
+                      color: isActive
+                        ? (theme === 'dark' ? '#c4b5fd' : '#6d28d9')
                         : (theme === 'dark' ? 'rgba(167, 139, 250, 0.55)' : 'rgba(79, 70, 229, 0.65)'),
                     })}
                   >
@@ -377,7 +373,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
 
         {/* Footer Profile Details */}
         <div className="relative z-10 mt-auto pt-3" style={{ borderTop: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.12)' : '1px solid rgba(139, 92, 246, 0.08)' }}>
-          <div 
+          <div
             className={`flex items-center gap-2.5 rounded-xl p-2 ${isCollapsed ? 'justify-center p-1 border-0' : ''}`}
             style={{
               background: theme === 'dark' ? 'rgba(139, 92, 246, 0.07)' : 'rgba(139, 92, 246, 0.04)',
@@ -385,14 +381,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
             }}
           >
             {user?.avatar_url ? (
-              <img 
-                src={user.avatar_url} 
-                alt="" 
-                className="h-8 w-8 rounded-full object-cover shrink-0" 
+              <img
+                src={user.avatar_url}
+                alt=""
+                className="h-8 w-8 rounded-full object-cover shrink-0"
                 style={{ border: '2px solid rgba(139, 92, 246, 0.4)' }}
               />
             ) : (
-              <div 
+              <div
                 className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-bold text-xs text-white"
                 style={{ background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)' }}
               >
@@ -428,14 +424,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
 
         {/* Create Workspace Modal */}
         {isCreateModalOpen && (
-          <div 
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4" 
-            style={{ 
-              background: theme === 'dark' ? 'rgba(15, 7, 32, 0.75)' : 'rgba(30, 20, 60, 0.4)', 
-              backdropFilter: 'blur(8px)' 
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+            style={{
+              background: theme === 'dark' ? 'rgba(15, 7, 32, 0.75)' : 'rgba(30, 20, 60, 0.4)',
+              backdropFilter: 'blur(8px)'
             }}
           >
-            <div 
+            <div
               className="w-full max-w-md rounded-2xl p-6 shadow-2xl animate-in zoom-in-95 duration-200"
               style={{
                 background: theme === 'dark' ? '#1a0e35' : '#ffffff',
@@ -445,8 +441,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                   : '0 24px 80px rgba(109, 40, 217, 0.12), 0 4px 24px rgba(0,0,0,0.08)',
               }}
             >
-              <div 
-                className="flex items-center justify-between pb-4 mb-4" 
+              <div
+                className="flex items-center justify-between pb-4 mb-4"
                 style={{ borderBottom: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.15)' : '1px solid rgba(139, 92, 246, 0.12)' }}
               >
                 <div className="flex items-center gap-2.5">
@@ -471,7 +467,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                   <X size={16} />
                 </button>
               </div>
-              
+
               <form onSubmit={handleCreateWorkspace} className="space-y-4">
                 {createError && (
                   <div className="flex flex-col gap-3 rounded-2xl border border-rose-500/20 bg-rose-500/5 p-4 text-xs font-semibold text-rose-600 dark:text-rose-450">
@@ -494,8 +490,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                   </div>
                 )}
                 <div>
-                  <label 
-                    className="block text-[11px] font-bold uppercase tracking-wider mb-1.5" 
+                  <label
+                    className="block text-[11px] font-bold uppercase tracking-wider mb-1.5"
                     style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.7)' : 'rgba(109, 40, 217, 0.65)' }}
                   >
                     Workspace Name *
@@ -526,8 +522,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                 </div>
 
                 <div>
-                  <label 
-                    className="block text-[11px] font-bold uppercase tracking-wider mb-1.5" 
+                  <label
+                    className="block text-[11px] font-bold uppercase tracking-wider mb-1.5"
                     style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.7)' : 'rgba(109, 40, 217, 0.65)' }}
                   >
                     Description
@@ -557,8 +553,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                 </div>
 
 
-                <div 
-                  className="flex items-center justify-end gap-3 pt-3" 
+                <div
+                  className="flex items-center justify-end gap-3 pt-3"
                   style={{ borderTop: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.15)' : '1px solid rgba(139, 92, 246, 0.1)' }}
                 >
                   <button

@@ -374,6 +374,65 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     };
   }, [user]);
 
+  // Set up Realtime Subscription for Workspace Data (Projects, Tasks, Members, etc.)
+  useEffect(() => {
+    if (!user || !activeWorkspace) return;
+
+    let cleanup = () => {};
+
+    if (isUsingMock) {
+      // Mock Real-time: Listen to local custom window events
+      const handleMockRefresh = (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail && detail.workspaceId === activeWorkspace.id) {
+          loadWorkspaceSubData(activeWorkspace.id);
+        }
+      };
+
+      window.addEventListener('workspace-data-changed', handleMockRefresh);
+
+      cleanup = () => {
+        window.removeEventListener('workspace-data-changed', handleMockRefresh);
+      };
+    } else if (supabase.channel) {
+      // Subscribe to changes in projects and tasks tables for the active workspace
+      const channel = supabase
+        .channel(`public:workspace-data-${activeWorkspace.id}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'projects',
+            filter: `workspace_id=eq.${activeWorkspace.id}`
+          },
+          () => {
+            loadWorkspaceSubData(activeWorkspace.id);
+          }
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'tasks'
+          },
+          () => {
+            loadWorkspaceSubData(activeWorkspace.id);
+          }
+        )
+        .subscribe();
+
+      cleanup = () => {
+        supabase.removeChannel(channel);
+      };
+    }
+
+    return () => {
+      cleanup();
+    };
+  }, [user, activeWorkspace]);
+
   // Load Workspaces data
   const loadWorkspacesData = async () => {
     setLoading(true);

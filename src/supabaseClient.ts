@@ -102,6 +102,10 @@ function loadDb() {
 
 function saveDb(db: any) {
   localStorage.setItem(MOCK_STORAGE_KEY, JSON.stringify(db));
+  const activeWorkspaceId = localStorage.getItem('taskflow_active_workspace_id');
+  if (activeWorkspaceId) {
+    window.dispatchEvent(new CustomEvent('workspace-data-changed', { detail: { workspaceId: activeWorkspaceId } }));
+  }
 }
 
 // Returns the currently logged-in mock user (or null if not logged in)
@@ -297,6 +301,26 @@ export const mockSupabase = {
           const rows = isArray ? rowData : [rowData];
           const all: any[] = (dbState[this.table as keyof typeof dbState] as any[]) || [];
 
+          // Server-side simulation validations for projects
+          if (this.table === 'projects') {
+            for (const row of rows) {
+              if (!row.start_date || String(row.start_date).trim() === '') {
+                return { data: null, error: new Error('Start Date is required.') };
+              }
+              if (!row.due_date || String(row.due_date).trim() === '') {
+                return { data: null, error: new Error('Due Date is required.') };
+              }
+              const start = new Date(row.start_date);
+              const due = new Date(row.due_date);
+              if (isNaN(start.getTime()) || isNaN(due.getTime())) {
+                return { data: null, error: new Error('Invalid date format.') };
+              }
+              if (due < start) {
+                return { data: null, error: new Error('Due Date cannot be earlier than Start Date.') };
+              }
+            }
+          }
+
           const inserted = rows.map((row: any) => {
             const item = {
               id: row.id || 'id_' + Math.random().toString(36).substr(2, 9),
@@ -316,6 +340,29 @@ export const mockSupabase = {
           const isArray = Array.isArray(rowData);
           const rows = isArray ? rowData : [rowData];
           const all: any[] = (dbState[this.table as keyof typeof dbState] as any[]) || [];
+
+          // Server-side simulation validations for projects
+          if (this.table === 'projects') {
+            for (const row of rows) {
+              const existingIdx = all.findIndex((rec: any) => rec.id === row.id);
+              const existing = existingIdx !== -1 ? all[existingIdx] : null;
+              const merged = existing ? { ...existing, ...row } : row;
+              if (!merged.start_date || String(merged.start_date).trim() === '') {
+                return { data: null, error: new Error('Start Date is required.') };
+              }
+              if (!merged.due_date || String(merged.due_date).trim() === '') {
+                return { data: null, error: new Error('Due Date is required.') };
+              }
+              const start = new Date(merged.start_date);
+              const due = new Date(merged.due_date);
+              if (isNaN(start.getTime()) || isNaN(due.getTime())) {
+                return { data: null, error: new Error('Invalid date format.') };
+              }
+              if (due < start) {
+                return { data: null, error: new Error('Due Date cannot be earlier than Start Date.') };
+              }
+            }
+          }
 
           const upserted = rows.map((row: any) => {
             let existingIdx = -1;
@@ -346,6 +393,31 @@ export const mockSupabase = {
         } else if (this.operation.type === 'update') {
           const all: any[] = (dbState[this.table as keyof typeof dbState] as any[]) || [];
           const ids = records.map((r: any) => r.id);
+
+          // Server-side simulation validations for projects
+          if (this.table === 'projects') {
+            const updates = this.operation.args;
+            for (const rec of all) {
+              if (ids.includes(rec.id)) {
+                const merged = { ...rec, ...updates };
+                if (!merged.start_date || String(merged.start_date).trim() === '') {
+                  return { data: null, error: new Error('Start Date is required.') };
+                }
+                if (!merged.due_date || String(merged.due_date).trim() === '') {
+                  return { data: null, error: new Error('Due Date is required.') };
+                }
+                const start = new Date(merged.start_date);
+                const due = new Date(merged.due_date);
+                if (isNaN(start.getTime()) || isNaN(due.getTime())) {
+                  return { data: null, error: new Error('Invalid date format.') };
+                }
+                if (due < start) {
+                  return { data: null, error: new Error('Due Date cannot be earlier than Start Date.') };
+                }
+              }
+            }
+          }
+
           const updated = all.map((rec: any) =>
             ids.includes(rec.id) ? { ...rec, ...this.operation.args } : rec
           );

@@ -20,6 +20,7 @@ import {
   Paperclip,
   Trash2,
   Edit,
+  Edit2,
   Clock,
   AlertTriangle,
   Upload,
@@ -69,7 +70,8 @@ const ProjectDetail: React.FC = () => {
     deleteAttachment,
     logActivity,
     activities,
-    refreshWorkspaceData
+    refreshWorkspaceData,
+    updateProject
   } = useWorkspace();
 
   const [project, setProject] = useState<Project | null>(null);
@@ -78,6 +80,76 @@ const ProjectDetail: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'table' | 'kanban' | 'files' | 'activity'>('table');
   const [loading, setLoading] = useState(true);
   const now = new Date();
+
+  const currentMemberRecord = (members || []).find(m => m.user_id === currentUser?.id);
+  const isWorkspaceOwner = activeWorkspace?.owner_id === currentUser?.id || currentMemberRecord?.role === 'owner';
+  const isWorkspaceAdmin = isWorkspaceOwner || currentMemberRecord?.role === 'manager';
+
+  // Project editing modal states
+  const [isEditProjectModalOpen, setIsEditProjectModalOpen] = useState(false);
+  const [projectEditName, setProjectEditName] = useState('');
+  const [projectEditDescription, setProjectEditDescription] = useState('');
+  const [projectEditStartDate, setProjectEditStartDate] = useState('');
+  const [projectEditDueDate, setProjectEditDueDate] = useState('');
+  const [projectEditPriority, setProjectEditPriority] = useState<'low' | 'medium' | 'high' | 'critical'>('medium');
+  const [projectEditStatus, setProjectEditStatus] = useState<'active' | 'on hold' | 'completed' | 'archived'>('active');
+  const [projectEditSubmitAttempted, setProjectEditSubmitAttempted] = useState(false);
+  const [projectEditError, setProjectEditError] = useState('');
+  const projectEditStartDateInputRef = useRef<HTMLInputElement>(null);
+  const projectEditDueDateInputRef = useRef<HTMLInputElement>(null);
+
+  const handleStartEditProject = () => {
+    if (!project) return;
+    setProjectEditName(project.name);
+    setProjectEditDescription(project.description || '');
+    setProjectEditStartDate(project.start_date || '');
+    setProjectEditDueDate(project.due_date || '');
+    setProjectEditPriority(project.priority);
+    setProjectEditStatus(project.status);
+    setProjectEditSubmitAttempted(false);
+    setProjectEditError('');
+    setIsEditProjectModalOpen(true);
+  };
+
+  const handleSubmitEditProject = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setProjectEditSubmitAttempted(true);
+    setProjectEditError('');
+
+    if (!projectEditName.trim()) {
+      return;
+    }
+    if (!projectEditStartDate) {
+      setProjectEditError('Start Date is required.');
+      return;
+    }
+    if (!projectEditDueDate) {
+      setProjectEditError('Due Date is required.');
+      return;
+    }
+    if (new Date(projectEditDueDate) < new Date(projectEditStartDate)) {
+      setProjectEditError('Due Date cannot be earlier than Start Date.');
+      return;
+    }
+
+    if (project) {
+      const { project: updated, error } = await updateProject(project.id, {
+        name: projectEditName,
+        description: projectEditDescription,
+        start_date: projectEditStartDate,
+        due_date: projectEditDueDate,
+        priority: projectEditPriority,
+        status: projectEditStatus
+      });
+
+      if (error) {
+        setProjectEditError(error.message || 'Failed to update project.');
+      } else if (updated) {
+        setIsEditProjectModalOpen(false);
+        setProjectEditSubmitAttempted(false);
+      }
+    }
+  };
 
   // Monday.com style interactive cell selectors
   const [activeStatusSelector, setActiveStatusSelector] = useState<string | null>(null);
@@ -524,12 +596,21 @@ const ProjectDetail: React.FC = () => {
           <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-500 dark:text-slate-400 shrink-0">
             <div className="flex items-center gap-1.5">
               <Calendar size={14} className="text-violet-500" />
-              <span>Due: {project.due_date || 'No due date'}</span>
+              <span>Due: {formatDateDisplay(project.due_date, 'No due date')}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <Clock size={14} className="text-violet-500" />
-              <span>Start: {project.start_date || 'N/A'}</span>
+              <span>Start: {formatDateDisplay(project.start_date, 'N/A')}</span>
             </div>
+            {isWorkspaceAdmin && (
+              <button
+                onClick={handleStartEditProject}
+                className="flex items-center gap-1.5 rounded-xl border border-violet-200/60 dark:border-slate-805/40 bg-white/50 dark:bg-slate-900/40 hover:bg-slate-100 dark:hover:bg-slate-850 text-slate-705 dark:text-slate-300 px-3 py-1.5 font-bold shadow-xs transition-colors"
+              >
+                <Edit2 size={13} />
+                <span>Edit Project</span>
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -1563,6 +1644,170 @@ const ProjectDetail: React.FC = () => {
                 )}
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Project Modal */}
+      {isEditProjectModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="relative w-full max-w-lg rounded-3xl border border-violet-200/30 dark:border-violet-805/30 bg-white dark:bg-slate-950 p-6 shadow-2xl animate-in zoom-in-95 duration-200 text-slate-800 dark:text-slate-100 overflow-hidden">
+            {/* Ambient Modal Stripe */}
+            <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-brand-primary to-brand-dark"></div>
+
+            <div className="flex items-center justify-between border-b border-violet-100 dark:border-slate-800 pb-4">
+              <div className="flex items-center gap-2">
+                <Edit2 className="text-brand-primary dark:text-brand-primary" size={20} />
+                <h3 className="text-lg font-bold">Edit Project</h3>
+              </div>
+              <button
+                onClick={() => setIsEditProjectModalOpen(false)}
+                className="rounded-lg p-1 text-slate-400 dark:text-slate-500 hover:bg-slate-105 dark:hover:bg-slate-800 hover:text-slate-855 dark:hover:text-slate-100 transition-colors"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleSubmitEditProject} className="mt-4 space-y-4">
+              {projectEditError && (
+                <div className="flex flex-col gap-3 rounded-2xl border border-rose-500/20 bg-rose-500/5 p-4 text-xs font-semibold text-rose-600 dark:text-rose-400">
+                  <div className="flex items-start gap-2.5">
+                    <LucideIcons.AlertCircle size={16} className="stroke-[2.5] shrink-0 mt-0.5 text-rose-500" />
+                    <span>{projectEditError}</span>
+                  </div>
+                </div>
+              )}
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-550 dark:text-slate-400">
+                  Project Name <span className="text-rose-500 dark:text-rose-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Q3 Roadmap Campaign"
+                  value={projectEditName}
+                  onChange={(e) => setProjectEditName(e.target.value)}
+                  className={`mt-1.5 w-full rounded-xl glass-input p-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none ${projectEditSubmitAttempted && !projectEditName.trim() ? 'border-rose-500/50 dark:border-rose-500/50 ring-1 ring-rose-500/20' : ''}`}
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-550 dark:text-slate-400">Description</label>
+                <textarea
+                  placeholder="Summarize objectives, goals, and key results of this project..."
+                  value={projectEditDescription}
+                  onChange={(e) => setProjectEditDescription(e.target.value)}
+                  rows={3}
+                  className="mt-1.5 w-full rounded-xl glass-input p-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none resize-none"
+                />
+              </div>
+
+              {(() => {
+                const isDateRangeInvalid = projectEditStartDate && projectEditDueDate && new Date(projectEditDueDate) < new Date(projectEditStartDate);
+                const isStartDateInvalid = (projectEditSubmitAttempted && !projectEditStartDate) || isDateRangeInvalid;
+                const isDueDateInvalid = (projectEditSubmitAttempted && !projectEditDueDate) || isDateRangeInvalid;
+
+                return (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-550 dark:text-slate-400">
+                        Start Date <span className="text-rose-500 dark:text-rose-400">*</span>
+                      </label>
+                      <div 
+                        onClick={() => {
+                          try { projectEditStartDateInputRef.current?.showPicker(); } catch (e) { projectEditStartDateInputRef.current?.click(); }
+                        }} 
+                        className="relative mt-1.5 cursor-pointer"
+                      >
+                        <div className={`w-full rounded-xl glass-input p-2.5 text-sm text-slate-850 dark:text-slate-200 flex items-center justify-between ${isStartDateInvalid ? 'border-rose-500/50 dark:border-rose-500/50 ring-1 ring-rose-500/20' : ''}`}>
+                          <span>{formatDateDisplay(projectEditStartDate)}</span>
+                          <Calendar size={14} className="text-slate-400 dark:text-slate-500" />
+                        </div>
+                        <input
+                          ref={projectEditStartDateInputRef}
+                          type="date"
+                          value={projectEditStartDate}
+                          max={projectEditDueDate || undefined}
+                          onChange={(e) => setProjectEditStartDate(e.target.value)}
+                          className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
+                          style={{ colorScheme: 'dark' }}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-550 dark:text-slate-400">
+                        Due Date <span className="text-rose-500 dark:text-rose-400">*</span>
+                      </label>
+                      <div 
+                        onClick={() => {
+                          try { projectEditDueDateInputRef.current?.showPicker(); } catch (e) { projectEditDueDateInputRef.current?.click(); }
+                        }} 
+                        className="relative mt-1.5 cursor-pointer"
+                      >
+                        <div className={`w-full rounded-xl glass-input p-2.5 text-sm text-slate-850 dark:text-slate-200 flex items-center justify-between ${isDueDateInvalid ? 'border-rose-500/50 dark:border-rose-500/50 ring-1 ring-rose-500/20' : ''}`}>
+                          <span>{formatDateDisplay(projectEditDueDate)}</span>
+                          <Calendar size={14} className="text-slate-400 dark:text-slate-500" />
+                        </div>
+                        <input
+                          ref={projectEditDueDateInputRef}
+                          type="date"
+                          value={projectEditDueDate}
+                          min={projectEditStartDate || undefined}
+                          onChange={(e) => setProjectEditDueDate(e.target.value)}
+                          className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
+                          style={{ colorScheme: 'dark' }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-550 dark:text-slate-400">Priority Level</label>
+                  <select
+                    value={projectEditPriority}
+                    onChange={(e) => setProjectEditPriority(e.target.value as any)}
+                    className="mt-1.5 w-full rounded-xl glass-input p-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="critical">Critical</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-550 dark:text-slate-400">Status</label>
+                  <select
+                    value={projectEditStatus}
+                    onChange={(e) => setProjectEditStatus(e.target.value as any)}
+                    className="mt-1.5 w-full rounded-xl glass-input p-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
+                  >
+                    <option value="active">Active</option>
+                    <option value="on hold">On Hold</option>
+                    <option value="completed">Completed</option>
+                    <option value="archived">Archived</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-violet-100 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setIsEditProjectModalOpen(false)}
+                  className="rounded-xl px-4 py-2.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="rounded-xl btn-brand px-5 py-2.5 text-xs font-bold shadow-lg shadow-brand-primary/20"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

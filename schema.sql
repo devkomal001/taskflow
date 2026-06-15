@@ -44,11 +44,12 @@ CREATE TABLE IF NOT EXISTS projects (
   workspace_id UUID REFERENCES workspaces(id) ON DELETE CASCADE NOT NULL,
   name TEXT NOT NULL,
   description TEXT,
-  start_date DATE,
-  due_date DATE,
+  start_date DATE NOT NULL,
+  due_date DATE NOT NULL,
   priority TEXT DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high', 'critical')) NOT NULL,
   status TEXT DEFAULT 'active' CHECK (status IN ('active', 'on hold', 'completed', 'archived')) NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+  CONSTRAINT check_dates CHECK (due_date >= start_date)
 );
 
 -- Project Members Table
@@ -437,8 +438,17 @@ CREATE POLICY "Enable insert for all on audit_logs" ON audit_logs
 -- ==========================================
 -- 5. REALTIME SUBSCRIPTIONS
 -- ==========================================
--- Enable real-time for the notifications table so users receive pop-ups instantly
+-- Enable real-time for core tables so users receive instant updates
 ALTER PUBLICATION supabase_realtime ADD TABLE notifications;
+ALTER PUBLICATION supabase_realtime ADD TABLE projects;
+ALTER PUBLICATION supabase_realtime ADD TABLE tasks;
+ALTER PUBLICATION supabase_realtime ADD TABLE comments;
+ALTER PUBLICATION supabase_realtime ADD TABLE teams;
+ALTER PUBLICATION supabase_realtime ADD TABLE team_members;
+ALTER PUBLICATION supabase_realtime ADD TABLE workspace_members;
+ALTER PUBLICATION supabase_realtime ADD TABLE activity_logs;
+ALTER PUBLICATION supabase_realtime ADD TABLE project_messages;
+ALTER PUBLICATION supabase_realtime ADD TABLE workspace_messages;
 
 
 -- ==========================================
