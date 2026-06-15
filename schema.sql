@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS tasks (
   assignee_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
   priority TEXT DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high', 'critical')) NOT NULL,
   status TEXT DEFAULT 'todo' CHECK (status IN ('backlog', 'todo', 'in_progress', 'review', 'completed')) NOT NULL,
-  due_date TIMESTAMP WITH TIME ZONE,
+  due_date TIMESTAMP WITH TIME ZONE NOT NULL,
   labels TEXT[] DEFAULT '{}'::TEXT[] NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
@@ -201,6 +201,34 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE OR REPLACE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- Trigger function to check task due date falls within project start and due date
+CREATE OR REPLACE FUNCTION public.check_task_due_date()
+RETURNS TRIGGER AS $$
+DECLARE
+  project_rec RECORD;
+BEGIN
+  -- Fetch the project
+  SELECT start_date, due_date INTO project_rec
+  FROM public.projects
+  WHERE id = NEW.project_id;
+
+  IF FOUND THEN
+    IF NEW.due_date IS NOT NULL THEN
+      IF NEW.due_date::date < project_rec.start_date OR NEW.due_date::date > project_rec.due_date THEN
+        RAISE EXCEPTION 'Task due date must be between the project start date and project due date.';
+      END IF;
+    END IF;
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger definition
+CREATE OR REPLACE TRIGGER enforce_task_due_date_range
+  BEFORE INSERT OR UPDATE ON public.tasks
+  FOR EACH ROW EXECUTE FUNCTION public.check_task_due_date();
 
 
 -- ==========================================
@@ -641,6 +669,14 @@ BEGIN
   -- Validate matching email address
   IF LOWER(profile_rec.email) != LOWER(invitation_rec.email) THEN
     RETURN jsonb_build_object('error', 'This invitation was sent to ' || invitation_rec.email || ', but you are logged in as ' || profile_rec.email);
+  END IF;
+
+  -- Validate caller is not already active member of workspace
+  IF EXISTS (
+    SELECT 1 FROM public.workspace_members 
+    WHERE workspace_id = invitation_rec.workspace_id AND user_id = profile_rec.id AND status = 'active'
+  ) THEN
+    RETURN jsonb_build_object('error', 'You are already a member of this workspace');
   END IF;
 
   -- Add to workspace_members (or update status to active)

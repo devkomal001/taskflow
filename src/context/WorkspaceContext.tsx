@@ -180,6 +180,7 @@ interface WorkspaceContextType {
   projects: Project[];
   members: WorkspaceMember[];
   invitations: WorkspaceInvitation[];
+  receivedInvitations: WorkspaceInvitation[];
   teams: Team[];
   teamMembers: TeamMember[];
   notifications: Notification[];
@@ -301,6 +302,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [projects, setProjects] = useState<Project[]>([]);
   const [members, setMembers] = useState<WorkspaceMember[]>([]);
   const [invitations, setInvitations] = useState<WorkspaceInvitation[]>([]);
+  const [receivedInvitations, setReceivedInvitations] = useState<WorkspaceInvitation[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -319,6 +321,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setTeamMembers([]);
       setNotifications([]);
       setActivities([]);
+      setReceivedInvitations([]);
       setLoading(false);
       return;
     }
@@ -433,6 +436,75 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     };
   }, [user, activeWorkspace]);
 
+  // Load received invitations for the logged-in user
+  const loadReceivedInvitations = async () => {
+    if (!user) {
+      setReceivedInvitations([]);
+      return;
+    }
+    try {
+      const userEmail = user.email.toLowerCase();
+      const { data: inviteData, error: inviteError } = await supabase
+        .from('workspace_invitations')
+        .select('*')
+        .eq('email', userEmail)
+        .eq('status', 'Pending');
+
+      if (inviteError) throw inviteError;
+
+      if (!inviteData) {
+        setReceivedInvitations([]);
+        return;
+      }
+
+      const enrichedInvites = await Promise.all(
+        inviteData.map(async (inv: any) => {
+          let workspaceName = 'Unknown Workspace';
+          if (isUsingMock) {
+            const dbState = JSON.parse(localStorage.getItem('taskflow_mock_db') || '{}');
+            const ws = (dbState.workspaces || []).find((w: any) => w.id === inv.workspace_id);
+            if (ws) workspaceName = ws.name;
+          } else {
+            const { data: wsData } = await supabase
+              .from('workspaces')
+              .select('name')
+              .eq('id', inv.workspace_id)
+              .maybeSingle();
+            if (wsData) workspaceName = wsData.name;
+          }
+
+          let inviterName = 'Workspace Owner';
+          if (isUsingMock) {
+            const dbState = JSON.parse(localStorage.getItem('taskflow_mock_db') || '{}');
+            const p = (dbState.profiles || []).find((prof: any) => prof.id === inv.invited_by);
+            if (p) inviterName = p.full_name || p.email;
+          } else {
+            const { data: pData } = await supabase
+              .from('profiles')
+              .select('full_name')
+              .eq('id', inv.invited_by)
+              .maybeSingle();
+            if (pData) inviterName = pData.full_name || 'Workspace Owner';
+          }
+
+          return {
+            ...inv,
+            workspace_name: workspaceName,
+            inviter_name: inviterName,
+            profile: {
+              full_name: inviterName,
+              avatar_url: `https://api.dicebear.com/7.x/initials/svg?seed=${inviterName}`
+            }
+          };
+        })
+      );
+
+      setReceivedInvitations(enrichedInvites);
+    } catch (err) {
+      console.error('Error loading received invitations:', err);
+    }
+  };
+
   // Load Workspaces data
   const loadWorkspacesData = async () => {
     setLoading(true);
@@ -478,6 +550,8 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         
         setNotifications(notifData || []);
       }
+
+      await loadReceivedInvitations();
 
     } catch (err) {
       console.error('Error loading workspaces:', err);
@@ -650,6 +724,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const refreshWorkspaceData = async () => {
+    await loadReceivedInvitations();
     if (activeWorkspace) {
       await loadWorkspaceSubData(activeWorkspace.id);
     }
@@ -1193,6 +1268,9 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         dbState.workspace_members = dbState.workspace_members || [];
         const existingMember = dbState.workspace_members.find((m: any) => m.workspace_id === invite.workspace_id && m.user_id === user.id);
         if (existingMember) {
+          if (existingMember.status === 'active') {
+            throw new Error('You are already a member of this workspace');
+          }
           const mIdx = dbState.workspace_members.findIndex((m: any) => m.id === existingMember.id);
           dbState.workspace_members[mIdx].status = 'active';
           dbState.workspace_members[mIdx].role = invite.role;
@@ -1258,12 +1336,14 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         
         dbState.workspace_invitations[inviteIndex].status = 'Declined';
         localStorage.setItem('taskflow_mock_db', JSON.stringify(dbState));
+        await refreshWorkspaceData();
         return { error: null };
       }
 
       const { data, error } = await supabase.rpc('decline_workspace_invitation', { invite_token: token });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
+      await refreshWorkspaceData();
       return { error: null };
     } catch (error: any) {
       console.error('Error declining invitation:', error);
@@ -2287,6 +2367,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       projects,
       members,
       invitations,
+      receivedInvitations,
       teams,
       teamMembers,
       notifications,

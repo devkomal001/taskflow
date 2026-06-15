@@ -39,7 +39,19 @@ import {
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
-  const { activeWorkspace, projects, members, activities, seedDatabase, teams, invitations, acceptInviteByToken, declineInviteByToken } = useWorkspace();
+  const { 
+    activeWorkspace, 
+    projects, 
+    members, 
+    activities, 
+    seedDatabase, 
+    teams, 
+    receivedInvitations, 
+    acceptInviteByToken, 
+    declineInviteByToken,
+    triggerNotification,
+    refreshWorkspaceData
+  } = useWorkspace();
   const { user: currentUser } = useAuth();
   const { theme } = useTheme();
   const [allTasks, setAllTasks] = useState<any[]>([]);
@@ -51,32 +63,44 @@ const Dashboard: React.FC = () => {
 
   // Check for pending invitations matching current user's email
   useEffect(() => {
-    if (currentUser && invitations.length > 0) {
-      const pending = invitations.find(
+    if (currentUser && receivedInvitations && receivedInvitations.length > 0) {
+      const pending = receivedInvitations.find(
         (inv) => inv.email.toLowerCase() === currentUser.email.toLowerCase() && inv.status === 'Pending'
       );
       if (pending) {
         setPendingInvite(pending);
+      } else {
+        setPendingInvite(null);
       }
+    } else {
+      setPendingInvite(null);
     }
-  }, [currentUser, invitations]);
+  }, [currentUser, receivedInvitations]);
 
   const handleAcceptPendingInvite = async () => {
-    if (!pendingInvite) return;
+    if (!pendingInvite || !currentUser) return;
     setInviteActionLoading(true);
     const { error } = await acceptInviteByToken(pendingInvite.token);
     if (!error) {
+      await triggerNotification(currentUser.id, "Workspace Joined", "Workspace joined successfully.");
       setPendingInvite(null);
+      await refreshWorkspaceData();
+    } else {
+      await triggerNotification(currentUser.id, "Error Joining Workspace", error.message || error);
     }
     setInviteActionLoading(false);
   };
 
   const handleDeclinePendingInvite = async () => {
-    if (!pendingInvite) return;
+    if (!pendingInvite || !currentUser) return;
     setInviteActionLoading(true);
     const { error } = await declineInviteByToken(pendingInvite.token);
     if (!error) {
+      await triggerNotification(currentUser.id, "Invitation Declined", "Workspace invitation declined successfully.");
       setPendingInvite(null);
+      await refreshWorkspaceData();
+    } else {
+      await triggerNotification(currentUser.id, "Error", error.message || error);
     }
     setInviteActionLoading(false);
   };
@@ -226,8 +250,14 @@ const Dashboard: React.FC = () => {
                 <div className="w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 p-4 space-y-2.5 text-left">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Workspace</span>
-                    <span className="text-sm font-bold text-slate-800 dark:text-white">{pendingInvite.profile?.inviter_name ? 'Invited Workspace' : 'Workspace'}</span>
+                    <span className="text-sm font-bold text-slate-800 dark:text-white">{pendingInvite.workspace_name || 'Workspace'}</span>
                   </div>
+                  {pendingInvite.inviter_name && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Invited By</span>
+                      <span className="text-sm font-bold text-slate-800 dark:text-white">{pendingInvite.inviter_name}</span>
+                    </div>
+                  )}
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Email</span>
                     <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">{pendingInvite.email}</span>
@@ -690,8 +720,14 @@ const Dashboard: React.FC = () => {
               <div className="w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 p-4 space-y-2.5 text-left">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Workspace</span>
-                  <span className="text-sm font-bold text-slate-800 dark:text-white">{pendingInvite.profile?.inviter_name ? 'Invited Workspace' : 'Workspace'}</span>
+                  <span className="text-sm font-bold text-slate-800 dark:text-white">{pendingInvite.workspace_name || 'Workspace'}</span>
                 </div>
+                {pendingInvite.inviter_name && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Invited By</span>
+                    <span className="text-sm font-bold text-slate-800 dark:text-white">{pendingInvite.inviter_name}</span>
+                  </div>
+                )}
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Email</span>
                   <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">{pendingInvite.email}</span>

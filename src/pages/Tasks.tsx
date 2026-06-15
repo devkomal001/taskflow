@@ -23,7 +23,8 @@ import {
   Download,
   Image as ImageIcon,
   FolderOpen,
-  Calendar
+  Calendar,
+  AlertCircle
 } from 'lucide-react';
 
 const formatDateDisplay = (dateStr: string | null | undefined, fallback: string = 'DD/MM/YYYY') => {
@@ -118,6 +119,12 @@ const Tasks: React.FC = () => {
   const [taskDueDate, setTaskDueDate] = useState('');
   const [taskLabels, setTaskLabels] = useState('');
   const taskDueDateInputRef = useRef<HTMLInputElement>(null);
+  const editDueDateInputRef = useRef<HTMLInputElement>(null);
+
+  const [taskCreateError, setTaskCreateError] = useState('');
+  const [taskCreateSubmitAttempted, setTaskCreateSubmitAttempted] = useState(false);
+  const [taskEditError, setTaskEditError] = useState('');
+  const [taskEditSubmitAttempted, setTaskEditSubmitAttempted] = useState(false);
 
   // Active Task Detail drawer states
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -218,7 +225,28 @@ const Tasks: React.FC = () => {
 
   const handleCreateTask = async (e: React.FormEvent) => {
     e.preventDefault();
+    setTaskCreateSubmitAttempted(true);
+    setTaskCreateError('');
+
     if (!taskTitle.trim() || !taskProjId) return;
+
+    if (!taskDueDate) {
+      setTaskCreateError('Task due date is required.');
+      return;
+    }
+
+    const selectedProject = projects.find(p => p.id === taskProjId);
+    if (selectedProject) {
+      const start = new Date(selectedProject.start_date);
+      start.setHours(0, 0, 0, 0);
+      const due = new Date(selectedProject.due_date);
+      due.setHours(23, 59, 59, 999);
+      const taskDue = new Date(taskDueDate);
+      if (taskDue < start || taskDue > due) {
+        setTaskCreateError('Task due date must be between the project start date and project due date.');
+        return;
+      }
+    }
 
     const labelsArray = taskLabels.split(',').map(l => l.trim()).filter(l => l.length > 0);
 
@@ -228,13 +256,13 @@ const Tasks: React.FC = () => {
       assignee_id: taskAssignee || null,
       priority: taskPriority,
       status: newTaskCol,
-      due_date: taskDueDate || null,
+      due_date: taskDueDate,
       labels: labelsArray,
       team_id: taskTeamId || null
     } as any);
 
     if (error) {
-      alert(error.message || 'Failed to create task.');
+      setTaskCreateError(error.message || 'Failed to create task.');
       return;
     }
 
@@ -248,6 +276,7 @@ const Tasks: React.FC = () => {
       setTaskPriority('medium');
       setTaskDueDate('');
       setTaskLabels('');
+      setTaskCreateSubmitAttempted(false);
       loadAllTasks();
     }
   };
@@ -256,26 +285,49 @@ const Tasks: React.FC = () => {
     e.preventDefault();
     if (!selectedTask) return;
 
+    setTaskEditSubmitAttempted(true);
+    setTaskEditError('');
+
+    if (!editDueDate) {
+      setTaskEditError('Task due date is required.');
+      return;
+    }
+
+    const selectedProjectForEdit = projects.find(p => p.id === selectedTask.project_id);
+    if (selectedProjectForEdit) {
+      const start = new Date(selectedProjectForEdit.start_date);
+      start.setHours(0, 0, 0, 0);
+      const due = new Date(selectedProjectForEdit.due_date);
+      due.setHours(23, 59, 59, 999);
+      const taskDue = new Date(editDueDate);
+      if (taskDue < start || taskDue > due) {
+        setTaskEditError('Task due date must be between the project start date and project due date.');
+        return;
+      }
+    }
+
     const { task, error } = await updateTask(selectedTask.id, {
       title: editTitle,
       description: editDesc,
       assignee_id: editAssignee || null,
       priority: editPriority,
-      due_date: editDueDate || null
+      due_date: editDueDate
     });
 
     if (error) {
-      alert(error.message || 'Failed to update task.');
+      setTaskEditError(error.message || 'Failed to update task.');
       return;
     }
 
     if (task) {
       setSelectedTask(task);
       setIsEditingTask(false);
+      setTaskEditSubmitAttempted(false);
       loadAllTasks();
       refreshWorkspaceData();
     }
   };
+
 
   const handleDeleteTask = async (taskId: string) => {
     if (confirm('Are you sure you want to delete this task?')) {
@@ -325,6 +377,8 @@ const Tasks: React.FC = () => {
   const handleOpenTaskDetails = async (task: Task) => {
     setSelectedTask(task);
     setIsEditingTask(false);
+    setTaskEditError('');
+    setTaskEditSubmitAttempted(false);
     setEditTitle(task.title);
     setEditDesc(task.description);
     setEditAssignee(task.assignee_id || '');
@@ -485,6 +539,8 @@ const Tasks: React.FC = () => {
               if (projects.length > 0) {
                 setTaskProjId(projects[0].id);
                 setNewTaskCol('todo');
+                setTaskCreateError('');
+                setTaskCreateSubmitAttempted(false);
                 setIsNewTaskOpen(true);
               } else {
                 alert("Please create a project first before creating tasks.");
@@ -590,6 +646,8 @@ const Tasks: React.FC = () => {
                       if (projects.length > 0) {
                         setTaskProjId(projects[0].id);
                         setNewTaskCol(colStatus as any);
+                        setTaskCreateError('');
+                        setTaskCreateSubmitAttempted(false);
                         setIsNewTaskOpen(true);
                       }
                     }}
@@ -854,6 +912,12 @@ const Tasks: React.FC = () => {
             </div>
             
             <form onSubmit={handleCreateTask} className="mt-4 space-y-4">
+              {taskCreateError && (
+                <div className="flex items-start gap-2.5 rounded-2xl border border-rose-500/20 bg-rose-500/5 p-4 text-xs font-semibold text-rose-600 dark:text-rose-400">
+                  <AlertCircle size={16} className="stroke-[2.5] shrink-0 mt-0.5 text-rose-500" />
+                  <span>{taskCreateError}</span>
+                </div>
+              )}
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Select Project *</label>
                 <select
@@ -934,27 +998,39 @@ const Tasks: React.FC = () => {
                     <option value="critical">Critical</option>
                   </select>
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-550 dark:text-slate-400">Due Date</label>
-                  <div 
-                    onClick={() => {
-                      try { taskDueDateInputRef.current?.showPicker(); } catch (e) { taskDueDateInputRef.current?.click(); }
-                    }} 
-                    className="relative mt-1.5 cursor-pointer"
-                  >
-                    <div className="w-full rounded-xl glass-input p-2.5 text-sm text-slate-800 dark:text-slate-200 flex items-center justify-between">
-                      <span>{formatDateDisplay(taskDueDate)}</span>
-                      <Calendar size={14} className="text-slate-400 dark:text-slate-500" />
-                    </div>
-                    <input
-                      ref={taskDueDateInputRef}
-                      type="date"
-                      value={taskDueDate}
-                      onChange={(e) => setTaskDueDate(e.target.value)}
-                      className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
-                      style={{ colorScheme: 'dark' }}
-                    />
-                  </div>
+                 <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-555 dark:text-slate-400">
+                    Due Date <span className="text-rose-500 dark:text-rose-400">*</span>
+                  </label>
+                  {(() => {
+                    const selectedProject = projects.find(p => p.id === taskProjId);
+                    const isTaskCreateDateRangeInvalid = taskDueDate && selectedProject && (new Date(taskDueDate) < new Date(selectedProject.start_date) || new Date(taskDueDate) > new Date(selectedProject.due_date));
+                    const isTaskCreateDueDateInvalid = (taskCreateSubmitAttempted && !taskDueDate) || isTaskCreateDateRangeInvalid;
+
+                    return (
+                      <div 
+                        onClick={() => {
+                          try { taskDueDateInputRef.current?.showPicker(); } catch (e) { taskDueDateInputRef.current?.click(); }
+                        }} 
+                        className="relative mt-1.5 cursor-pointer"
+                      >
+                        <div className={`w-full rounded-xl glass-input p-2.5 text-sm text-slate-800 dark:text-slate-200 flex items-center justify-between ${isTaskCreateDueDateInvalid ? 'border-rose-500/50 dark:border-rose-500/50 ring-1 ring-rose-500/20' : ''}`}>
+                          <span>{formatDateDisplay(taskDueDate)}</span>
+                          <Calendar size={14} className="text-slate-400 dark:text-slate-500" />
+                        </div>
+                        <input
+                          ref={taskDueDateInputRef}
+                          type="date"
+                          value={taskDueDate}
+                          min={selectedProject?.start_date || undefined}
+                          max={selectedProject?.due_date || undefined}
+                          onChange={(e) => setTaskDueDate(e.target.value)}
+                          className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
+                          style={{ colorScheme: 'dark' }}
+                        />
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
 
@@ -1028,7 +1104,11 @@ const Tasks: React.FC = () => {
                       </p>
                     </div>
                     <button
-                      onClick={() => setIsEditingTask(true)}
+                      onClick={() => {
+                        setTaskEditError('');
+                        setTaskEditSubmitAttempted(false);
+                        setIsEditingTask(true);
+                      }}
                       className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-850 dark:hover:text-white font-bold rounded-lg bg-violet-50/50 dark:bg-violet-955/50 hover:bg-violet-100/80 dark:hover:bg-violet-900/50 px-3 py-1.5 border border-violet-100 dark:border-violet-900/30 shrink-0 shadow-xs transition-all"
                     >
                       <Edit size={12} />
@@ -1069,6 +1149,12 @@ const Tasks: React.FC = () => {
                 </div>
               ) : (
                 <form onSubmit={handleUpdateTaskDetails} className="space-y-4 rounded-xl p-4 animate-in fade-in duration-200 glass-card bg-white/40 dark:bg-slate-900/10 border border-violet-100/50 dark:border-violet-900/20">
+                  {taskEditError && (
+                    <div className="flex items-start gap-2.5 rounded-xl border border-rose-500/20 bg-rose-500/5 p-2.5 text-xs font-semibold text-rose-600 dark:text-rose-400">
+                      <AlertCircle size={14} className="stroke-[2.5] shrink-0 mt-0.5 text-rose-500" />
+                      <span>{taskEditError}</span>
+                    </div>
+                  )}
                   <div>
                     <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Task Title *</label>
                     <input
@@ -1096,7 +1182,7 @@ const Tasks: React.FC = () => {
                       <select
                         value={editAssignee}
                         onChange={(e) => setEditAssignee(e.target.value)}
-                        className="mt-1.5 w-full rounded-xl p-2 text-xs focus:outline-none glass-input text-slate-700 dark:text-slate-300"
+                        className="mt-1.5 w-full rounded-xl p-2 text-xs focus:outline-none glass-input text-slate-707 dark:text-slate-300"
                       >
                         <option value="">Unassigned</option>
                         {members.map(m => (
@@ -1117,6 +1203,41 @@ const Tasks: React.FC = () => {
                         <option value="high">High</option>
                         <option value="critical">Critical</option>
                       </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                        Due Date <span className="text-rose-500 dark:text-rose-400">*</span>
+                      </label>
+                      {(() => {
+                        const selectedProjectForEdit = projects.find(p => p.id === selectedTask.project_id);
+                        const isTaskEditDateRangeInvalid = editDueDate && selectedProjectForEdit && (new Date(editDueDate) < new Date(selectedProjectForEdit.start_date) || new Date(editDueDate) > new Date(selectedProjectForEdit.due_date));
+                        const isTaskEditDueDateInvalid = (taskEditSubmitAttempted && !editDueDate) || isTaskEditDateRangeInvalid;
+
+                        return (
+                          <div 
+                            onClick={() => {
+                              try { editDueDateInputRef.current?.showPicker(); } catch (e) { editDueDateInputRef.current?.click(); }
+                            }} 
+                            className="relative mt-1.5 cursor-pointer"
+                          >
+                            <div className={`w-full rounded-xl glass-input p-2.5 text-xs text-slate-805 dark:text-slate-200 flex items-center justify-between ${isTaskEditDueDateInvalid ? 'border-rose-500/50 dark:border-rose-500/50 ring-1 ring-rose-500/20' : ''}`}>
+                              <span>{formatDateDisplay(editDueDate)}</span>
+                              <Calendar size={12} className="text-slate-400 dark:text-slate-500" />
+                            </div>
+                            <input
+                              ref={editDueDateInputRef}
+                              type="date"
+                              value={editDueDate}
+                              min={selectedProjectForEdit?.start_date || undefined}
+                              max={selectedProjectForEdit?.due_date || undefined}
+                              onChange={(e) => setEditDueDate(e.target.value)}
+                              className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
+                              style={{ colorScheme: 'dark' }}
+                            />
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
 

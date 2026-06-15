@@ -321,6 +321,41 @@ export const mockSupabase = {
             }
           }
 
+          // Server-side simulation validations for tasks
+          if (this.table === 'tasks') {
+            for (const row of rows) {
+              if (!row.due_date || String(row.due_date).trim() === '') {
+                return { data: null, error: new Error('Task due date is required.') };
+              }
+              const project = dbState.projects.find((p: any) => p.id === row.project_id);
+              if (project) {
+                const start = new Date(project.start_date);
+                start.setHours(0, 0, 0, 0);
+                const due = new Date(project.due_date);
+                due.setHours(23, 59, 59, 999);
+                const taskDue = new Date(row.due_date);
+                if (taskDue < start || taskDue > due) {
+                  return { data: null, error: new Error('Task due date must be between the project start date and project due date.') };
+                }
+              }
+            }
+          }
+
+          // Server-side simulation validations for workspace_members
+          if (this.table === 'workspace_members') {
+            for (const row of rows) {
+              if (!row.workspace_id || !row.user_id) {
+                return { data: null, error: new Error('Workspace ID and User ID are required.') };
+              }
+              const exists = all.some(
+                (rec: any) => rec.workspace_id === row.workspace_id && rec.user_id === row.user_id
+              );
+              if (exists) {
+                return { data: null, error: new Error('User is already a member of this workspace') };
+              }
+            }
+          }
+
           const inserted = rows.map((row: any) => {
             const item = {
               id: row.id || 'id_' + Math.random().toString(36).substr(2, 9),
@@ -364,10 +399,36 @@ export const mockSupabase = {
             }
           }
 
+          // Server-side simulation validations for tasks
+          if (this.table === 'tasks') {
+            for (const row of rows) {
+              const existingIdx = all.findIndex((rec: any) => rec.id === row.id);
+              const existing = existingIdx !== -1 ? all[existingIdx] : null;
+              const merged = existing ? { ...existing, ...row } : row;
+
+              if (!merged.due_date || String(merged.due_date).trim() === '') {
+                return { data: null, error: new Error('Task due date is required.') };
+              }
+              const project = dbState.projects.find((p: any) => p.id === merged.project_id);
+              if (project) {
+                const start = new Date(project.start_date);
+                start.setHours(0, 0, 0, 0);
+                const due = new Date(project.due_date);
+                due.setHours(23, 59, 59, 999);
+                const taskDue = new Date(merged.due_date);
+                if (taskDue < start || taskDue > due) {
+                  return { data: null, error: new Error('Task due date must be between the project start date and project due date.') };
+                }
+              }
+            }
+          }
+
           const upserted = rows.map((row: any) => {
             let existingIdx = -1;
             if (this.table === 'firewall_rate_limits') {
               existingIdx = all.findIndex((rec: any) => rec.ip_address === row.ip_address && rec.action === row.action);
+            } else if (this.table === 'workspace_members') {
+              existingIdx = all.findIndex((rec: any) => rec.workspace_id === row.workspace_id && rec.user_id === row.user_id);
             } else {
               existingIdx = all.findIndex((rec: any) => rec.id === row.id);
             }
@@ -413,6 +474,30 @@ export const mockSupabase = {
                 }
                 if (due < start) {
                   return { data: null, error: new Error('Due Date cannot be earlier than Start Date.') };
+                }
+              }
+            }
+          }
+
+          // Server-side simulation validations for tasks
+          if (this.table === 'tasks') {
+            const updates = this.operation.args;
+            for (const rec of all) {
+              if (ids.includes(rec.id)) {
+                const merged = { ...rec, ...updates };
+                if (!merged.due_date || String(merged.due_date).trim() === '') {
+                  return { data: null, error: new Error('Task due date is required.') };
+                }
+                const project = dbState.projects.find((p: any) => p.id === merged.project_id);
+                if (project) {
+                  const start = new Date(project.start_date);
+                  start.setHours(0, 0, 0, 0);
+                  const due = new Date(project.due_date);
+                  due.setHours(23, 59, 59, 999);
+                  const taskDue = new Date(merged.due_date);
+                  if (taskDue < start || taskDue > due) {
+                    return { data: null, error: new Error('Task due date must be between the project start date and project due date.') };
+                  }
                 }
               }
             }
