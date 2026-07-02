@@ -511,24 +511,24 @@ const Tasks: React.FC = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto h-full flex flex-col page-enter">
       {/* Top Section */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-violet-100 dark:border-violet-900/30 pb-5">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-[#286CFC]/12 dark:border-[#286CFC]/10 pb-5">
         <div>
-          <h2 className="text-2xl font-extrabold tracking-tight text-slate-955 dark:text-white md:text-3xl animate-fade-in-up delay-50">Workspace Tasks Board</h2>
+          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white md:text-3xl animate-fade-in-up delay-50">Workspace Tasks Board</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">View and organize all tasks across workspace projects and teams.</p>
         </div>
         <div className="flex items-center gap-3 animate-fade-in-up delay-100">
           {/* Toggle board vs list view */}
-          <div className="flex items-center rounded-xl p-1 shrink-0 glass-panel bg-white/40 dark:bg-slate-900/30">
+          <div className="flex items-center rounded-xl p-1 shrink-0 glass-panel">
             <button
               onClick={() => setViewType('board')}
-              className={`p-1.5 rounded-lg transition-colors ${viewType === 'board' ? 'bg-violet-500/10 text-violet-600 dark:text-violet-400 font-bold' : 'text-slate-450 hover:text-slate-700'}`}
+              className={`p-2 rounded-lg transition-all ${viewType === 'board' ? 'bg-[#286CFC]/15 text-[#286CFC] font-bold shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-[#286CFC]'}`}
               title="Board View"
             >
               <KanbanSquare size={16} />
             </button>
             <button
               onClick={() => setViewType('list')}
-              className={`p-1.5 rounded-lg transition-colors ${viewType === 'list' ? 'bg-violet-500/10 text-violet-600 dark:text-violet-400 font-bold' : 'text-slate-450 hover:text-slate-700'}`}
+              className={`p-2 rounded-lg transition-all ${viewType === 'list' ? 'bg-[#286CFC]/15 text-[#286CFC] font-bold shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-[#286CFC]'}`}
               title="List Table View"
             >
               <List size={16} />
@@ -628,16 +628,16 @@ const Tasks: React.FC = () => {
                 key={colStatus}
                 onDragOver={(e) => handleDragOver(e, colStatus)}
                 onDrop={(e) => handleDrop(e, colStatus)}
-                className={`flex w-72 flex-col rounded-2xl border p-3 transition-colors shadow-xs ${
+                className={`flex w-72 flex-col rounded-2xl border p-3 transition-all duration-200 ${
                   draggedOverCol === colStatus 
-                    ? 'border-violet-500 bg-violet-500/10 dark:bg-violet-500/20 shadow-lg shadow-violet-500/5' 
-                    : 'border-violet-100 dark:border-violet-900/30'
-                } glass-panel bg-white/40 dark:bg-slate-900/10`}
+                    ? 'border-[#286CFC]/60 bg-[#286CFC]/8 dark:bg-[#286CFC]/10 shadow-lg shadow-[#286CFC]/10' 
+                    : 'border-[#286CFC]/12 dark:border-[#286CFC]/10'
+                } glass-panel`}
               >
                 <div className="mb-4 flex items-center justify-between px-1.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-slate-700 dark:text-slate-200 tracking-wide">{col.name}</span>
-                    <span className="rounded-full bg-violet-100 dark:bg-violet-900/50 px-2 py-0.5 text-[10px] font-bold text-violet-600 dark:text-violet-400">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-100 tracking-wide">{col.name}</span>
+                    <span className="rounded-full bg-[#286CFC]/10 dark:bg-[#286CFC]/15 px-2 py-0.5 text-[10px] font-bold text-[#286CFC]">
                       {col.tasks.length}
                     </span>
                   </div>
@@ -651,7 +651,7 @@ const Tasks: React.FC = () => {
                         setIsNewTaskOpen(true);
                       }
                     }}
-                    className="rounded-lg p-1 text-slate-400 hover:bg-violet-100 dark:hover:bg-violet-900/55 hover:text-slate-700 dark:hover:text-white transition-all"
+                    className="rounded-lg p-1.5 text-slate-400 hover:bg-[#286CFC]/10 hover:text-[#286CFC] transition-all"
                   >
                     <Plus size={14} />
                   </button>
@@ -673,28 +673,28 @@ const Tasks: React.FC = () => {
                         draggable
                         onDragStart={(e) => handleDragStart(e, task.id)}
                         onClick={() => handleOpenTaskDetails(task)}
-                        className="group hover-lift rounded-xl p-4 glass-card hover:border-violet-500/40 dark:hover:border-violet-500/35 transition-all duration-200 cursor-grab active:cursor-grabbing hover:shadow-lg hover:shadow-violet-500/5"
+                        className="group hover-lift rounded-xl p-4 glass-card hover:border-[#286CFC]/35 dark:hover:border-[#286CFC]/30 transition-all duration-200 cursor-grab active:cursor-grabbing hover:shadow-lg hover:shadow-[#286CFC]/8"
                       >
                         <div className="flex items-center justify-between gap-2 mb-2">
                           <span className={`rounded px-1.5 py-0.5 text-[8px] font-extrabold uppercase border ${getPriorityBadgeColor(task.priority)}`}>
                             {task.priority}
                           </span>
                           {isOverdue && (
-                            <span className="flex items-center gap-0.5 text-[8px] font-bold text-rose-500 dark:text-rose-400">
+                            <span className="flex items-center gap-0.5 text-[8px] font-bold text-rose-500">
                               <AlertTriangle size={8} className="animate-pulse" />
                               <span>Overdue</span>
                             </span>
                           )}
                         </div>
 
-                        <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors line-clamp-2">
+                        <h4 className="text-xs font-bold text-slate-800 dark:text-slate-100 group-hover:text-[#286CFC] transition-colors line-clamp-2">
                           {task.title}
                         </h4>
 
                         {/* Project and Team details */}
                         <div className="mt-2.5 flex flex-wrap items-center gap-1.5 text-[9px] font-bold">
                           {proj && (
-                            <span className="rounded bg-violet-50/50 dark:bg-violet-950/45 border border-violet-100/30 dark:border-violet-900/20 px-1.5 py-0.5 text-slate-550 dark:text-slate-400 uppercase max-w-[120px] truncate" title={proj.name}>
+                            <span className="rounded bg-[#286CFC]/6 dark:bg-[#286CFC]/10 border border-[#286CFC]/12 dark:border-[#286CFC]/15 px-1.5 py-0.5 text-slate-500 dark:text-slate-300 uppercase max-w-[120px] truncate" title={proj.name}>
                               {proj.name}
                             </span>
                           )}
@@ -710,7 +710,7 @@ const Tasks: React.FC = () => {
                         </div>
 
                         {/* Checklist/Comment counters and assignee */}
-                        <div className="mt-4 flex items-center justify-between border-t border-violet-100/50 dark:border-violet-900/20 pt-3 text-[10px] text-slate-500 dark:text-slate-450 font-semibold">
+                        <div className="mt-4 flex items-center justify-between border-t border-[#286CFC]/8 dark:border-[#286CFC]/6 pt-3 text-[10px] text-slate-500 dark:text-slate-400 font-semibold">
                           <div className="flex items-center gap-2">
                             {task.checklistCount && task.checklistCount.total > 0 && (
                               <div className="flex items-center gap-0.5" title="Checklist progress">
@@ -737,10 +737,10 @@ const Tasks: React.FC = () => {
                               src={assignee.profile.avatar_url}
                               alt=""
                               title={assignee.profile.full_name}
-                              className="h-5.5 w-5.5 rounded-full object-cover border border-violet-200 dark:border-violet-800"
+                              className="h-5 w-5 rounded-full object-cover border-2 border-[#286CFC]/25"
                             />
                           ) : (
-                            <div className="rounded-full bg-violet-50 dark:bg-violet-950/40 p-0.5 text-slate-400 border border-violet-100/50 dark:border-violet-900/30" title="Unassigned">
+                            <div className="rounded-full bg-[#286CFC]/8 dark:bg-[#286CFC]/10 p-0.5 text-[#286CFC]/50 border border-[#286CFC]/15" title="Unassigned">
                               <User size={12} />
                             </div>
                           )}
@@ -749,7 +749,7 @@ const Tasks: React.FC = () => {
                     );
                   })}
                   {col.tasks.length === 0 && (
-                    <div className="py-8 text-center text-slate-500 text-[10px]">No tasks in {col.name.toLowerCase()}</div>
+                    <div className="py-8 text-center text-slate-400 dark:text-slate-500 text-[10px]">No tasks in {col.name.toLowerCase()}</div>
                   )}
                 </div>
               </div>
@@ -762,7 +762,7 @@ const Tasks: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-violet-100 dark:border-violet-900/30 bg-violet-50/20 dark:bg-violet-950/20 text-slate-700 dark:text-slate-350 uppercase tracking-wider font-bold">
+                <tr className="border-b border-[#286CFC]/12 dark:border-[#286CFC]/10 bg-[#286CFC]/4 dark:bg-[#07153D]/60 text-slate-600 dark:text-slate-300 uppercase tracking-wider font-bold">
                   <th className="px-5 py-3.5">Task Title</th>
                   <th className="px-5 py-3.5">Project</th>
                   <th className="px-5 py-3.5">Team</th>
@@ -772,7 +772,7 @@ const Tasks: React.FC = () => {
                   <th className="px-5 py-3.5">Assignee</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-violet-100/30 dark:divide-violet-900/10">
+              <tbody className="divide-y divide-[#286CFC]/8 dark:divide-[#286CFC]/6">
                 {filteredTasks.map(task => {
                   const assignee = members.find(m => m.user_id === task.assignee_id);
                   const proj = projects.find(p => p.id === task.project_id);
@@ -784,10 +784,10 @@ const Tasks: React.FC = () => {
                     <tr 
                       key={task.id}
                       onClick={() => handleOpenTaskDetails(task)}
-                      className="hover:bg-violet-50/20 dark:hover:bg-violet-900/10 cursor-pointer transition-colors"
+                      className="hover:bg-[#286CFC]/4 dark:hover:bg-[#286CFC]/5 cursor-pointer transition-colors"
                     >
                       <td className="px-5 py-3.5">
-                        <span className="font-bold text-slate-800 dark:text-slate-200 text-xs hover:text-violet-600 dark:hover:text-violet-400 transition-colors">{task.title}</span>
+                        <span className="font-bold text-slate-800 dark:text-slate-100 text-xs hover:text-[#286CFC] transition-colors">{task.title}</span>
                       </td>
                       <td className="px-5 py-3.5">
                         <span className="text-slate-500 dark:text-slate-400 font-semibold">{proj ? proj.name : 'N/A'}</span>
@@ -795,8 +795,8 @@ const Tasks: React.FC = () => {
                       <td className="px-5 py-3.5">
                         {team ? (
                           <span 
-                            className="rounded px-2 py-0.5 text-[10px] font-bold uppercase border border-violet-100/10"
-                            style={{ backgroundColor: `${team.color}15`, color: team.color }}
+                            className="rounded px-2 py-0.5 text-[10px] font-bold uppercase border"
+                            style={{ backgroundColor: `${team.color}15`, color: team.color, borderColor: `${team.color}30` }}
                           >
                             {team.name}
                           </span>
@@ -816,7 +816,7 @@ const Tasks: React.FC = () => {
                           {task.priority}
                         </button>
                         {activePrioritySelector === task.id && (
-                          <div className="absolute left-1/2 -translate-x-1/2 mt-1.5 z-30 w-32 rounded-xl p-1.5 shadow-2xl animate-dropdown glass-panel bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-violet-100 dark:border-violet-900/30">
+                          <div className="absolute left-1/2 -translate-x-1/2 mt-1.5 z-30 w-32 rounded-xl p-1.5 shadow-2xl animate-dropdown glass-panel bg-white/95 dark:bg-[#07153D]/95 backdrop-blur-md border border-[#286CFC]/15 dark:border-[#286CFC]/20">
                             {['low', 'medium', 'high', 'critical'].map(prio => (
                               <button
                                 key={prio}
@@ -846,7 +846,7 @@ const Tasks: React.FC = () => {
                           {task.status.replace('_', ' ')}
                         </button>
                         {activeStatusSelector === task.id && (
-                          <div className="absolute left-1/2 -translate-x-1/2 mt-1.5 z-30 w-32 rounded-xl p-1.5 shadow-2xl animate-dropdown glass-panel bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-violet-100 dark:border-violet-900/30">
+                          <div className="absolute left-1/2 -translate-x-1/2 mt-1.5 z-30 w-32 rounded-xl p-1.5 shadow-2xl animate-dropdown glass-panel bg-white/95 dark:bg-[#07153D]/95 backdrop-blur-md border border-[#286CFC]/15 dark:border-[#286CFC]/20">
                             {['backlog', 'todo', 'in_progress', 'review', 'completed'].map(st => (
                               <button
                                 key={st}
@@ -865,7 +865,7 @@ const Tasks: React.FC = () => {
                         )}
                       </td>
                       <td className="px-5 py-3.5">
-                        <span className={`font-semibold ${isOverdue ? 'text-rose-505 dark:text-rose-450' : 'text-slate-500 dark:text-slate-400'}`}>
+                        <span className={`font-semibold ${isOverdue ? 'text-rose-500 font-bold' : 'text-slate-500 dark:text-slate-400'}`}>
                           {task.due_date ? formatDateDisplay(task.due_date, 'No due date') : 'No due date'}
                         </span>
                       </td>
@@ -873,7 +873,7 @@ const Tasks: React.FC = () => {
                         <div className="flex items-center gap-2">
                           {assignee ? (
                             <>
-                              <img src={assignee.profile.avatar_url} alt="" className="h-6 w-6 rounded-full object-cover border border-violet-200 dark:border-violet-800" />
+                              <img src={assignee.profile.avatar_url} alt="" className="h-6 w-6 rounded-full object-cover border-2 border-[#286CFC]/20" />
                               <span className="font-semibold text-slate-700 dark:text-slate-300">{assignee.profile.full_name}</span>
                             </>
                           ) : (
@@ -886,8 +886,13 @@ const Tasks: React.FC = () => {
                 })}
                 {filteredTasks.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="px-5 py-8 text-center text-slate-500">
-                      No tasks match current filters.
+                    <td colSpan={7} className="px-5 py-12 text-center">
+                      <div className="flex flex-col items-center gap-2">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#286CFC]/8 text-[#286CFC]/50">
+                          <FolderOpen size={20} />
+                        </div>
+                        <p className="text-sm text-slate-500">No tasks match current filters.</p>
+                      </div>
                     </td>
                   </tr>
                 )}

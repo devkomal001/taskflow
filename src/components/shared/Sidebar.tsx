@@ -124,11 +124,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
           } ${isCollapsed ? 'w-[72px]' : 'w-[240px]'}`}
         style={{
           background: theme === 'dark'
-            ? 'linear-gradient(180deg, #1e0f3d 0%, #160c2e 50%, #0f0720 100%)'
-            : 'linear-gradient(180deg, #ffffff 0%, #f9f8ff 100%)',
+            ? 'linear-gradient(180deg, #07153D 0%, #030B24 100%)'
+            : 'linear-gradient(180deg, #ffffff 0%, #f8f9fc 100%)',
           borderRight: theme === 'dark'
-            ? '1px solid rgba(139, 92, 246, 0.15)'
-            : '1px solid rgba(139, 92, 246, 0.08)',
+            ? '1px solid rgba(40, 108, 252, 0.15)'
+            : '1px solid rgba(40, 108, 252, 0.08)',
         }}
       >
         {/* Subtle background glow */}
@@ -181,14 +181,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
             onClick={() => setIsWorkspaceMenuOpen(!isWorkspaceMenuOpen)}
             className={`flex w-full items-center justify-between rounded-xl p-2 text-left transition-all duration-200 ${isCollapsed ? 'justify-center p-1.5' : ''}`}
             style={{
-              background: theme === 'dark' ? 'rgba(139, 92, 246, 0.1)' : 'rgba(139, 92, 246, 0.05)',
-              border: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.2)' : '1px solid rgba(139, 92, 246, 0.12)',
+              background: theme === 'dark' ? 'rgba(40, 108, 252, 0.12)' : 'rgba(40, 108, 252, 0.05)',
+              border: theme === 'dark' ? '1px solid rgba(40, 108, 252, 0.25)' : '1px solid rgba(40, 108, 252, 0.12)',
             }}
             onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.18)' : 'rgba(139, 92, 246, 0.1)';
+              (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(40, 108, 252, 0.2)' : 'rgba(40, 108, 252, 0.1)';
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.1)' : 'rgba(139, 92, 246, 0.05)';
+              (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(40, 108, 252, 0.12)' : 'rgba(40, 108, 252, 0.05)';
             }}
           >
             <div className="flex items-center gap-2 overflow-hidden shrink-0">
@@ -197,12 +197,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                   src={activeWorkspace.logo_url}
                   alt=""
                   className="h-7 w-7 rounded-lg object-cover border shrink-0"
-                  style={{ borderColor: 'rgba(139, 92, 246, 0.3)' }}
+                  style={{ borderColor: 'rgba(40, 108, 252, 0.3)' }}
                 />
               ) : (
                 <div
                   className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
-                  style={{ background: 'rgba(139, 92, 246, 0.2)', color: '#a78bfa' }}
+                  style={{ background: 'rgba(40, 108, 252, 0.15)', color: '#4CB5D4' }}
                 >
                   <Briefcase size={13} />
                 </div>
@@ -211,12 +211,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                 <div className="truncate animate-in fade-in duration-200">
                   <p className={`text-xs font-bold truncate ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>{activeWorkspace?.name || 'No Workspace'}</p>
                   <div className="flex items-center gap-1.5 mt-0.5">
-                    <span className="text-[9px] font-semibold truncate" style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.7)' : 'rgba(109, 40, 217, 0.6)' }}>Workspace</span>
+                    <span className="text-[9px] font-semibold truncate" style={{ color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.6)' }}>Workspace</span>
                   </div>
                 </div>
               )}
             </div>
-            {!isCollapsed && <ChevronDown size={13} className={`shrink-0 transition-transform duration-200 ${isWorkspaceMenuOpen ? 'rotate-180' : ''}`} style={{ color: '#a78bfa' }} />}
+            {!isCollapsed && <ChevronDown size={13} className={`shrink-0 transition-transform duration-200 ${isWorkspaceMenuOpen ? 'rotate-180' : ''}`} style={{ color: '#4CB5D4' }} />}
           </button>
 
           {isWorkspaceMenuOpen && (
@@ -225,14 +225,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
               style={{
                 zIndex: 300,
                 minWidth: 220,
-                background: theme === 'dark' ? '#1e0f3d' : '#ffffff',
-                border: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.25)' : '1px solid rgba(139, 92, 246, 0.18)',
+                background: theme === 'dark' ? '#07153D' : '#ffffff',
+                border: theme === 'dark' ? '1px solid rgba(40, 108, 252, 0.25)' : '1px solid rgba(40, 108, 252, 0.18)',
                 boxShadow: theme === 'dark'
-                  ? '0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(139, 92, 246, 0.1)'
-                  : '0 12px 48px rgba(109, 40, 217, 0.14), 0 0 0 1px rgba(139, 92, 246, 0.08)',
+                  ? '0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(40, 108, 252, 0.1)'
+                  : '0 12px 48px rgba(13, 30, 61, 0.14), 0 0 0 1px rgba(40, 108, 252, 0.08)',
               }}
             >
-              <p className="px-2 py-1 text-[9px] font-extrabold uppercase tracking-wider" style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.6)' : 'rgba(109, 40, 217, 0.5)' }}>Workspaces</p>
+              <p className="px-2 py-1 text-[9px] font-extrabold uppercase tracking-wider" style={{ color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.5)' }}>Workspaces</p>
               <div className="max-h-48 overflow-y-auto py-1">
                 {workspaces.map((ws) => (
                   <button
@@ -247,15 +247,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                       }`}
                     style={{
                       background: activeWorkspace?.id === ws.id
-                        ? (theme === 'dark' ? 'rgba(139, 92, 246, 0.2)' : 'rgba(139, 92, 246, 0.08)')
+                        ? (theme === 'dark' ? 'rgba(40, 108, 252, 0.25)' : 'rgba(40, 108, 252, 0.08)')
                         : 'transparent',
                       color: activeWorkspace?.id === ws.id
-                        ? (theme === 'dark' ? '#c4b5fd' : '#6d28d9')
-                        : (theme === 'dark' ? 'rgba(196, 181, 253, 0.7)' : 'rgba(30, 27, 75, 0.85)'),
+                        ? (theme === 'dark' ? '#4CB5D4' : '#286CFC')
+                        : (theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.85)'),
                     }}
                     onMouseEnter={e => {
                       if (activeWorkspace?.id !== ws.id) {
-                        (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.1)' : 'rgba(139, 92, 246, 0.04)';
+                        (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(40, 108, 252, 0.12)' : 'rgba(40, 108, 252, 0.04)';
                       }
                     }}
                     onMouseLeave={e => {
@@ -265,9 +265,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                     }}
                   >
                     {ws.logo_url ? (
-                      <img src={ws.logo_url} alt="" className="h-5 w-5 rounded object-cover shrink-0" style={{ border: '1px solid rgba(139,92,246,0.2)' }} />
+                      <img src={ws.logo_url} alt="" className="h-5 w-5 rounded object-cover shrink-0" style={{ border: '1px solid rgba(40,108,252,0.2)' }} />
                     ) : (
-                      <div className="flex h-5 w-5 items-center justify-center rounded shrink-0 text-[10px] font-bold" style={{ background: 'rgba(139, 92, 246, 0.2)', color: '#a78bfa' }}>
+                      <div className="flex h-5 w-5 items-center justify-center rounded shrink-0 text-[10px] font-bold" style={{ background: 'rgba(40, 108, 252, 0.15)', color: '#4CB5D4' }}>
                         {ws.name.substring(0, 2).toUpperCase()}
                       </div>
                     )}
@@ -275,7 +275,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                   </button>
                 ))}
               </div>
-              <div style={{ borderTop: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.15)' : '1px solid rgba(139, 92, 246, 0.08)' }} className="mt-1 pt-1">
+              <div style={{ borderTop: theme === 'dark' ? '1px solid rgba(40, 108, 252, 0.15)' : '1px solid rgba(40, 108, 252, 0.08)' }} className="mt-1 pt-1">
                 <button
                   onClick={() => {
                     setIsWorkspaceMenuOpen(false);
@@ -283,9 +283,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                     setIsCreateModalOpen(true);
                   }}
                   className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-xs transition-colors"
-                  style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.8)' : 'rgba(109, 40, 217, 0.8)' }}
+                  style={{ color: theme === 'dark' ? '#4CB5D4' : '#286CFC' }}
                   onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.1)' : 'rgba(139, 92, 246, 0.04)';
+                    (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(40, 108, 252, 0.12)' : 'rgba(40, 108, 252, 0.04)';
                   }}
                   onMouseLeave={e => {
                     (e.currentTarget as HTMLElement).style.background = 'transparent';
@@ -302,7 +302,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
         {/* Navigation Links */}
         <nav className="relative flex-1 space-y-0.5 overflow-y-auto pr-1" style={{ zIndex: 1 }}>
           {!isCollapsed && (
-            <p className="px-3 pb-2 text-[9px] font-extrabold uppercase tracking-widest" style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.4)' : 'rgba(109, 40, 217, 0.5)' }}>
+            <p className="px-3 pb-2 text-[9px] font-extrabold uppercase tracking-widest" style={{ color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.5)' }}>
               Navigation
             </p>
           )}
@@ -321,13 +321,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
               style={({ isActive }) => ({
                 background: isActive
                   ? (theme === 'dark'
-                    ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.22), rgba(109, 40, 217, 0.12))'
-                    : 'linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(109, 40, 217, 0.06))')
+                    ? 'linear-gradient(135deg, rgba(40, 108, 252, 0.25), rgba(76, 181, 212, 0.12))'
+                    : 'linear-gradient(135deg, rgba(40, 108, 252, 0.12), rgba(76, 181, 212, 0.06))')
                   : 'transparent',
                 color: isActive
-                  ? (theme === 'dark' ? '#c4b5fd' : '#6d28d9')
-                  : (theme === 'dark' ? 'rgba(167, 139, 250, 0.65)' : 'rgba(79, 70, 229, 0.7)'),
-                borderLeft: isActive ? '3px solid rgba(139, 92, 246, 0.8)' : '3px solid transparent',
+                  ? (theme === 'dark' ? '#4CB5D4' : '#286CFC')
+                  : (theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.7)'),
+                borderLeft: isActive ? '3px solid #286CFC' : '3px solid transparent',
               })}
             >
               <div className="flex items-center gap-3">
@@ -340,7 +340,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
           {/* Teams list divider inside sidebar */}
           {teams.length > 0 && !isCollapsed && (
             <div className="pt-4 pb-2 animate-in fade-in duration-200">
-              <p className="px-3 text-[9px] font-extrabold uppercase tracking-widest pb-1.5" style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.4)' : 'rgba(109, 40, 217, 0.5)' }}>Teams</p>
+              <p className="px-3 text-[9px] font-extrabold uppercase tracking-widest pb-1.5" style={{ color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.5)' }}>Teams</p>
               <div className="mt-1 space-y-0.5">
                 {teams.map(team => (
                   <NavLink
@@ -355,11 +355,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                     }
                     style={({ isActive }) => ({
                       background: isActive
-                        ? (theme === 'dark' ? 'rgba(139, 92, 246, 0.15)' : 'rgba(139, 92, 246, 0.08)')
+                        ? (theme === 'dark' ? 'rgba(40, 108, 252, 0.15)' : 'rgba(40, 108, 252, 0.08)')
                         : 'transparent',
                       color: isActive
-                        ? (theme === 'dark' ? '#c4b5fd' : '#6d28d9')
-                        : (theme === 'dark' ? 'rgba(167, 139, 250, 0.55)' : 'rgba(79, 70, 229, 0.65)'),
+                        ? (theme === 'dark' ? '#4CB5D4' : '#286CFC')
+                        : (theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.65)'),
                     })}
                   >
                     {renderTeamIcon(team.icon, team.color)}
@@ -372,12 +372,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
         </nav>
 
         {/* Footer Profile Details */}
-        <div className="relative z-10 mt-auto pt-3" style={{ borderTop: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.12)' : '1px solid rgba(139, 92, 246, 0.08)' }}>
+        <div className="relative z-10 mt-auto pt-3" style={{ borderTop: theme === 'dark' ? '1px solid rgba(40, 108, 252, 0.12)' : '1px solid rgba(40, 108, 252, 0.08)' }}>
           <div
             className={`flex items-center gap-2.5 rounded-xl p-2 ${isCollapsed ? 'justify-center p-1 border-0' : ''}`}
             style={{
-              background: theme === 'dark' ? 'rgba(139, 92, 246, 0.07)' : 'rgba(139, 92, 246, 0.04)',
-              border: isCollapsed ? 'none' : (theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.12)' : '1px solid rgba(139, 92, 246, 0.08)'),
+              background: theme === 'dark' ? 'rgba(40, 108, 252, 0.07)' : 'rgba(40, 108, 252, 0.04)',
+              border: isCollapsed ? 'none' : (theme === 'dark' ? '1px solid rgba(40, 108, 252, 0.12)' : '1px solid rgba(40, 108, 252, 0.08)'),
             }}
           >
             {user?.avatar_url ? (
@@ -385,12 +385,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                 src={user.avatar_url}
                 alt=""
                 className="h-8 w-8 rounded-full object-cover shrink-0"
-                style={{ border: '2px solid rgba(139, 92, 246, 0.4)' }}
+                style={{ border: '2px solid rgba(40, 108, 252, 0.4)' }}
               />
             ) : (
               <div
                 className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-bold text-xs text-white"
-                style={{ background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)' }}
+                style={{ background: 'linear-gradient(135deg, #286CFC, #4CB5D4)' }}
               >
                 {user?.full_name?.substring(0, 2).toUpperCase() || 'US'}
               </div>
@@ -398,7 +398,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
             {!isCollapsed && (
               <div className="flex-1 overflow-hidden animate-in fade-in duration-200">
                 <h4 className={`text-xs font-bold truncate ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>{user?.full_name}</h4>
-                <p className="text-[9px] truncate leading-none mt-0.5" style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.55)' : 'rgba(109, 40, 217, 0.6)' }}>{user?.email}</p>
+                <p className="text-[9px] truncate leading-none mt-0.5" style={{ color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.6)' }}>{user?.email}</p>
               </div>
             )}
             {!isCollapsed && (
@@ -434,34 +434,34 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
             <div
               className="w-full max-w-md rounded-2xl p-6 shadow-2xl animate-in zoom-in-95 duration-200"
               style={{
-                background: theme === 'dark' ? '#1a0e35' : '#ffffff',
-                border: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.25)' : '1px solid rgba(139, 92, 246, 0.2)',
+                background: theme === 'dark' ? '#07153D' : '#ffffff',
+                border: theme === 'dark' ? '1px solid rgba(40, 108, 252, 0.25)' : '1px solid rgba(40, 108, 252, 0.2)',
                 boxShadow: theme === 'dark'
                   ? '0 24px 80px rgba(0, 0, 0, 0.6)'
-                  : '0 24px 80px rgba(109, 40, 217, 0.12), 0 4px 24px rgba(0,0,0,0.08)',
+                  : '0 24px 80px rgba(40, 108, 252, 0.12), 0 4px 24px rgba(0,0,0,0.08)',
               }}
             >
               <div
                 className="flex items-center justify-between pb-4 mb-4"
-                style={{ borderBottom: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.15)' : '1px solid rgba(139, 92, 246, 0.12)' }}
+                style={{ borderBottom: theme === 'dark' ? '1px solid rgba(40, 108, 252, 0.15)' : '1px solid rgba(40, 108, 252, 0.12)' }}
               >
                 <div className="flex items-center gap-2.5">
-                  <div className="rounded-lg p-1.5" style={{ background: 'rgba(139, 92, 246, 0.12)' }}>
-                    <FolderPlus className="text-violet-500" size={16} />
+                  <div className="rounded-lg p-1.5" style={{ background: 'rgba(40, 108, 252, 0.12)' }}>
+                    <FolderPlus className="text-blue-500" size={16} />
                   </div>
-                  <h3 className="text-base font-bold" style={{ color: theme === 'dark' ? '#ffffff' : '#1e1b4b' }}>Create Workspace</h3>
+                  <h3 className="text-base font-bold" style={{ color: theme === 'dark' ? '#ffffff' : '#0d1e3d' }}>Create Workspace</h3>
                 </div>
                 <button
                   onClick={() => setIsCreateModalOpen(false)}
                   className="rounded-lg p-1.5 transition-colors"
-                  style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.6)' : 'rgba(109, 40, 217, 0.5)' }}
+                  style={{ color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.5)' }}
                   onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.1)' : 'rgba(139, 92, 246, 0.08)';
-                    (e.currentTarget as HTMLElement).style.color = theme === 'dark' ? '#c4b5fd' : '#6d28d9';
+                    (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(40, 108, 252, 0.1)' : 'rgba(40, 108, 252, 0.08)';
+                    (e.currentTarget as HTMLElement).style.color = theme === 'dark' ? '#4CB5D4' : '#286CFC';
                   }}
                   onMouseLeave={e => {
                     (e.currentTarget as HTMLElement).style.background = 'transparent';
-                    (e.currentTarget as HTMLElement).style.color = theme === 'dark' ? 'rgba(167, 139, 250, 0.6)' : 'rgba(109, 40, 217, 0.5)';
+                    (e.currentTarget as HTMLElement).style.color = theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.5)';
                   }}
                 >
                   <X size={16} />
@@ -492,7 +492,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                 <div>
                   <label
                     className="block text-[11px] font-bold uppercase tracking-wider mb-1.5"
-                    style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.7)' : 'rgba(109, 40, 217, 0.65)' }}
+                    style={{ color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.65)' }}
                   >
                     Workspace Name *
                   </label>
@@ -504,19 +504,19 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                     onChange={(e) => setNewWsName(e.target.value)}
                     className="w-full rounded-xl p-3 text-sm focus:outline-none transition-all duration-200"
                     style={{
-                      background: theme === 'dark' ? 'rgba(139, 92, 246, 0.08)' : 'rgba(139, 92, 246, 0.05)',
-                      border: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.2)' : '1px solid rgba(139, 92, 246, 0.18)',
-                      color: theme === 'dark' ? '#e2e0ff' : '#1e1b4b',
+                      background: theme === 'dark' ? 'rgba(40, 108, 252, 0.08)' : 'rgba(40, 108, 252, 0.05)',
+                      border: theme === 'dark' ? '1px solid rgba(40, 108, 252, 0.2)' : '1px solid rgba(40, 108, 252, 0.18)',
+                      color: theme === 'dark' ? '#ffffff' : '#0d1e3d',
                     }}
                     onFocus={e => {
-                      (e.target as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.5)';
-                      (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(139, 92, 246, 0.1)';
-                      (e.target as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.12)' : 'rgba(139, 92, 246, 0.07)';
+                      (e.target as HTMLElement).style.borderColor = '#286CFC';
+                      (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(40, 108, 252, 0.15)';
+                      (e.target as HTMLElement).style.background = theme === 'dark' ? 'rgba(40, 108, 252, 0.12)' : 'rgba(40, 108, 252, 0.07)';
                     }}
                     onBlur={e => {
-                      (e.target as HTMLElement).style.borderColor = theme === 'dark' ? 'rgba(139, 92, 246, 0.2)' : 'rgba(139, 92, 246, 0.18)';
+                      (e.target as HTMLElement).style.borderColor = theme === 'dark' ? 'rgba(40, 108, 252, 0.2)' : 'rgba(40, 108, 252, 0.18)';
                       (e.target as HTMLElement).style.boxShadow = 'none';
-                      (e.target as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.08)' : 'rgba(139, 92, 246, 0.05)';
+                      (e.target as HTMLElement).style.background = theme === 'dark' ? 'rgba(40, 108, 252, 0.08)' : 'rgba(40, 108, 252, 0.05)';
                     }}
                   />
                 </div>
@@ -524,7 +524,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                 <div>
                   <label
                     className="block text-[11px] font-bold uppercase tracking-wider mb-1.5"
-                    style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.7)' : 'rgba(109, 40, 217, 0.65)' }}
+                    style={{ color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.65)' }}
                   >
                     Description
                   </label>
@@ -535,19 +535,19 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                     rows={3}
                     className="w-full rounded-xl p-3 text-sm focus:outline-none transition-all duration-200 resize-none"
                     style={{
-                      background: theme === 'dark' ? 'rgba(139, 92, 246, 0.08)' : 'rgba(139, 92, 246, 0.05)',
-                      border: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.2)' : '1px solid rgba(139, 92, 246, 0.18)',
-                      color: theme === 'dark' ? '#e2e0ff' : '#1e1b4b',
+                      background: theme === 'dark' ? 'rgba(40, 108, 252, 0.08)' : 'rgba(40, 108, 252, 0.05)',
+                      border: theme === 'dark' ? '1px solid rgba(40, 108, 252, 0.2)' : '1px solid rgba(40, 108, 252, 0.18)',
+                      color: theme === 'dark' ? '#ffffff' : '#0d1e3d',
                     }}
                     onFocus={e => {
-                      (e.target as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.5)';
-                      (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(139, 92, 246, 0.1)';
-                      (e.target as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.12)' : 'rgba(139, 92, 246, 0.07)';
+                      (e.target as HTMLElement).style.borderColor = '#286CFC';
+                      (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(40, 108, 252, 0.15)';
+                      (e.target as HTMLElement).style.background = theme === 'dark' ? 'rgba(40, 108, 252, 0.12)' : 'rgba(40, 108, 252, 0.07)';
                     }}
                     onBlur={e => {
-                      (e.target as HTMLElement).style.borderColor = theme === 'dark' ? 'rgba(139, 92, 246, 0.2)' : 'rgba(139, 92, 246, 0.18)';
+                      (e.target as HTMLElement).style.borderColor = theme === 'dark' ? 'rgba(40, 108, 252, 0.2)' : 'rgba(40, 108, 252, 0.18)';
                       (e.target as HTMLElement).style.boxShadow = 'none';
-                      (e.target as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.08)' : 'rgba(139, 92, 246, 0.05)';
+                      (e.target as HTMLElement).style.background = theme === 'dark' ? 'rgba(40, 108, 252, 0.08)' : 'rgba(40, 108, 252, 0.05)';
                     }}
                   />
                 </div>
@@ -555,14 +555,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
 
                 <div
                   className="flex items-center justify-end gap-3 pt-3"
-                  style={{ borderTop: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.15)' : '1px solid rgba(139, 92, 246, 0.1)' }}
+                  style={{ borderTop: theme === 'dark' ? '1px solid rgba(40, 108, 252, 0.15)' : '1px solid rgba(40, 108, 252, 0.1)' }}
                 >
                   <button
                     type="button"
                     onClick={() => setIsCreateModalOpen(false)}
                     className="rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200"
-                    style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.7)' : 'rgba(109, 40, 217, 0.7)' }}
-                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.1)' : 'rgba(139, 92, 246, 0.07)'}
+                    style={{ color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.7)' }}
+                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(40, 108, 252, 0.1)' : 'rgba(40, 108, 252, 0.07)'}
                     onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
                   >
                     Cancel
@@ -571,8 +571,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
                     type="submit"
                     className="rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
                     style={{
-                      background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
-                      boxShadow: '0 4px 16px rgba(109, 40, 217, 0.4)',
+                      background: 'linear-gradient(135deg, #286CFC, #1d5ad4)',
+                      boxShadow: '0 4px 16px rgba(40, 108, 252, 0.4)',
                     }}
                   >
                     Create Workspace

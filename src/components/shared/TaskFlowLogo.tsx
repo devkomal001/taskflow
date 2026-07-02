@@ -48,16 +48,16 @@ const TaskFlowLogo: React.FC<TaskFlowLogoProps> = ({
       style={{ flexShrink: 0, display: 'block' }}
     >
       <defs>
-        {/* Main gradient: pink-purple → deep violet (diagonal) */}
+        {/* Main gradient: cyan/teal → brand blue → dark blue */}
         <linearGradient id={gradA} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%"   stopColor="#c084fc" /> {/* purple-400 */}
-          <stop offset="45%"  stopColor="#9333ea" /> {/* purple-600 */}
-          <stop offset="100%" stopColor="#5b21b6" /> {/* violet-800 */}
+          <stop offset="0%"   stopColor="#4CB5D4" />
+          <stop offset="50%"  stopColor="#286CFC" />
+          <stop offset="100%" stopColor="#004ee6" />
         </linearGradient>
         {/* Accent gradient for wordmark text */}
         <linearGradient id={gradB} x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%"   stopColor="#a855f7" /> {/* purple-500 */}
-          <stop offset="100%" stopColor="#7c3aed" /> {/* violet-600 */}
+          <stop offset="0%"   stopColor="#4CB5D4" />
+          <stop offset="100%" stopColor="#286CFC" />
         </linearGradient>
       </defs>
 
@@ -99,7 +99,7 @@ const TaskFlowLogo: React.FC<TaskFlowLogoProps> = ({
             letterSpacing: '-0.04em',
             lineHeight: 1,
             /* Gradient text — visible on both light and dark */
-            background: `linear-gradient(110deg, #a855f7 0%, #8b5cf6 45%, #6d28d9 100%)`,
+            background: `linear-gradient(110deg, #4CB5D4 0%, #286CFC 45%, #004ee6 100%)`,
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
@@ -119,7 +119,7 @@ const TaskFlowLogo: React.FC<TaskFlowLogoProps> = ({
               textTransform: 'uppercase',
               marginTop: 4,
               lineHeight: 1,
-              color: 'rgba(139, 92, 246, 0.6)',
+              color: 'rgba(76, 181, 212, 0.6)',
             }}
           >
             Plan · Track · Deliver

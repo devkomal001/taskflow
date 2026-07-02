@@ -82,14 +82,17 @@ const Login: React.FC = () => {
 
 
   return (
-    <div className="relative flex min-h-screen w-screen items-center justify-center bg-slate-950 px-4 py-16 overflow-hidden">
+    <div 
+      className="relative flex min-h-screen w-screen items-center justify-center px-4 py-16 overflow-hidden"
+      style={{ background: '#030B24' }}
+    >
       {/* Background Ambient Lights */}
-      <div className="absolute top-[-10%] left-[-10%] h-[50%] w-[50%] rounded-full bg-brand-500/10 blur-[140px] pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] h-[50%] w-[50%] rounded-full bg-violet-600/10 blur-[140px] pointer-events-none"></div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-cyan-500/5 blur-[120px] pointer-events-none"></div>
+      <div className="absolute top-[-10%] left-[-10%] h-[50%] w-[50%] rounded-full bg-[#286CFC]/10 blur-[140px] pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] h-[50%] w-[50%] rounded-full bg-[#4CB5D4]/10 blur-[140px] pointer-events-none"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-[#286CFC]/5 blur-[120px] pointer-events-none"></div>
 
       {/* Grid Pattern Overlay */}
-      <div className="absolute inset-0 bg-[radial-gradient(transparent_1px,#020617_1px)] bg-[size:20px_20px] opacity-40 pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(transparent_1px,#030B24_1px)] bg-[size:20px_20px] opacity-40 pointer-events-none"></div>
 
       <div className="z-10 w-full max-w-md animate-in fade-in zoom-in-95 duration-500">
         {/* Brand Header */}
@@ -98,15 +101,15 @@ const Login: React.FC = () => {
           <h2 className="text-2xl font-extrabold tracking-tight" style={{ color: 'white', fontFamily: "'Outfit', sans-serif", letterSpacing: '-0.02em' }}>
             Welcome Back
           </h2>
-          <p className="text-sm font-medium" style={{ color: 'rgba(196, 181, 253, 0.65)' }}>
+          <p className="text-sm font-semibold text-[#A0AEC0]">
             Sign in to your workspace
           </p>
         </div>
 
         {/* Login Card */}
-        <div className="relative rounded-3xl border border-slate-800/80 bg-slate-900/40 p-8 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-slate-700/60 group overflow-hidden">
+        <div className="relative rounded-3xl border border-white/10 bg-[#07153D]/50 p-8 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-[#286CFC]/20 group overflow-hidden">
           {/* Card Border Glow */}
-          <div className="absolute -inset-px bg-gradient-to-r from-brand-500/20 to-violet-500/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+          <div className="absolute -inset-px bg-gradient-to-r from-[#286CFC]/20 to-[#4CB5D4]/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
           {errorMsg && (
             <div className="relative mb-5 flex items-start gap-2.5 rounded-2xl border border-rose-500/20 bg-rose-500/5 p-4 text-xs font-semibold text-rose-400 leading-relaxed animate-in slide-in-from-top-2 duration-300">
@@ -117,9 +120,9 @@ const Login: React.FC = () => {
 
           <form onSubmit={handleSubmit} className="relative space-y-5">
             <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Email Address</label>
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-[#A0AEC0]">Email Address</label>
               <div className="relative mt-2">
-                <Mail className="absolute left-4 top-3.5 text-slate-500 transition-colors group-focus-within:text-brand-400" size={16} />
+                <Mail className="absolute left-4 top-3.5 text-slate-500 transition-colors group-focus-within:text-[#286CFC]" size={16} />
                 <input
                   id="login-email"
                   type="email"
@@ -127,24 +130,24 @@ const Login: React.FC = () => {
                   placeholder="name@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-2xl border border-slate-800 bg-slate-950/80 py-3.5 pl-11 pr-4 text-sm text-slate-200 placeholder-slate-605 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 focus:outline-none transition-all duration-200"
+                  className="w-full rounded-2xl border border-white/10 bg-[#030B24]/85 py-3.5 pl-11 pr-4 text-sm text-slate-200 placeholder-slate-500 focus:border-[#286CFC] focus:ring-2 focus:ring-[#286CFC]/10 focus:outline-none transition-all duration-200"
                 />
               </div>
             </div>
 
             <div>
               <div className="flex items-center justify-between">
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Password</label>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#A0AEC0]">Password</label>
                 <Link 
                   to="/forgot-password" 
                   id="forgot-password-link" 
-                  className="text-xs font-semibold text-brand-400 hover:text-brand-300 transition-colors"
+                  className="text-xs font-semibold text-[#4CB5D4] hover:text-[#4CB5D4]/80 transition-colors"
                 >
                   Forgot Password?
                 </Link>
               </div>
               <div className="relative mt-2">
-                <Lock className="absolute left-4 top-3.5 text-slate-500 transition-colors group-focus-within:text-brand-400" size={16} />
+                <Lock className="absolute left-4 top-3.5 text-slate-500 transition-colors group-focus-within:text-[#286CFC]" size={16} />
                 <input
                   id="login-password"
                   type={showPassword ? 'text' : 'password'}
@@ -152,12 +155,12 @@ const Login: React.FC = () => {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-2xl border border-slate-800 bg-slate-950/80 py-3.5 pl-11 pr-11 text-sm text-slate-200 placeholder-slate-605 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 focus:outline-none transition-all duration-200"
+                  className="w-full rounded-2xl border border-white/10 bg-[#030B24]/85 py-3.5 pl-11 pr-11 text-sm text-slate-200 placeholder-slate-500 focus:border-[#286CFC] focus:ring-2 focus:ring-[#286CFC]/10 focus:outline-none transition-all duration-200"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-3.5 text-slate-500 hover:text-slate-350 transition-colors focus:outline-none"
+                  className="absolute right-4 top-3.5 text-slate-500 hover:text-slate-300 transition-colors focus:outline-none"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -175,7 +178,7 @@ const Login: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="relative flex w-full items-center justify-center rounded-2xl bg-brand-600 py-3.5 text-sm font-semibold text-white hover:bg-brand-500 transition-all duration-200 shadow-xl shadow-brand-500/20 hover:shadow-brand-500/30 active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 disabled:hover:shadow-none"
+              className="relative flex w-full items-center justify-center rounded-2xl bg-[#286CFC] py-3.5 text-sm font-semibold text-white hover:bg-[#004ee6] transition-all duration-200 shadow-xl shadow-[#286CFC]/20 hover:shadow-[#286CFC]/30 active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 disabled:hover:shadow-none cursor-pointer"
             >
               {loading ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
@@ -191,7 +194,7 @@ const Login: React.FC = () => {
         {/* Footer Link */}
         <p className="mt-8 text-center text-sm text-slate-400 font-medium">
           Don't have an account?{' '}
-          <Link to="/register" id="create-account-link" className="font-semibold text-brand-400 hover:text-brand-300 transition-colors">
+          <Link to="/register" id="create-account-link" className="font-semibold text-[#286CFC] hover:text-[#286CFC]/80 transition-colors">
             Create Account
           </Link>
         </p>

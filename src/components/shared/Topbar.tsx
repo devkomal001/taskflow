@@ -176,9 +176,9 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
   };
 
   const iconButtonStyle = {
-    background: theme === 'dark' ? 'rgba(139, 92, 246, 0.08)' : 'rgba(255, 255, 255, 0.9)',
-    border: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.15)' : '1px solid rgba(139, 92, 246, 0.12)',
-    color: theme === 'dark' ? '#a78bfa' : '#7c3aed',
+    background: theme === 'dark' ? 'rgba(40, 108, 252, 0.08)' : 'rgba(255, 255, 255, 0.9)',
+    border: theme === 'dark' ? '1px solid rgba(40, 108, 252, 0.15)' : '1px solid rgba(40, 108, 252, 0.12)',
+    color: theme === 'dark' ? '#4CB5D4' : '#286CFC',
     borderRadius: '12px',
     padding: '8px',
     cursor: 'pointer',
@@ -193,15 +193,15 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
       className="sticky top-0 z-40 flex h-16 w-full items-center justify-between px-4 md:px-6 transition-all duration-200"
       style={{
         background: theme === 'dark' 
-          ? 'rgba(10, 6, 20, 0.92)' 
-          : 'rgba(252, 250, 255, 0.92)',
+          ? 'rgba(3, 11, 36, 0.92)' 
+          : 'rgba(244, 246, 250, 0.92)',
         backdropFilter: 'blur(16px) saturate(180%)',
         borderBottom: theme === 'dark'
-          ? '1px solid rgba(139, 92, 246, 0.1)'
-          : '1px solid rgba(139, 92, 246, 0.1)',
+          ? '1px solid rgba(40, 108, 252, 0.12)'
+          : '1px solid rgba(40, 108, 252, 0.1)',
         boxShadow: theme === 'dark'
-          ? '0 1px 20px rgba(0, 0, 0, 0.3)'
-          : '0 1px 20px rgba(109, 40, 217, 0.06)',
+          ? '0 1px 20px rgba(0, 0, 0, 0.4)'
+          : '0 1px 20px rgba(40, 108, 252, 0.06)',
       }}
     >
       <div className="flex items-center gap-4">
@@ -210,9 +210,9 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
             onClick={onMenuClick}
             className="rounded-xl p-2 transition-all duration-200"
             style={{
-              background: theme === 'dark' ? 'rgba(139, 92, 246, 0.08)' : 'rgba(255, 255, 255, 0.9)',
-              border: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.15)' : '1px solid rgba(139, 92, 246, 0.12)',
-              color: theme === 'dark' ? '#a78bfa' : '#7c3aed',
+              background: theme === 'dark' ? 'rgba(40, 108, 252, 0.08)' : 'rgba(255, 255, 255, 0.9)',
+              border: theme === 'dark' ? '1px solid rgba(40, 108, 252, 0.15)' : '1px solid rgba(40, 108, 252, 0.12)',
+              color: theme === 'dark' ? '#4CB5D4' : '#286CFC',
               borderRadius: '12px',
               padding: '8px',
               cursor: 'pointer',
@@ -225,14 +225,14 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
 
         <div>
           <h1 className="text-base font-bold tracking-tight md:text-lg" style={{ 
-            color: theme === 'dark' ? '#e2e0ff' : '#1e1b4b',
+            color: theme === 'dark' ? '#ffffff' : '#0d1e3d',
             fontFamily: "'Outfit', sans-serif",
             letterSpacing: '-0.02em'
           }}>
             {getHeaderTitle()}
           </h1>
           <p className="text-[11px] font-medium hidden sm:block" style={{
-            color: theme === 'dark' ? 'rgba(167, 139, 250, 0.5)' : 'rgba(109, 40, 217, 0.5)'
+            color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.5)'
           }}>
             {getHeaderSubtitle()}
           </p>
@@ -246,7 +246,7 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
           <Search 
             size={14} 
             className="absolute left-3.5 top-3 pointer-events-none"
-            style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.5)' : 'rgba(109, 40, 217, 0.4)' }}
+            style={{ color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.4)' }}
           />
           <input
             type="text"
@@ -255,22 +255,22 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-52 py-2 pl-9 pr-4 text-xs focus:outline-none transition-all duration-200 rounded-xl"
             style={{
-              background: theme === 'dark' ? 'rgba(139, 92, 246, 0.07)' : 'rgba(139, 92, 246, 0.05)',
-              border: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.15)' : '1px solid rgba(139, 92, 246, 0.12)',
-              color: theme === 'dark' ? '#e2e0ff' : '#1e1b4b',
+              background: theme === 'dark' ? 'rgba(40, 108, 252, 0.08)' : 'rgba(40, 108, 252, 0.05)',
+              border: theme === 'dark' ? '1px solid rgba(40, 108, 252, 0.15)' : '1px solid rgba(40, 108, 252, 0.12)',
+              color: theme === 'dark' ? '#ffffff' : '#0d1e3d',
             }}
             onFocus={e => {
               (e.target as HTMLElement).style.width = '240px';
-              (e.target as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.4)';
-              (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(139, 92, 246, 0.08)';
-              (e.target as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.12)' : 'white';
+              (e.target as HTMLElement).style.borderColor = '#286CFC';
+              (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(40, 108, 252, 0.15)';
+              (e.target as HTMLElement).style.background = theme === 'dark' ? 'rgba(7, 21, 61, 0.95)' : 'white';
               searchQuery.trim() && setShowSearchResults(true);
             }}
             onBlur={e => {
               (e.target as HTMLElement).style.width = '';
-              (e.target as HTMLElement).style.borderColor = theme === 'dark' ? 'rgba(139, 92, 246, 0.15)' : 'rgba(139, 92, 246, 0.12)';
+              (e.target as HTMLElement).style.borderColor = theme === 'dark' ? 'rgba(40, 108, 252, 0.15)' : 'rgba(40, 108, 252, 0.12)';
               (e.target as HTMLElement).style.boxShadow = 'none';
-              (e.target as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.07)' : 'rgba(139, 92, 246, 0.05)';
+              (e.target as HTMLElement).style.background = theme === 'dark' ? 'rgba(40, 108, 252, 0.08)' : 'rgba(40, 108, 252, 0.05)';
             }}
           />
 
@@ -279,27 +279,27 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
             <div 
               className="absolute left-0 mt-2 w-80 rounded-2xl p-2 animate-dropdown max-h-96 overflow-y-auto z-50"
               style={{
-                background: theme === 'dark' ? '#150b2e' : 'white',
-                border: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.2)' : '1px solid rgba(139, 92, 246, 0.12)',
+                background: theme === 'dark' ? '#07153D' : 'white',
+                border: theme === 'dark' ? '1px solid rgba(40, 108, 252, 0.2)' : '1px solid rgba(40, 108, 252, 0.12)',
                 boxShadow: theme === 'dark' 
-                  ? '0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(139, 92, 246, 0.08)' 
-                  : '0 20px 60px rgba(109, 40, 217, 0.12)',
+                  ? '0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(40, 108, 252, 0.08)' 
+                  : '0 20px 60px rgba(40, 108, 252, 0.12)',
               }}
             >
-              <div className="px-3 py-2 flex items-center justify-between mb-1" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.1)' }}>
-                <span className="text-xs font-bold uppercase tracking-wider" style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.6)' : 'rgba(109, 40, 217, 0.5)' }}>Search Results</span>
-                {isSearching && <Loader2 className="animate-spin text-violet-500" size={13} />}
+              <div className="px-3 py-2 flex items-center justify-between mb-1" style={{ borderBottom: '1px solid rgba(40, 108, 252, 0.1)' }}>
+                <span className="text-xs font-bold uppercase tracking-wider" style={{ color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.5)' }}>Search Results</span>
+                {isSearching && <Loader2 className="animate-spin text-blue-500" size={13} />}
               </div>
 
               <div className="py-1">
                 {isSearching && !searchResults && (
-                  <div className="py-8 text-center text-xs" style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.5)' : 'rgba(109, 40, 217, 0.4)' }}>
+                  <div className="py-8 text-center text-xs" style={{ color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.4)' }}>
                     Searching workspace...
                   </div>
                 )}
 
                 {!isSearching && (!searchResults || (searchResults.workspaces.length === 0 && searchResults.projects.length === 0 && searchResults.tasks.length === 0 && searchResults.members.length === 0)) ? (
-                  <div className="py-8 text-center text-xs" style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.5)' : 'rgba(109, 40, 217, 0.4)' }}>
+                  <div className="py-8 text-center text-xs" style={{ color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.4)' }}>
                     No results found for "{searchQuery}"
                   </div>
                 ) : (
@@ -308,7 +308,7 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
                       {/* Workspaces Group */}
                       {searchResults.workspaces.length > 0 && (
                         <div>
-                          <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider" style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.5)' : 'rgba(109, 40, 217, 0.4)' }}>Workspaces</div>
+                          <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider" style={{ color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.4)' }}>Workspaces</div>
                           {searchResults.workspaces.map(w => (
                             <button
                               key={w.id}
@@ -319,8 +319,8 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
                                 navigate('/');
                               }}
                               className="w-full flex items-center gap-2 rounded-lg px-3 py-2 text-left text-xs transition-colors"
-                              style={{ color: theme === 'dark' ? '#c4b5fd' : '#6d28d9' }}
-                              onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.1)' : 'rgba(139, 92, 246, 0.06)'}
+                              style={{ color: theme === 'dark' ? '#4CB5D4' : '#286CFC' }}
+                              onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(40, 108, 252, 0.12)' : 'rgba(40, 108, 252, 0.06)'}
                               onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
                             >
                               <Briefcase size={13} className="text-amber-400" />
@@ -333,7 +333,7 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
                       {/* Projects Group */}
                       {searchResults.projects.length > 0 && (
                         <div>
-                          <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider" style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.5)' : 'rgba(109, 40, 217, 0.4)' }}>Projects</div>
+                          <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider" style={{ color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.4)' }}>Projects</div>
                           {searchResults.projects.map(p => (
                             <button
                               key={p.id}
@@ -343,8 +343,8 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
                                 setSearchQuery('');
                               }}
                               className="w-full flex items-center gap-2 rounded-lg px-3 py-2 text-left text-xs transition-colors"
-                              style={{ color: theme === 'dark' ? '#c4b5fd' : '#6d28d9' }}
-                              onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.1)' : 'rgba(139, 92, 246, 0.06)'}
+                              style={{ color: theme === 'dark' ? '#4CB5D4' : '#286CFC' }}
+                              onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(40, 108, 252, 0.12)' : 'rgba(40, 108, 252, 0.06)'}
                               onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
                             >
                               <KanbanSquare size={13} className="text-violet-400" />
@@ -357,7 +357,7 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
                       {/* Tasks Group */}
                       {searchResults.tasks.length > 0 && (
                         <div>
-                          <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider" style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.5)' : 'rgba(109, 40, 217, 0.4)' }}>Tasks</div>
+                          <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider" style={{ color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.4)' }}>Tasks</div>
                           {searchResults.tasks.map(t => (
                             <button
                               key={t.id}
@@ -367,8 +367,8 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
                                 setSearchQuery('');
                               }}
                               className="w-full flex items-center gap-2 rounded-lg px-3 py-2 text-left text-xs transition-colors"
-                              style={{ color: theme === 'dark' ? '#c4b5fd' : '#6d28d9' }}
-                              onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.1)' : 'rgba(139, 92, 246, 0.06)'}
+                              style={{ color: theme === 'dark' ? '#4CB5D4' : '#286CFC' }}
+                              onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(40, 108, 252, 0.12)' : 'rgba(40, 108, 252, 0.06)'}
                               onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
                             >
                               <CheckSquare size={13} className="text-emerald-400" />
@@ -381,7 +381,7 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
                       {/* Members Group */}
                       {searchResults.members.length > 0 && (
                         <div>
-                          <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider" style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.5)' : 'rgba(109, 40, 217, 0.4)' }}>Team Members</div>
+                          <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider" style={{ color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.4)' }}>Team Members</div>
                           {searchResults.members.map(m => (
                             <button
                               key={m.id}
@@ -391,8 +391,8 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
                                 setSearchQuery('');
                               }}
                               className="w-full flex items-center gap-2 rounded-lg px-3 py-2 text-left text-xs transition-colors"
-                              style={{ color: theme === 'dark' ? '#c4b5fd' : '#6d28d9' }}
-                              onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.1)' : 'rgba(139, 92, 246, 0.06)'}
+                              style={{ color: theme === 'dark' ? '#4CB5D4' : '#286CFC' }}
+                              onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(40, 108, 252, 0.12)' : 'rgba(40, 108, 252, 0.06)'}
                               onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
                             >
                               <User size={13} className="text-blue-400" />
@@ -418,18 +418,18 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
           style={iconButtonStyle}
           title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
           onMouseEnter={e => {
-            (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.15)' : 'rgba(139, 92, 246, 0.08)';
-            (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.3)';
+            (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(40, 108, 252, 0.15)' : 'rgba(40, 108, 252, 0.08)';
+            (e.currentTarget as HTMLElement).style.borderColor = 'rgba(40, 108, 252, 0.3)';
           }}
           onMouseLeave={e => {
-            (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.08)' : 'rgba(255, 255, 255, 0.9)';
-            (e.currentTarget as HTMLElement).style.borderColor = theme === 'dark' ? 'rgba(139, 92, 246, 0.15)' : 'rgba(139, 92, 246, 0.12)';
+            (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(40, 108, 252, 0.08)' : 'rgba(255, 255, 255, 0.9)';
+            (e.currentTarget as HTMLElement).style.borderColor = theme === 'dark' ? 'rgba(40, 108, 252, 0.15)' : 'rgba(40, 108, 252, 0.12)';
           }}
         >
           {theme === 'dark' ? (
             <Sun size={17} style={{ color: '#fbbf24' }} className="transition-all duration-300" />
           ) : (
-            <Moon size={17} style={{ color: '#7c3aed' }} className="transition-all duration-300" />
+            <Moon size={17} style={{ color: '#286CFC' }} className="transition-all duration-300" />
           )}
         </button>
 
@@ -440,12 +440,12 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
             className="relative transition-all duration-200 hover:scale-105 active:scale-95"
             style={iconButtonStyle}
             onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.15)' : 'rgba(139, 92, 246, 0.08)';
-              (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.3)';
+              (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(40, 108, 252, 0.15)' : 'rgba(40, 108, 252, 0.08)';
+              (e.currentTarget as HTMLElement).style.borderColor = 'rgba(40, 108, 252, 0.3)';
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(139, 92, 246, 0.08)' : 'rgba(255, 255, 255, 0.9)';
-              (e.currentTarget as HTMLElement).style.borderColor = theme === 'dark' ? 'rgba(139, 92, 246, 0.15)' : 'rgba(139, 92, 246, 0.12)';
+              (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? 'rgba(40, 108, 252, 0.08)' : 'rgba(255, 255, 255, 0.9)';
+              (e.currentTarget as HTMLElement).style.borderColor = theme === 'dark' ? 'rgba(40, 108, 252, 0.15)' : 'rgba(40, 108, 252, 0.12)';
             }}
           >
             <Bell size={17} />
@@ -454,7 +454,7 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
                 className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[8px] font-bold text-white ring-2"
                 style={{
                   background: 'linear-gradient(135deg, #f43f5e, #e11d48)',
-                  ringColor: theme === 'dark' ? '#0a0614' : '#f4f2ff',
+                  ringColor: theme === 'dark' ? '#030B24' : '#f4f6fa',
                 }}
               >
                 {unreadCount}
@@ -467,20 +467,20 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
             <div 
               className="absolute right-0 z-50 mt-2 w-80 rounded-2xl p-2 animate-dropdown"
               style={{
-                background: theme === 'dark' ? '#150b2e' : 'white',
-                border: theme === 'dark' ? '1px solid rgba(139, 92, 246, 0.2)' : '1px solid rgba(139, 92, 246, 0.12)',
+                background: theme === 'dark' ? '#07153D' : 'white',
+                border: theme === 'dark' ? '1px solid rgba(40, 108, 252, 0.2)' : '1px solid rgba(40, 108, 252, 0.12)',
                 boxShadow: theme === 'dark' 
                   ? '0 20px 60px rgba(0, 0, 0, 0.6)' 
-                  : '0 20px 60px rgba(109, 40, 217, 0.12)',
+                  : '0 20px 60px rgba(40, 108, 252, 0.12)',
               }}
             >
-              <div className="flex items-center justify-between px-3 py-2 mb-1" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.1)' }}>
-                <span className="text-sm font-bold" style={{ color: theme === 'dark' ? '#e2e0ff' : '#1e1b4b' }}>Notifications</span>
+              <div className="flex items-center justify-between px-3 py-2 mb-1" style={{ borderBottom: '1px solid rgba(40, 108, 252, 0.1)' }}>
+                <span className="text-sm font-bold" style={{ color: theme === 'dark' ? '#ffffff' : '#0d1e3d' }}>Notifications</span>
                 {unreadCount > 0 && (
                   <button
                     onClick={markAllNotificationsRead}
                     className="flex items-center gap-1 text-[10px] font-bold transition-colors hover:opacity-80"
-                    style={{ color: '#a78bfa' }}
+                    style={{ color: '#4CB5D4' }}
                   >
                     <CheckCheck size={11} />
                     <span>Mark all read</span>
@@ -493,12 +493,12 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
                   <div className="flex flex-col items-center justify-center py-8 text-center">
                     <div 
                       className="rounded-full p-3 mb-3"
-                      style={{ background: 'rgba(139, 92, 246, 0.1)' }}
+                      style={{ background: 'rgba(40, 108, 252, 0.1)' }}
                     >
-                      <Inbox size={20} style={{ color: '#a78bfa' }} />
+                      <Inbox size={20} style={{ color: '#4CB5D4' }} />
                     </div>
-                    <p className="text-xs font-semibold" style={{ color: theme === 'dark' ? '#c4b5fd' : '#6d28d9' }}>All caught up!</p>
-                    <p className="text-[10px] mt-0.5" style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.4)' : 'rgba(109, 40, 217, 0.4)' }}>No new notifications.</p>
+                    <p className="text-xs font-semibold" style={{ color: theme === 'dark' ? '#4CB5D4' : '#286CFC' }}>All caught up!</p>
+                    <p className="text-[10px] mt-0.5" style={{ color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.4)' }}>No new notifications.</p>
                   </div>
                 ) : (
                   notifications.map((notif) => (
@@ -509,19 +509,19 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
                       style={{
                         background: notif.is_read 
                           ? 'transparent' 
-                          : theme === 'dark' ? 'rgba(139, 92, 246, 0.07)' : 'rgba(139, 92, 246, 0.04)',
-                        borderLeft: notif.is_read ? '3px solid transparent' : '3px solid rgba(139, 92, 246, 0.5)',
+                          : theme === 'dark' ? 'rgba(40, 108, 252, 0.07)' : 'rgba(40, 108, 252, 0.04)',
+                        borderLeft: notif.is_read ? '3px solid transparent' : '3px solid rgba(40, 108, 252, 0.5)',
                       }}
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <span className="text-xs font-semibold" style={{ color: notif.is_read ? (theme === 'dark' ? 'rgba(167, 139, 250, 0.5)' : 'rgba(109, 40, 217, 0.4)') : (theme === 'dark' ? '#e2e0ff' : '#1e1b4b') }}>
+                        <span className="text-xs font-semibold" style={{ color: notif.is_read ? (theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.4)') : (theme === 'dark' ? '#ffffff' : '#0d1e3d') }}>
                           {notif.title}
                         </span>
-                        <span className="text-[9px] whitespace-nowrap" style={{ color: 'rgba(167, 139, 250, 0.4)' }}>
+                        <span className="text-[9px] whitespace-nowrap" style={{ color: 'rgba(40, 108, 252, 0.4)' }}>
                           {formatNotifTime(notif.created_at)}
                         </span>
                       </div>
-                      <p className="text-[10px] leading-relaxed" style={{ color: theme === 'dark' ? 'rgba(167, 139, 250, 0.5)' : 'rgba(109, 40, 217, 0.45)' }}>
+                      <p className="text-[10px] leading-relaxed" style={{ color: theme === 'dark' ? '#A0AEC0' : 'rgba(13, 30, 61, 0.45)' }}>
                         {notif.description}
                       </p>
                     </div>

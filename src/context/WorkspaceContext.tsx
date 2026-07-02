@@ -186,6 +186,7 @@ interface WorkspaceContextType {
   notifications: Notification[];
   activities: ActivityLog[];
   loading: boolean;
+  currentUserRole: 'owner' | 'manager' | 'member';
   createWorkspace: (name: string, description: string, logoUrl: string, userId?: string) => Promise<{ workspace: Workspace | null; error: any }>;
   updateWorkspace: (workspaceId: string, updates: Partial<Workspace>) => Promise<{ workspace: Workspace | null; error: any }>;
   deleteWorkspace: (workspaceId: string) => Promise<{ error: any }>;
@@ -2360,6 +2361,12 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     return { success: true, error: null };
   };
 
+  // Calculate active user role dynamically
+  const activeMember = members.find(m => m.user_id === user?.id);
+  const currentUserRole: 'owner' | 'manager' | 'member' = activeWorkspace?.owner_id === user?.id
+    ? 'owner'
+    : (activeMember?.role || 'member');
+
   return (
     <WorkspaceContext.Provider value={{
       workspaces,
@@ -2373,6 +2380,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       notifications,
       activities,
       loading,
+      currentUserRole,
       createWorkspace,
       updateWorkspace,
       switchWorkspace,

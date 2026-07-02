@@ -2,39 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
-  CheckCircle2,
   Zap,
   Users,
   LayoutDashboard,
   FolderKanban,
-  Bell,
   Shield,
-  Star,
-  ChevronRight,
   Play,
   TrendingUp,
-  Clock,
-  MessageSquare,
-  FileText,
   Activity,
   Sparkles,
-  Globe,
-  Lock,
   BarChart3,
   Check,
   X,
   Rocket,
-  Building2,
-  Crown,
   Menu,
+  Search,
+  Bell,
+  Plus,
 } from 'lucide-react';
 import TaskFlowLogo from '../components/shared/TaskFlowLogo';
 
-// ─── Animated Counter ───────────────────────────────────────────────────────
+// ─── Animated Counter Component ──────────────────────────────────────────────
 const Counter: React.FC<{ end: number; suffix?: string; duration?: number }> = ({
   end,
   suffix = '',
-  duration = 2000,
+  duration = 1500,
 }) => {
   const [count, setCount] = useState(0);
   useEffect(() => {
@@ -54,192 +46,9 @@ const Counter: React.FC<{ end: number; suffix?: string; duration?: number }> = (
   return <>{count.toLocaleString()}{suffix}</>;
 };
 
-// ─── Data ────────────────────────────────────────────────────────────────────
-const features = [
-  {
-    icon: LayoutDashboard,
-    title: 'Smart Dashboard',
-    desc: 'Get a bird\'s-eye view of all your projects, tasks, and team activity in one beautiful, real-time workspace.',
-    color: '#8b5cf6',
-    bg: 'rgba(139,92,246,0.08)',
-  },
-  {
-    icon: FolderKanban,
-    title: 'Project Tracking',
-    desc: 'Manage projects with priority levels, due dates, and progress bars. Never miss a milestone again.',
-    color: '#6d28d9',
-    bg: 'rgba(109,40,217,0.08)',
-  },
-  {
-    icon: Users,
-    title: 'Team Collaboration',
-    desc: 'Invite members, assign roles, create teams, and communicate in real-time — all in one place.',
-    color: '#7c3aed',
-    bg: 'rgba(124,58,237,0.08)',
-  },
-  {
-    icon: Bell,
-    title: 'Smart Notifications',
-    desc: 'Stay up-to-date with real-time notifications for task updates, mentions, and project changes.',
-    color: '#a78bfa',
-    bg: 'rgba(167,139,250,0.08)',
-  },
-  {
-    icon: Shield,
-    title: 'Enterprise Security',
-    desc: 'Row-level security, CAPTCHA protection, rate limiting, and audit logs to keep your data safe.',
-    color: '#8b5cf6',
-    bg: 'rgba(139,92,246,0.08)',
-  },
-  {
-    icon: Activity,
-    title: 'Activity Logs',
-    desc: 'Full audit trail of every action in your workspace. Transparency you can trust, compliance you need.',
-    color: '#6d28d9',
-    bg: 'rgba(109,40,217,0.08)',
-  },
-];
-
-const stats = [
-  { value: 10000, suffix: '+', label: 'Active Users' },
-  { value: 50000, suffix: '+', label: 'Tasks Completed' },
-  { value: 99, suffix: '.9%', label: 'Uptime SLA' },
-  { value: 500, suffix: '+', label: 'Teams Onboarded' },
-];
-
-const steps = [
-  { step: '01', title: 'Create Workspace', desc: 'Set up your workspace in seconds. Invite your team and configure roles.', icon: Rocket },
-  { step: '02', title: 'Launch Projects', desc: 'Create projects, set priorities and deadlines, and assign them to teams.', icon: FolderKanban },
-  { step: '03', title: 'Track Progress', desc: 'Monitor task completion, project milestones, and team performance live.', icon: BarChart3 },
-  { step: '04', title: 'Ship Faster', desc: 'Use insights, notifications, and collaboration tools to hit every deadline.', icon: Zap },
-];
-
-const testimonials = [
-  {
-    name: 'Sarah Johnson',
-    role: 'Product Manager @ NovaTech',
-    avatar: 'SJ',
-    color: '#8b5cf6',
-    quote: 'TaskFlow completely transformed how our team works. The real-time updates and intuitive dashboard cut our meeting time in half.',
-    stars: 5,
-  },
-  {
-    name: 'Marcus Chen',
-    role: 'CTO @ ScaleUp Labs',
-    avatar: 'MC',
-    color: '#6d28d9',
-    quote: 'The enterprise security features gave us the confidence to migrate all our project data. Best decision we\'ve made this year.',
-    stars: 5,
-  },
-  {
-    name: 'Priya Sharma',
-    role: 'Team Lead @ BuildCraft',
-    avatar: 'PS',
-    color: '#7c3aed',
-    quote: 'Onboarding was seamless, the UI is stunning, and the team collaboration features are exactly what we needed to scale.',
-    stars: 5,
-  },
-];
-
-const pricingPlans = [
-  {
-    name: 'Free',
-    icon: Zap,
-    monthlyPrice: 0,
-    yearlyPrice: 0,
-    description: 'Perfect for individuals and small experiments.',
-    color: '#6d28d9',
-    accentBg: 'rgba(109,40,217,0.06)',
-    features: [
-      { text: '1 Workspace', included: true },
-      { text: '3 Projects', included: true },
-      { text: 'Up to 3 Members', included: true },
-      { text: 'Basic Task Management', included: true },
-      { text: 'Activity Logs', included: true },
-      { text: 'Priority Support', included: false },
-      { text: 'Custom Roles', included: false },
-      { text: 'Advanced Analytics', included: false },
-    ],
-    cta: 'Get Start',
-    popular: false,
-  },
-  {
-    name: 'Starter',
-    icon: Rocket,
-    monthlyPrice: 750,
-    yearlyPrice: 580,
-    description: 'For growing teams ready to scale their workflow.',
-    color: '#8b5cf6',
-    accentBg: 'rgba(139,92,246,0.06)',
-    features: [
-      { text: '3 Workspaces', included: true },
-      { text: '15 Projects', included: true },
-      { text: 'Up to 10 Members', included: true },
-      { text: 'Advanced Task Management', included: true },
-      { text: 'Activity Logs', included: true },
-      { text: 'Email Support', included: true },
-      { text: 'Custom Roles', included: false },
-      { text: 'Advanced Analytics', included: false },
-    ],
-    cta: 'Start Free Trial',
-    popular: false,
-  },
-  {
-    name: 'Pro',
-    icon: Crown,
-    monthlyPrice: 1500,
-    yearlyPrice: 1200,
-    description: 'For power teams that demand maximum performance.',
-    color: '#7c3aed',
-    accentBg: 'rgba(124,58,237,0.06)',
-    features: [
-      { text: 'Unlimited Workspaces', included: true },
-      { text: 'Unlimited Projects', included: true },
-      { text: 'Unlimited Members', included: true },
-      { text: 'Advanced Task Management', included: true },
-      { text: 'Activity Logs & Audit Trail', included: true },
-      { text: 'Priority Support', included: true },
-      { text: 'Custom Roles & Permissions', included: true },
-      { text: 'Advanced Analytics', included: true },
-    ],
-    cta: 'Start Free Trial',
-    popular: true,
-  },
-  {
-    name: 'Enterprise',
-    icon: Building2,
-    monthlyPrice: null,
-    yearlyPrice: null,
-    description: 'Custom solutions for large-scale organizations.',
-    color: '#4c1d95',
-    accentBg: 'rgba(76,29,149,0.06)',
-    features: [
-      { text: 'Everything in Pro', included: true },
-      { text: 'SSO / SAML Integration', included: true },
-      { text: 'Dedicated Account Manager', included: true },
-      { text: 'Custom Integrations', included: true },
-      { text: 'SLA & Uptime Guarantee', included: true },
-      { text: 'On-Premise Deployment Option', included: true },
-      { text: 'Security Audit & Compliance', included: true },
-      { text: 'White-label Option', included: true },
-    ],
-    cta: 'Contact Sales',
-    popular: false,
-  },
-];
-
-const navLinks = ['Features', 'How It Works', 'Testimonials'];
-
-const logoStrip = [
-  'NovaTech', 'ScaleUp', 'BuildCraft', 'DevForge', 'CloudStack',
-  'Nexora', 'PulseIO', 'HyperLab', 'PixelStudio', 'VaultAI',
-];
-
-// ─── Main Component ──────────────────────────────────────────────────────────
 const Homepage: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -247,132 +56,65 @@ const Homepage: React.FC = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const getPrice = (plan: typeof pricingPlans[0]) => {
-    if (plan.monthlyPrice === null) return null;
-    return billingCycle === 'monthly' ? plan.monthlyPrice : plan.yearlyPrice;
-  };
-
   return (
     <div
+      className="min-h-screen text-white select-none overflow-x-hidden font-sans"
       style={{
-        fontFamily: "'Inter', sans-serif",
-        background: '#f4f2ff',
-        color: '#1e1b4b',
-        overflowX: 'hidden',
+        background: '#030B24',
       }}
     >
-      {/* ── NAV ── */}
+      {/* ─── STICKY GLASS NAVBAR ─── */}
       <nav
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 100,
-          transition: 'all 0.3s ease',
-          background: scrolled || mobileMenuOpen ? 'rgba(255,255,255,0.95)' : 'transparent',
-          backdropFilter: scrolled || mobileMenuOpen ? 'blur(20px) saturate(180%)' : 'none',
-          borderBottom: scrolled || mobileMenuOpen ? '1px solid rgba(139,92,246,0.12)' : '1px solid transparent',
-          boxShadow: scrolled || mobileMenuOpen ? '0 4px 30px rgba(109,40,217,0.08)' : 'none',
-        }}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-4 md:px-8 ${
+          scrolled || mobileMenuOpen
+            ? 'bg-[#030B24]/80 backdrop-blur-md border-b border-[#286CFC]/15 shadow-[0_4px_30px_rgba(3,11,36,0.6)]'
+            : 'bg-transparent border-b border-transparent'
+        }`}
       >
-        <div
-          style={{
-            maxWidth: 1200,
-            margin: '0 auto',
-            padding: '0 24px',
-            height: 68,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
+        <div className="max-w-7xl mx-auto h-20 flex items-center justify-between">
           {/* Logo */}
-          <TaskFlowLogo variant="full" iconSize={32} textSize={20} />
+          <div className="flex items-center">
+            <TaskFlowLogo variant="full" iconSize={32} textSize={20} />
+          </div>
 
-          {/* Desktop Nav Links */}
-          <div className="hidden md:flex items-center" style={{ gap: 36 }}>
-            {navLinks.map((link) => (
+          {/* Nav Links */}
+          <div className="hidden md:flex items-center gap-10">
+            {[
+              { name: 'Home', href: '#' },
+              { name: 'Features', href: '#features' },
+              { name: 'How It Works', href: '#how-it-works' }
+            ].map((link) => (
               <a
-                key={link}
-                href={`#${link.toLowerCase().replace(/\s+/g, '-')}`}
-                style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: '#4c1d95',
-                  textDecoration: 'none',
-                  transition: 'color 0.2s',
-                  opacity: 0.75,
-                }}
-                onMouseEnter={e => ((e.target as HTMLElement).style.opacity = '1')}
-                onMouseLeave={e => ((e.target as HTMLElement).style.opacity = '0.75')}
+                key={link.name}
+                href={link.href}
+                className="text-sm font-semibold tracking-wide transition-all duration-200 text-[#A0AEC0] hover:text-white relative group"
               >
-                {link}
+                {link.name}
+                <span className="absolute left-0 right-0 bottom-[-4px] h-[2px] bg-gradient-to-r from-[#286CFC] to-[#4CB5D4] scale-x-0 group-hover:scale-x-100 transition-transform duration-250 origin-left" />
               </a>
             ))}
           </div>
 
-          {/* Desktop CTA Buttons */}
-          <div className="hidden md:flex items-center" style={{ gap: 12 }}>
+          {/* CTAs */}
+          <div className="hidden md:flex items-center gap-4">
             <Link
               to="/login"
-              style={{
-                fontSize: 14,
-                fontWeight: 600,
-                color: '#6d28d9',
-                textDecoration: 'none',
-                padding: '8px 16px',
-                borderRadius: 10,
-                transition: 'all 0.2s',
-              }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLElement).style.background = 'rgba(139,92,246,0.07)';
-              }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLElement).style.background = 'transparent';
-              }}
+              className="text-sm font-semibold text-[#A0AEC0] hover:text-white transition-colors px-4 py-2"
             >
-              Log In
+              Login
             </Link>
             <Link
               to="/register"
-              style={{
-                fontSize: 14,
-                fontWeight: 700,
-                color: 'white',
-                textDecoration: 'none',
-                padding: '10px 22px',
-                borderRadius: 12,
-                background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
-                boxShadow: '0 4px 20px rgba(139,92,246,0.4)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                transition: 'all 0.25s',
-              }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)';
-                (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 28px rgba(139,92,246,0.5)';
-              }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-                (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 20px rgba(139,92,246,0.4)';
-              }}
+              className="text-sm font-bold bg-[#286CFC] hover:bg-[#004ee6] text-white px-6 py-2.5 rounded-xl shadow-lg shadow-[#286CFC]/20 hover:shadow-[#286CFC]/35 transition-all duration-250 flex items-center gap-2 hover:-translate-y-0.5 active:translate-y-0"
             >
               Get Started <ArrowRight size={14} />
             </Link>
           </div>
 
-          {/* Mobile Hamburger Menu Toggle */}
+          {/* Mobile Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="flex md:hidden rounded-xl p-2 transition-all duration-200"
-            style={{
-              background: 'rgba(139, 92, 246, 0.08)',
-              border: '1px solid rgba(139, 92, 246, 0.15)',
-              color: '#7c3aed',
-              cursor: 'pointer',
-            }}
+            className="md:hidden p-2.5 rounded-xl bg-[#07153D] border border-[#286CFC]/20 text-[#4CB5D4] cursor-pointer"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -380,67 +122,33 @@ const Homepage: React.FC = () => {
 
         {/* Mobile Dropdown Panel */}
         {mobileMenuOpen && (
-          <div 
-            className="md:hidden animate-fade-in"
-            style={{
-              background: 'white',
-              borderBottom: '1px solid rgba(139,92,246,0.12)',
-              boxShadow: '0 10px 30px rgba(109,40,217,0.08)',
-              padding: '16px 24px 24px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 16,
-            }}
-          >
-            {navLinks.map((link) => (
+          <div className="md:hidden pb-6 pt-2 flex flex-col gap-4 border-t border-[#286CFC]/10 animate-fade-in">
+            {[
+              { name: 'Home', href: '#' },
+              { name: 'Features', href: '#features' },
+              { name: 'How It Works', href: '#how-it-works' }
+            ].map((link) => (
               <a
-                key={link}
-                href={`#${link.toLowerCase().replace(/\s+/g, '-')}`}
+                key={link.name}
+                href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                style={{
-                  fontSize: 15,
-                  fontWeight: 600,
-                  color: '#4c1d95',
-                  textDecoration: 'none',
-                  padding: '8px 0',
-                  borderBottom: '1px solid rgba(139,92,246,0.06)',
-                }}
+                className="text-base font-semibold py-2 text-[#A0AEC0] hover:text-[#FFFFFF] border-b border-[#07153D]"
               >
-                {link}
+                {link.name}
               </a>
             ))}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 8 }}>
+            <div className="flex flex-col gap-3 pt-3">
               <Link
                 to="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                style={{
-                  fontSize: 15,
-                  fontWeight: 600,
-                  color: '#6d28d9',
-                  textDecoration: 'none',
-                  textAlign: 'center',
-                  padding: '12px',
-                  borderRadius: 12,
-                  background: 'rgba(139,92,246,0.05)',
-                  border: '1px solid rgba(139,92,246,0.12)',
-                }}
+                className="text-center font-semibold text-[#A0AEC0] hover:text-[#FFFFFF] py-3 rounded-xl bg-[#07153D] border border-[#286CFC]/15"
               >
-                Log In
+                Login
               </Link>
               <Link
                 to="/register"
                 onClick={() => setMobileMenuOpen(false)}
-                style={{
-                  fontSize: 15,
-                  fontWeight: 700,
-                  color: 'white',
-                  textDecoration: 'none',
-                  textAlign: 'center',
-                  padding: '12px',
-                  borderRadius: 12,
-                  background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
-                  boxShadow: '0 4px 15px rgba(139,92,246,0.3)',
-                }}
+                className="text-center font-bold text-white py-3 rounded-xl bg-[#286CFC] hover:bg-[#004ee6] transition-all"
               >
                 Get Started
               </Link>
@@ -449,559 +157,409 @@ const Homepage: React.FC = () => {
         )}
       </nav>
 
-      {/* ── HERO ── */}
+      {/* ─── HERO SECTION ─── */}
       <section
+        className="relative min-h-screen flex flex-col items-center justify-center pt-32 pb-20 px-4 md:px-8"
         style={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-          background: 'linear-gradient(135deg, #faf8ff 0%, #f0ecff 50%, #ede9fe 100%)',
-          paddingTop: 100,
-          paddingBottom: 60,
+          background: 'radial-gradient(circle at top, rgba(40, 108, 252, 0.1) 0%, transparent 65%)',
         }}
       >
-        {/* Ambient orbs */}
+        {/* Glow Spheres */}
+        <div className="absolute top-1/4 right-0 w-[45%] h-[45%] rounded-full bg-radial from-[#286CFC]/10 to-transparent filter blur-[80px] pointer-events-none animate-pulse-slow" />
+        <div className="absolute bottom-10 left-0 w-[40%] h-[40%] rounded-full bg-radial from-[#4CB5D4]/10 to-transparent filter blur-[80px] pointer-events-none" />
+
+        {/* Grid Overlay */}
         <div
+          className="absolute inset-0 pointer-events-none opacity-[0.03]"
           style={{
-            position: 'absolute', top: '-10%', right: '-5%',
-            width: '55%', height: '55%', borderRadius: '50%',
-            background: 'radial-gradient(ellipse, rgba(139,92,246,0.15) 0%, transparent 70%)',
-            filter: 'blur(60px)', animation: 'floatBubble 14s ease-in-out infinite',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute', bottom: '-10%', left: '-5%',
-            width: '50%', height: '50%', borderRadius: '50%',
-            background: 'radial-gradient(ellipse, rgba(109,40,217,0.1) 0%, transparent 70%)',
-            filter: 'blur(60px)', animation: 'floatBubble 20s ease-in-out infinite',
-          }}
-        />
-        {/* Dot grid */}
-        <div
-          style={{
-            position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.4,
-            backgroundImage: 'radial-gradient(circle, rgba(139,92,246,0.25) 1px, transparent 1px)',
-            backgroundSize: '36px 36px',
+            backgroundImage: 'radial-gradient(circle, #286CFC 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
           }}
         />
 
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1, width: '100%' }}>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-[60px]" style={{ alignItems: 'center' }}>
-            {/* Left: copy */}
-            <div>
-              {/* Badge */}
-              <div
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 8,
-                  background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)',
-                  borderRadius: 30, padding: '6px 18px', marginBottom: 28,
-                  animation: 'fadeInUp 0.6s ease forwards',
-                }}
-              >
-                <Sparkles size={14} style={{ color: '#8b5cf6' }} />
-                <span style={{ fontSize: 13, fontWeight: 700, color: '#6d28d9', letterSpacing: '0.01em' }}>
-                  The Modern Project Management Platform
-                </span>
-              </div>
+        <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col items-center text-center">
+          {/* Pill Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#07153D] border border-[#286CFC]/20 text-xs font-semibold tracking-wider text-[#4CB5D4] mb-8 animate-fade-in">
+            <Sparkles size={13} className="text-[#4CB5D4]" />
+            Modern Project Management SaaS
+          </div>
 
-              {/* Headline */}
-              <h1
-                style={{
-                  fontSize: 'clamp(32px, 6vw, 60px)',
-                  fontFamily: "'Outfit', sans-serif",
-                  fontWeight: 800,
-                  lineHeight: 1.15,
-                  letterSpacing: '-0.03em',
-                  color: '#1e1b4b',
-                  marginBottom: 22,
-                  animation: 'fadeInUp 0.7s 0.1s ease both',
-                }}
-              >
-                Collaborate, Track &{' '}
-                <span
-                  style={{
-                    background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
-                  Ship Faster
-                </span>
-              </h1>
+          {/* Heading */}
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight leading-[1.15] font-display text-white max-w-4xl animate-fade-in-up">
+            Manage Projects, Tasks & Teams
+            <span className="block mt-2 bg-gradient-to-r from-[#286CFC] to-[#4CB5D4] bg-clip-text text-transparent">
+              From One Powerful Workspace
+            </span>
+          </h1>
 
-              {/* Sub */}
-              <p
-                style={{
-                  fontSize: 'clamp(15px, 2.5vw, 18px)',
-                  color: 'rgba(109,40,217,0.65)',
-                  lineHeight: 1.6,
-                  marginBottom: 36,
-                  fontWeight: 500,
-                  animation: 'fadeInUp 0.7s 0.2s ease both',
-                }}
-              >
-                TaskFlow brings your teams, projects, and tasks into one unified workspace.
-                Real-time collaboration, enterprise security, and beautiful design — all in one.
-              </p>
+          {/* Subheading */}
+          <p className="text-base sm:text-lg lg:text-xl text-[#A0AEC0] leading-relaxed max-w-2xl mt-6 animate-fade-in-up delay-100">
+            Plan projects, assign tasks, collaborate with your team, track progress, and deliver work on time from a centralized workspace.
+          </p>
 
-              {/* CTAs */}
-              <div
-                style={{
-                  display: 'flex', alignItems: 'center',
-                  gap: 16, flexWrap: 'wrap',
-                  animation: 'fadeInUp 0.7s 0.3s ease both',
-                }}
-              >
-                <Link
-                  to="/register"
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 8,
-                    background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
-                    color: 'white', fontWeight: 700, fontSize: 16,
-                    padding: '14px 30px', borderRadius: 14, textDecoration: 'none',
-                    boxShadow: '0 8px 32px rgba(139,92,246,0.45)',
-                    transition: 'all 0.25s',
-                  }}
-                  onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
-                    (e.currentTarget as HTMLElement).style.boxShadow = '0 12px 40px rgba(139,92,246,0.55)';
-                  }}
-                  onMouseLeave={e => {
-                    (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-                    (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 32px rgba(139,92,246,0.45)';
-                  }}
-                >
-                  Start for Free <ArrowRight size={18} />
-                </Link>
-                <a
-                  href="#how-it-works"
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 8,
-                    background: 'rgba(139,92,246,0.08)',
-                    border: '1.5px solid rgba(139,92,246,0.25)',
-                    color: '#6d28d9', fontWeight: 700, fontSize: 15,
-                    padding: '13px 26px', borderRadius: 14, textDecoration: 'none',
-                    transition: 'all 0.25s',
-                  }}
-                  onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.background = 'rgba(139,92,246,0.14)';
-                    (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139,92,246,0.4)';
-                  }}
-                  onMouseLeave={e => {
-                    (e.currentTarget as HTMLElement).style.background = 'rgba(139,92,246,0.08)';
-                    (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139,92,246,0.25)';
-                  }}
-                >
-                  <Play size={16} fill="#6d28d9" /> See How It Works
-                </a>
-              </div>
+          {/* CTAs */}
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-8 animate-fade-in-up delay-200">
+            <Link
+              to="/register"
+              className="bg-[#286CFC] hover:bg-[#004ee6] text-white font-bold text-base px-8 py-4 rounded-xl shadow-lg shadow-[#286CFC]/20 hover:shadow-[#286CFC]/35 transition-all duration-200 hover:-translate-y-0.5"
+            >
+              Get Started
+            </Link>
+            <a
+              href="#how-it-works"
+              className="inline-flex items-center gap-2 bg-[#07153D] hover:bg-[#0b1c4f] border border-[#286CFC]/20 text-white font-bold text-base px-7 py-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
+            >
+              <Play size={16} className="text-[#4CB5D4] fill-[#4CB5D4]" />
+              View Demo
+            </a>
+          </div>
 
-              {/* Trust indicators */}
-              <div
-                style={{
-                  display: 'flex', alignItems: 'center',
-                  gap: 24, marginTop: 36, flexWrap: 'wrap',
-                  animation: 'fadeInUp 0.7s 0.4s ease both',
-                }}
-              >
-                {[
-                  { icon: CheckCircle2, text: 'Free forever plan' },
-                  { icon: Shield, text: 'SOC2 compliant' },
-                  { icon: Zap, text: 'No credit card needed' },
-                ].map(({ icon: Icon, text }) => (
-                  <div key={text} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <Icon size={15} style={{ color: '#8b5cf6' }} />
-                    <span style={{ fontSize: 13, fontWeight: 600, color: 'rgba(109,40,217,0.7)' }}>{text}</span>
+          {/* ─── PREMIUM DASHBOARD PREVIEW ─── */}
+          <div className="w-full max-w-5xl mt-16 relative animate-fade-in-up delay-300">
+            {/* Ambient Background Glow behind mockup */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#286CFC]/10 to-[#4CB5D4]/10 rounded-2xl filter blur-2xl -z-10" />
+
+            {/* Window Container */}
+            <div className="rounded-2xl border border-white/10 bg-[#07153D]/50 backdrop-blur-xl p-1 md:p-3 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)] overflow-hidden">
+              <div className="rounded-xl bg-[#030B24]/90 overflow-hidden border border-white/5 flex flex-col md:flex-row h-[480px]">
+                
+                {/* Mock Sidebar */}
+                <div className="w-full md:w-52 border-b md:border-b-0 md:border-r border-white/5 bg-[#030B24]/40 p-4 flex flex-row md:flex-col justify-between md:justify-start gap-4 md:gap-6 shrink-0 overflow-x-auto md:overflow-x-visible">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-gradient-to-tr from-[#286CFC] to-[#4CB5D4] flex items-center justify-center font-bold text-xs text-white">TF</div>
+                    <span className="font-bold text-sm text-white hidden md:inline">TaskFlow Pro</span>
                   </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right: mock app preview */}
-            <div style={{ position: 'relative', animation: 'fadeInUp 0.8s 0.2s ease both' }}>
-              <div
-                style={{
-                  borderRadius: 24, overflow: 'hidden',
-                  background: 'linear-gradient(135deg, #1e0f3d, #0f0720)',
-                  border: '1px solid rgba(139,92,246,0.3)',
-                  boxShadow: '0 32px 100px rgba(109,40,217,0.3), 0 4px 20px rgba(0,0,0,0.2)',
-                  padding: 24,
-                }}
-              >
-                {/* Mock topbar */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
-                  <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#f43f5e' }} />
-                  <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#f59e0b' }} />
-                  <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#10b981' }} />
-                  <div style={{ flex: 1, height: 8, borderRadius: 4, background: 'rgba(139,92,246,0.15)', marginLeft: 12 }} />
+                  
+                  <nav className="flex flex-row md:flex-col gap-1.5 w-full">
+                    {[
+                      { name: 'Dashboard', icon: LayoutDashboard, active: true },
+                      { name: 'Projects', icon: FolderKanban, active: false },
+                      { name: 'Team Members', icon: Users, active: false },
+                      { name: 'Progress Analytics', icon: TrendingUp, active: false },
+                    ].map((item, idx) => (
+                      <div
+                        key={idx}
+                        className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
+                          item.active 
+                            ? 'bg-[#286CFC]/10 text-[#286CFC] border-l-2 border-[#286CFC]' 
+                            : 'text-[#A0AEC0] hover:bg-white/5 hover:text-white'
+                        }`}
+                      >
+                        <item.icon size={14} className={item.active ? 'text-[#286CFC]' : 'text-[#A0AEC0]'} />
+                        <span className="hidden md:inline">{item.name}</span>
+                      </div>
+                    ))}
+                  </nav>
                 </div>
 
-                {/* Mock stats */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
-                  {[
-                    { label: 'Active Projects', val: '24', color: '#8b5cf6' },
-                    { label: 'Tasks Done', val: '187', color: '#10b981' },
-                    { label: 'Team Members', val: '12', color: '#f59e0b' },
-                    { label: 'On Track', val: '96%', color: '#6d28d9' },
-                  ].map(s => (
-                    <div key={s.label} style={{ background: 'rgba(139,92,246,0.1)', borderRadius: 12, padding: '14px 16px', border: '1px solid rgba(139,92,246,0.15)' }}>
-                      <div style={{ fontSize: 22, fontWeight: 800, color: s.color, fontFamily: "'Outfit', sans-serif" }}>{s.val}</div>
-                      <div style={{ fontSize: 11, color: 'rgba(167,139,250,0.7)', marginTop: 2 }}>{s.label}</div>
+                {/* Main Mock Dashboard Workspace */}
+                <div className="flex-1 flex flex-col overflow-y-auto bg-[#030B24]/20 p-5 space-y-5">
+                  {/* Top Bar inside dashboard */}
+                  <div className="flex items-center justify-between pb-3 border-b border-white/5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-[#A0AEC0]">Workspace /</span>
+                      <span className="text-xs font-bold text-white">Overview</span>
                     </div>
-                  ))}
-                </div>
-
-                {/* Mock project list */}
-                {['Q3 Product Roadmap', 'Website Redesign', 'Mobile App v2.0'].map((proj, i) => (
-                  <div key={proj} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px', borderRadius: 10, background: 'rgba(139,92,246,0.07)', marginBottom: 8, border: '1px solid rgba(139,92,246,0.1)' }}>
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: ['#8b5cf6', '#10b981', '#f59e0b'][i] }} />
-                    <div style={{ flex: 1, fontSize: 12, color: '#c4b5fd', fontWeight: 600 }}>{proj}</div>
-                    <div style={{ fontSize: 11, color: 'rgba(167,139,250,0.5)', background: 'rgba(139,92,246,0.1)', padding: '2px 8px', borderRadius: 6 }}>
-                      {['Active', 'Review', 'In Progress'][i]}
+                    
+                    <div className="flex items-center gap-3">
+                      <div className="relative hidden sm:block">
+                        <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#A0AEC0]" />
+                        <input
+                          type="text"
+                          placeholder="Search workspace..."
+                          className="bg-white/5 border border-white/5 rounded-md pl-7 pr-3 py-1 text-[11px] text-white focus:outline-none w-36"
+                          disabled
+                        />
+                      </div>
+                      <Bell size={13} className="text-[#A0AEC0]" />
+                      <div className="w-5 h-5 rounded-full bg-[#286CFC] flex items-center justify-center text-[10px] font-bold text-white">
+                        KC
+                      </div>
                     </div>
                   </div>
-                ))}
-              </div>
 
-              {/* Floating badges */}
-              <div
-                className="hidden sm:flex"
-                style={{
-                  position: 'absolute', bottom: -16, right: -16,
-                  background: 'white', borderRadius: 14, padding: '12px 20px',
-                  boxShadow: '0 8px 32px rgba(109,40,217,0.18)',
-                  border: '1px solid rgba(139,92,246,0.15)',
-                  alignItems: 'center', gap: 10,
-                }}
-              >
-                <TrendingUp size={20} style={{ color: '#10b981' }} />
-                <div>
-                  <div style={{ fontSize: 16, fontWeight: 800, color: '#1e1b4b' }}>+38%</div>
-                  <div style={{ fontSize: 11, color: 'rgba(109,40,217,0.55)', fontWeight: 600 }}>Team velocity</div>
+                  {/* 4 KPIs grid */}
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                    {[
+                      { label: 'Total Projects', val: '24', change: '+12% this month', color: '#286CFC', bg: 'rgba(40,108,252,0.1)' },
+                      { label: 'Active Tasks', val: '120', change: '+8% vs last week', color: '#4CB5D4', bg: 'rgba(76,181,212,0.1)' },
+                      { label: 'Completed Tasks', val: '84', change: '85% total rate', color: '#10B981', bg: 'rgba(16,185,129,0.1)' },
+                      { label: 'Team Members', val: '12', change: '4 teams connected', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)' },
+                    ].map((stat, i) => (
+                      <div key={i} className="bg-[#07153D]/60 border border-white/5 rounded-xl p-3.5 flex flex-col justify-between">
+                        <div>
+                          <div className="text-[10px] font-bold text-[#A0AEC0] uppercase tracking-wider">{stat.label}</div>
+                          <div className="text-2xl font-black mt-1 font-display" style={{ color: stat.color }}>{stat.val}</div>
+                        </div>
+                        <div className="text-[9px] text-[#A0AEC0] mt-2 flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: stat.color }} />
+                          {stat.change}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* 2 columns details section */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                    {/* Column 1: Progress Metrics */}
+                    <div className="lg:col-span-7 bg-[#07153D]/40 border border-white/5 rounded-xl p-4 flex flex-col justify-between">
+                      <div className="flex items-center justify-between pb-2 border-b border-white/5">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#A0AEC0]">Progress Metrics</span>
+                        <TrendingUp size={12} className="text-[#10B981]" />
+                      </div>
+                      
+                      <div className="space-y-4 my-2">
+                        {[
+                          { name: 'Core Platform Redesign', progress: 85, color: '#286CFC' },
+                          { name: 'Client Onboarding Flow', progress: 60, color: '#4CB5D4' },
+                          { name: 'Security Firewall Auditing', progress: 100, color: '#10B981' },
+                        ].map((item, index) => (
+                          <div key={index} className="space-y-1.5">
+                            <div className="flex justify-between text-[10px] font-semibold">
+                              <span className="text-white truncate">{item.name}</span>
+                              <span className="text-[#A0AEC0]">{item.progress}%</span>
+                            </div>
+                            <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                              <div
+                                className="h-full rounded-full transition-all duration-1000"
+                                style={{ width: `${item.progress}%`, backgroundColor: item.color }}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Column 2: Recent Activity / Team list */}
+                    <div className="lg:col-span-5 bg-[#07153D]/40 border border-white/5 rounded-xl p-4 flex flex-col justify-between">
+                      <div className="flex items-center justify-between pb-2 border-b border-white/5">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#A0AEC0]">Team Workload</span>
+                        <Users size={12} className="text-[#4CB5D4]" />
+                      </div>
+
+                      <div className="space-y-2.5 my-2">
+                        {[
+                          { name: 'Sarah J.', role: 'Product Lead', color: 'bg-[#286CFC]', initial: 'SJ' },
+                          { name: 'Alex M.', role: 'Senior Backend', color: 'bg-[#4CB5D4]', initial: 'AM' },
+                          { name: 'Rahul K.', role: 'UX Designer', color: 'bg-[#10B981]', initial: 'RK' },
+                        ].map((member, idx) => (
+                          <div key={idx} className="flex items-center justify-between text-[11px]">
+                            <div className="flex items-center gap-2">
+                              <div className={`w-5.5 h-5.5 rounded-full ${member.color} text-white flex items-center justify-center font-bold text-[9px]`}>
+                                {member.initial}
+                              </div>
+                              <span className="text-white truncate font-medium">{member.name}</span>
+                            </div>
+                            <span className="text-[#A0AEC0] text-[9px] uppercase tracking-wider font-semibold">{member.role}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
-              </div>
-
-              <div
-                className="hidden sm:flex"
-                style={{
-                  position: 'absolute', top: -16, left: -16,
-                  background: 'white', borderRadius: 14, padding: '10px 16px',
-                  boxShadow: '0 8px 32px rgba(109,40,217,0.18)',
-                  border: '1px solid rgba(139,92,246,0.15)',
-                  alignItems: 'center', gap: 8,
-                }}
-              >
-                <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 6px #10b981' }} />
-                <span style={{ fontSize: 12, fontWeight: 700, color: '#1e1b4b' }}>12 online now</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── STATS ── */}
-      <section style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)', padding: '60px 24px' }}>
-        <div
-          className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10"
-          style={{
-            maxWidth: 1100, margin: '0 auto',
-            textAlign: 'center',
-          }}
-        >
-          {stats.map((s) => (
-            <div key={s.label}>
-              <div style={{ fontSize: 'clamp(32px, 5vw, 44px)', fontWeight: 800, color: 'white', fontFamily: "'Outfit', sans-serif", letterSpacing: '-0.03em' }}>
-                <Counter end={s.value} suffix={s.suffix} />
-              </div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.72)', marginTop: 4 }}>{s.label}</div>
+      {/* ─── FEATURES SECTION ─── */}
+      <section id="features" className="py-24 px-4 md:px-8 border-t border-white/5 bg-[#07153D]/20 relative">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#07153D] border border-[#286CFC]/20 text-[10px] font-extrabold uppercase tracking-widest text-[#4CB5D4]">
+              <Zap size={11} className="text-[#4CB5D4]" />
+              Powerful Features
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── LOGO STRIP ── */}
-      <section style={{ background: '#faf8ff', padding: '40px 0', borderBottom: '1px solid rgba(139,92,246,0.08)', overflow: 'hidden' }}>
-        <div style={{ textAlign: 'center', marginBottom: 20 }}>
-          <span style={{ fontSize: 13, fontWeight: 600, color: 'rgba(109,40,217,0.45)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-            Trusted by teams at
-          </span>
-        </div>
-        <div
-          style={{
-            display: 'flex', gap: 48, alignItems: 'center',
-            animation: 'marquee 30s linear infinite',
-            width: 'max-content',
-          }}
-        >
-          {[...logoStrip, ...logoStrip].map((name, i) => (
-            <div
-              key={`${name}-${i}`}
-              style={{
-                fontSize: 16, fontWeight: 800, color: 'rgba(109,40,217,0.3)',
-                fontFamily: "'Outfit', sans-serif", letterSpacing: '-0.02em',
-                whiteSpace: 'nowrap', userSelect: 'none',
-              }}
-            >
-              {name}
-            </div>
-          ))}
-        </div>
-        <style>{`
-          @keyframes marquee {
-            from { transform: translateX(0); }
-            to { transform: translateX(-50%); }
-          }
-        `}</style>
-      </section>
-
-      {/* ── FEATURES ── */}
-      <section id="features" style={{ padding: '100px 24px', background: '#faf8ff' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          {/* Section header */}
-          <div style={{ textAlign: 'center', marginBottom: 60 }}>
-            <div
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.18)',
-                borderRadius: 30, padding: '5px 16px', marginBottom: 20,
-              }}
-            >
-              <Zap size={13} style={{ color: '#8b5cf6' }} />
-              <span style={{ fontSize: 12, fontWeight: 700, color: '#6d28d9', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Everything You Need</span>
-            </div>
-            <h2 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontFamily: "'Outfit', sans-serif", fontWeight: 800, color: '#1e1b4b', letterSpacing: '-0.03em', marginBottom: 16 }}>
-              Built for modern teams
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight font-display text-white">
+              Everything You Need To Manage Work Efficiently
             </h2>
-            <p style={{ fontSize: 17, color: 'rgba(109,40,217,0.6)', maxWidth: 520, margin: '0 auto', lineHeight: 1.6 }}>
-              Every feature is designed to make your team faster, smarter, and more aligned.
+            <p className="text-base text-[#A0AEC0] max-w-lg mx-auto">
+              Access a unified, professional environment designed specifically to align your project pipelines.
             </p>
           </div>
 
-          {/* Feature grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 24 }}>
-            {features.map((f, i) => (
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                icon: FolderKanban,
+                title: 'Project Management',
+                desc: 'Plan, organize, and track your projects from kickoff to successful completion with status and priorities.',
+                color: '#286CFC',
+              },
+              {
+                icon: LayoutDashboard,
+                title: 'Task Management',
+                desc: 'Assign tasks, set due dates, prioritize workloads, and keep items moving seamlessly across visual lanes.',
+                color: '#4CB5D4',
+              },
+              {
+                icon: Users,
+                title: 'Team Collaboration',
+                desc: 'Communicate in real-time, invite teammates, chat in channels, and share assets within your workspace.',
+                color: '#10B981',
+              },
+              {
+                icon: Activity,
+                title: 'Workspace Management',
+                desc: 'Create and customize multiple secure workspaces for separate client organizations, cohorts, or departments.',
+                color: '#F59E0B',
+              },
+              {
+                icon: BarChart3,
+                title: 'Progress Tracking',
+                desc: 'Analyze project updates, evaluate velocity metrics, check completed tasks, and optimize workload distribution.',
+                color: '#8B5CF6',
+              },
+              {
+                icon: Shield,
+                title: 'Role-Based Access Control',
+                desc: 'Manage secure workspaces with distinct roles like Owner, Manager, and Member to enforce project security.',
+                color: '#EF4444',
+              },
+            ].map((f, index) => (
               <div
-                key={f.title}
-                style={{
-                  background: 'white',
-                  border: '1px solid rgba(139,92,246,0.1)',
-                  borderRadius: 20,
-                  padding: '32px 28px',
-                  transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-                  cursor: 'default',
-                  animation: `fadeInUp 0.5s ${i * 80}ms ease both`,
-                  boxShadow: '0 2px 20px rgba(109,40,217,0.05)',
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)';
-                  (e.currentTarget as HTMLElement).style.boxShadow = '0 12px 40px rgba(109,40,217,0.14)';
-                  (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139,92,246,0.25)';
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-                  (e.currentTarget as HTMLElement).style.boxShadow = '0 2px 20px rgba(109,40,217,0.05)';
-                  (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139,92,246,0.1)';
-                }}
+                key={index}
+                className="group relative rounded-2xl border border-white/5 bg-[#07153D]/40 p-8 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-[#286CFC]/20 hover:shadow-[0_8px_30px_rgba(40,108,252,0.08)]"
               >
                 <div
+                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110"
                   style={{
-                    width: 48, height: 48, borderRadius: 14,
-                    background: f.bg, display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', marginBottom: 20,
-                    border: `1px solid ${f.color}22`,
+                    backgroundColor: `${f.color}15`,
+                    border: `1px solid ${f.color}25`,
                   }}
                 >
                   <f.icon size={22} style={{ color: f.color }} />
                 </div>
-                <h3 style={{ fontSize: 18, fontFamily: "'Outfit', sans-serif", fontWeight: 700, color: '#1e1b4b', marginBottom: 10 }}>
+                <h3 className="text-lg font-bold font-display text-white mb-2.5 transition-colors group-hover:text-[#4CB5D4]">
                   {f.title}
                 </h3>
-                <p style={{ fontSize: 14, color: 'rgba(109,40,217,0.6)', lineHeight: 1.65 }}>{f.desc}</p>
+                <p className="text-sm text-[#A0AEC0] leading-relaxed">{f.desc}</p>
+                
+                {/* Accent glow on hover */}
+                <div 
+                  className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                  style={{
+                    boxShadow: `inset 0 0 24px ${f.color}05`,
+                  }}
+                />
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ── */}
-      <section id="how-it-works" style={{ padding: '100px 24px', background: 'linear-gradient(135deg, #f0ecff 0%, #ede9fe 100%)' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 60 }}>
-            <div
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)',
-                borderRadius: 30, padding: '5px 16px', marginBottom: 20,
-              }}
-            >
-              <ChevronRight size={13} style={{ color: '#8b5cf6' }} />
-              <span style={{ fontSize: 12, fontWeight: 700, color: '#6d28d9', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Simple Process</span>
+      {/* ─── HOW IT WORKS SECTION ─── */}
+      <section id="how-it-works" className="py-24 px-4 md:px-8 border-t border-white/5 relative">
+        {/* Glow behind */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-[#286CFC]/5 rounded-full filter blur-3xl pointer-events-none" />
+
+        <div className="max-w-5xl mx-auto">
+          {/* Header */}
+          <div className="text-center max-w-2xl mx-auto mb-20 space-y-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#07153D] border border-[#286CFC]/20 text-[10px] font-extrabold uppercase tracking-widest text-[#4CB5D4]">
+              Workflow
             </div>
-            <h2 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontFamily: "'Outfit', sans-serif", fontWeight: 800, color: '#1e1b4b', letterSpacing: '-0.03em', marginBottom: 16 }}>
-              Up and running in minutes
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight font-display text-white">
+              Launch Your Workspace In Minutes
             </h2>
-            <p style={{ fontSize: 17, color: 'rgba(109,40,217,0.6)', maxWidth: 480, margin: '0 auto' }}>
-              No complex setup. No training required. Just sign up and start shipping.
+            <p className="text-sm text-[#A0AEC0]">
+              Get onboarded instantly and streamline project cycles.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-            {steps.map((step, i) => (
-              <div
-                key={step.step}
-                style={{
-                  background: 'white',
-                  border: '1px solid rgba(139,92,246,0.12)',
-                  borderRadius: 20, padding: '32px 24px',
-                  position: 'relative',
-                  boxShadow: '0 4px 24px rgba(109,40,217,0.07)',
-                  animation: `fadeInUp 0.5s ${i * 100}ms ease both`,
-                  transition: 'all 0.3s ease',
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)';
-                  (e.currentTarget as HTMLElement).style.boxShadow = '0 12px 40px rgba(109,40,217,0.14)';
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-                  (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 24px rgba(109,40,217,0.07)';
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-                  <div
-                    style={{
-                      width: 44, height: 44, borderRadius: 12,
-                      background: 'linear-gradient(135deg, rgba(139,92,246,0.12), rgba(109,40,217,0.06))',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      border: '1px solid rgba(139,92,246,0.15)',
-                    }}
-                  >
-                    <step.icon size={20} style={{ color: '#8b5cf6' }} />
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 28, fontFamily: "'Outfit', sans-serif", fontWeight: 800,
-                      background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
-                      WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-                      lineHeight: 1,
-                    }}
-                  >
-                    {step.step}
-                  </div>
-                </div>
-                <h3 style={{ fontSize: 17, fontFamily: "'Outfit', sans-serif", fontWeight: 700, color: '#1e1b4b', marginBottom: 10 }}>
-                  {step.title}
-                </h3>
-                <p style={{ fontSize: 14, color: 'rgba(109,40,217,0.6)', lineHeight: 1.6 }}>{step.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+          {/* Timeline steps */}
+          <div className="relative">
+            {/* Center connecting line (Desktop only) */}
+            <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#286CFC]/30 via-[#4CB5D4]/20 to-transparent -translate-x-1/2" />
 
-      {/* ── FEATURE HIGHLIGHT ── */}
-      <section style={{ padding: '100px 24px', background: '#faf8ff' }}>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-[64px]" style={{ maxWidth: 1100, margin: '0 auto', alignItems: 'center' }}>
-          {/* Left: visual mockup */}
-          <div style={{ position: 'relative' }}>
-            <div
-              style={{
-                borderRadius: 24, overflow: 'hidden',
-                background: 'linear-gradient(135deg, #1e0f3d, #0f0720)',
-                border: '1px solid rgba(139,92,246,0.25)',
-                boxShadow: '0 24px 80px rgba(109,40,217,0.25)',
-                padding: 24,
-              }}
-            >
-              {/* Mock topbar */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
-                <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#f43f5e' }} />
-                <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#f59e0b' }} />
-                <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#10b981' }} />
-                <div style={{ flex: 1, height: 8, borderRadius: 4, background: 'rgba(139,92,246,0.15)', marginLeft: 12 }} />
-              </div>
-
-              {/* Mock stats */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
-                {[
-                  { label: 'Active Projects', val: '24', color: '#8b5cf6' },
-                  { label: 'Tasks Done', val: '187', color: '#10b981' },
-                  { label: 'Team Members', val: '12', color: '#f59e0b' },
-                  { label: 'On Track', val: '96%', color: '#6d28d9' },
-                ].map(s => (
-                  <div key={s.label} style={{ background: 'rgba(139,92,246,0.1)', borderRadius: 12, padding: '14px 16px', border: '1px solid rgba(139,92,246,0.15)' }}>
-                    <div style={{ fontSize: 22, fontWeight: 800, color: s.color, fontFamily: "'Outfit', sans-serif" }}>{s.val}</div>
-                    <div style={{ fontSize: 11, color: 'rgba(167,139,250,0.7)', marginTop: 2 }}>{s.label}</div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Mock project list */}
-              {['Q3 Product Roadmap', 'Website Redesign', 'Mobile App v2.0'].map((proj, i) => (
-                <div key={proj} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px', borderRadius: 10, background: 'rgba(139,92,246,0.07)', marginBottom: 8, border: '1px solid rgba(139,92,246,0.1)' }}>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: ['#8b5cf6', '#10b981', '#f59e0b'][i] }} />
-                  <div style={{ flex: 1, fontSize: 12, color: '#c4b5fd', fontWeight: 600 }}>{proj}</div>
-                  <div style={{ fontSize: 11, color: 'rgba(167,139,250,0.5)', background: 'rgba(139,92,246,0.1)', padding: '2px 8px', borderRadius: 6 }}>
-                    {['Active', 'Review', 'In Progress'][i]}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Floating badge */}
-            <div
-              className="hidden sm:flex"
-              style={{
-                position: 'absolute', bottom: -16, right: -16,
-                background: 'white', borderRadius: 14, padding: '12px 20px',
-                boxShadow: '0 8px 32px rgba(109,40,217,0.18)',
-                border: '1px solid rgba(139,92,246,0.15)',
-                alignItems: 'center', gap: 10,
-              }}
-            >
-              <TrendingUp size={20} style={{ color: '#10b981' }} />
-              <div>
-                <div style={{ fontSize: 16, fontWeight: 800, color: '#1e1b4b' }}>+38%</div>
-                <div style={{ fontSize: 11, color: 'rgba(109,40,217,0.55)', fontWeight: 600 }}>Team velocity</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right: copy */}
-          <div>
-            <div
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.18)',
-                borderRadius: 30, padding: '5px 16px', marginBottom: 24,
-              }}
-            >
-              <BarChart3 size={13} style={{ color: '#8b5cf6' }} />
-              <span style={{ fontSize: 12, fontWeight: 700, color: '#6d28d9', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Live Dashboard</span>
-            </div>
-            <h2 style={{ fontSize: 'clamp(26px, 3.5vw, 40px)', fontFamily: "'Outfit', sans-serif", fontWeight: 800, color: '#1e1b4b', letterSpacing: '-0.03em', marginBottom: 20, lineHeight: 1.2 }}>
-              Everything visible,<br />nothing missed
-            </h2>
-            <p style={{ fontSize: 16, color: 'rgba(109,40,217,0.6)', lineHeight: 1.7, marginBottom: 32 }}>
-              Your dashboard shows live project health, task completion rates, team activity, and upcoming deadlines. All the context you need to make faster decisions.
-            </p>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div className="space-y-12 md:space-y-16">
               {[
-                { icon: Clock, text: 'Real-time task status updates across all projects' },
-                { icon: Users, text: 'Team workload balancing and member overview' },
-                { icon: Bell, text: 'Instant notifications for blockers and mentions' },
-                { icon: Globe, text: 'Multi-workspace support for growing organizations' },
-              ].map(({ icon: Icon, text }) => (
-                <div key={text} style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-                  <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(139,92,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Icon size={15} style={{ color: '#8b5cf6' }} />
+                {
+                  step: '01',
+                  title: 'Create Workspace',
+                  desc: 'Sign up and initialize your workspace workspace in seconds. Give it a name, write descriptive details, and prepare a secure base for operations.',
+                  icon: Rocket,
+                  color: '#286CFC',
+                  leftAlign: true,
+                },
+                {
+                  step: '02',
+                  title: 'Create Projects',
+                  desc: 'Split operations into structured project lines. Track progress metrics, set deadlines, and configure dashboard overview priorities.',
+                  icon: FolderKanban,
+                  color: '#4CB5D4',
+                  leftAlign: false,
+                },
+                {
+                  step: '03',
+                  title: 'Assign Tasks',
+                  desc: 'Create interactive task boards, assign responsibilities to teammates, customize labels, and track due dates dynamically.',
+                  icon: Users,
+                  color: '#10B981',
+                  leftAlign: true,
+                },
+                {
+                  step: '04',
+                  title: 'Track Progress',
+                  desc: 'Watch tasks move to completion, view activity logs, communicate in team chats, and complete milestones on time.',
+                  icon: BarChart3,
+                  color: '#F59E0B',
+                  leftAlign: false,
+                },
+              ].map((step, idx) => (
+                <div key={idx} className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center relative">
+                  
+                  {/* Left Side Card */}
+                  <div className={`md:col-span-5 ${step.leftAlign ? 'md:order-1 md:text-right' : 'md:order-3'}`}>
+                    {step.leftAlign ? (
+                      <div className="bg-[#07153D]/30 border border-white/5 rounded-2xl p-6 shadow-xl hover:border-[#286CFC]/20 transition-all duration-300">
+                        <div className="text-sm font-extrabold uppercase tracking-wider mb-2" style={{ color: step.color }}>Step {step.step}</div>
+                        <h3 className="text-xl font-bold font-display text-white mb-2">{step.title}</h3>
+                        <p className="text-sm text-[#A0AEC0] leading-relaxed">{step.desc}</p>
+                      </div>
+                    ) : (
+                      <div className="hidden md:block" />
+                    )}
                   </div>
-                  <span style={{ fontSize: 14, color: '#1e1b4b', fontWeight: 500, paddingTop: 7, lineHeight: 1.4 }}>{text}</span>
+
+                  {/* Icon Node (Desktop Center / Mobile Top) */}
+                  <div className="md:col-span-2 flex justify-start md:justify-center items-center md:order-2 relative z-10">
+                    <div
+                      className="w-12 h-12 rounded-full flex items-center justify-center border-2 shadow-lg"
+                      style={{
+                        backgroundColor: '#030B24',
+                        borderColor: step.color,
+                        boxShadow: `0 0 20px ${step.color}30`,
+                      }}
+                    >
+                      <step.icon size={18} style={{ color: step.color }} />
+                    </div>
+                  </div>
+
+                  {/* Right Side Card */}
+                  <div className={`md:col-span-5 ${step.leftAlign ? 'md:order-3' : 'md:order-1 md:text-left'}`}>
+                    {!step.leftAlign ? (
+                      <div className="bg-[#07153D]/30 border border-white/5 rounded-2xl p-6 shadow-xl hover:border-[#4CB5D4]/20 transition-all duration-300">
+                        <div className="text-sm font-extrabold uppercase tracking-wider mb-2" style={{ color: step.color }}>Step {step.step}</div>
+                        <h3 className="text-xl font-bold font-display text-white mb-2">{step.title}</h3>
+                        <p className="text-sm text-[#A0AEC0] leading-relaxed">{step.desc}</p>
+                      </div>
+                    ) : (
+                      <div className="md:hidden">
+                        {/* Mobile view duplicate of left aligned cards */}
+                        <div className="bg-[#07153D]/30 border border-white/5 rounded-2xl p-6 shadow-xl hover:border-[#286CFC]/20 transition-all duration-300">
+                          <div className="text-sm font-extrabold uppercase tracking-wider mb-2" style={{ color: step.color }}>Step {step.step}</div>
+                          <h3 className="text-xl font-bold font-display text-white mb-2">{step.title}</h3>
+                          <p className="text-sm text-[#A0AEC0] leading-relaxed">{step.desc}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
                 </div>
               ))}
             </div>
@@ -1009,213 +567,70 @@ const Homepage: React.FC = () => {
         </div>
       </section>
 
-      {/* ── TESTIMONIALS ── */}
-      <section id="testimonials" style={{ padding: '100px 24px', background: 'linear-gradient(135deg, #f0ecff 0%, #ede9fe 100%)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 60 }}>
-            <div
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.18)',
-                borderRadius: 30, padding: '5px 16px', marginBottom: 20,
-              }}
+      {/* ─── FINAL CTA ─── */}
+      <section className="py-24 px-4 md:px-8 border-t border-white/5 bg-[#07153D]/10 text-center relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-radial from-[#286CFC]/5 to-transparent filter blur-3xl pointer-events-none" />
+        
+        <div className="max-w-4xl mx-auto relative z-10 space-y-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-display text-white">
+            Ready to transform your workflow?
+          </h2>
+          <p className="text-base text-[#A0AEC0] max-w-xl mx-auto leading-relaxed">
+            Join productive teams already using TaskFlow to coordinate tasks, assign responsibilities, and deliver milestones on schedule.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+            <Link
+              to="/register"
+              className="bg-[#286CFC] hover:bg-[#004ee6] text-white font-bold text-sm px-8 py-3.5 rounded-xl shadow-lg shadow-[#286CFC]/20 transition-all duration-200"
             >
-              <Star size={13} style={{ color: '#f59e0b' }} fill="#f59e0b" />
-              <span style={{ fontSize: 12, fontWeight: 700, color: '#6d28d9', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Loved by Teams</span>
-            </div>
-            <h2 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontFamily: "'Outfit', sans-serif", fontWeight: 800, color: '#1e1b4b', letterSpacing: '-0.03em', marginBottom: 16 }}>
-              What our users say
-            </h2>
-            <p style={{ fontSize: 17, color: 'rgba(109,40,217,0.6)', maxWidth: 440, margin: '0 auto' }}>
-              Join thousands of teams that have transformed the way they work.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3" style={{ gap: 24 }}>
-            {testimonials.map((t, i) => (
-              <div
-                key={t.name}
-                style={{
-                  background: 'white',
-                  border: '1px solid rgba(139,92,246,0.12)',
-                  borderRadius: 20, padding: '32px 28px',
-                  boxShadow: '0 4px 24px rgba(109,40,217,0.07)',
-                  transition: 'all 0.3s ease',
-                  animation: `fadeInUp 0.5s ${i * 100}ms ease both`,
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)';
-                  (e.currentTarget as HTMLElement).style.boxShadow = '0 12px 40px rgba(109,40,217,0.14)';
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-                  (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 24px rgba(109,40,217,0.07)';
-                }}
-              >
-                {/* Stars */}
-                <div style={{ display: 'flex', gap: 4, marginBottom: 20 }}>
-                  {Array.from({ length: t.stars }).map((_, si) => (
-                    <Star key={si} size={16} style={{ color: '#f59e0b' }} fill="#f59e0b" />
-                  ))}
-                </div>
-
-                {/* Quote */}
-                <p style={{ fontSize: 15, color: '#1e1b4b', lineHeight: 1.7, marginBottom: 24, fontStyle: 'italic' }}>
-                  "{t.quote}"
-                </p>
-
-                {/* Author */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div
-                    style={{
-                      width: 42, height: 42, borderRadius: '50%',
-                      background: `linear-gradient(135deg, ${t.color}, ${t.color}99)`,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 13, fontWeight: 800, color: 'white',
-                    }}
-                  >
-                    {t.avatar}
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: '#1e1b4b' }}>{t.name}</div>
-                    <div style={{ fontSize: 12, color: 'rgba(109,40,217,0.55)', fontWeight: 500 }}>{t.role}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
+              Get Started Now
+            </Link>
+            <Link
+              to="/login"
+              className="bg-[#07153D] hover:bg-[#0b1c4f] border border-white/5 text-white font-bold text-sm px-8 py-3.5 rounded-xl transition-all duration-200"
+            >
+              Sign In
+            </Link>
           </div>
         </div>
       </section>
 
-
-      {/* ── CTA BANNER ── */}
-      <section style={{ padding: '80px 24px', background: 'linear-gradient(135deg, #f0ecff 0%, #ede9fe 100%)' }}>
-        <div
-          className="px-6 py-12 sm:px-10 sm:py-16"
-          style={{
-            maxWidth: 800, margin: '0 auto', textAlign: 'center',
-            background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
-            borderRadius: 28,
-            boxShadow: '0 24px 80px rgba(139,92,246,0.4)',
-            position: 'relative', overflow: 'hidden',
-          }}
-        >
-          {/* Decorative circles */}
-          <div style={{ position: 'absolute', top: '-30px', right: '-30px', width: 160, height: 160, borderRadius: '50%', background: 'rgba(255,255,255,0.06)' }} />
-          <div style={{ position: 'absolute', bottom: '-40px', left: '-40px', width: 200, height: 200, borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }} />
-
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <div
-              style={{
-                width: 56, height: 56, borderRadius: 16,
-                background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                margin: '0 auto 20px',
-              }}
-            >
-              <Rocket size={26} style={{ color: 'rgba(255,255,255,0.9)' }} />
-            </div>
-            <h2 style={{ fontSize: 'clamp(24px, 5vw, 40px)', fontFamily: "'Outfit', sans-serif", fontWeight: 800, color: 'white', letterSpacing: '-0.03em', marginBottom: 16 }}>
-              Ready to transform your workflow?
-            </h2>
-            <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.75)', marginBottom: 36, maxWidth: 480, margin: '0 auto 36px', lineHeight: 1.6 }}>
-              Join thousands of teams already using TaskFlow to ship projects faster and collaborate better.
-            </p>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
-              <Link
-                to="/register"
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 8,
-                  background: 'white',
-                  color: '#6d28d9', fontWeight: 800, fontSize: 15,
-                  padding: '14px 32px', borderRadius: 14, textDecoration: 'none',
-                  boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-                  transition: 'all 0.25s',
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
-                  (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 32px rgba(0,0,0,0.2)';
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-                  (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
-                }}
-              >
-                Get Start <ArrowRight size={16} />
-              </Link>
-              <Link
-                to="/login"
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 8,
-                  background: 'rgba(255,255,255,0.12)',
-                  border: '1.5px solid rgba(255,255,255,0.25)',
-                  color: 'white', fontWeight: 700, fontSize: 15,
-                  padding: '13px 28px', borderRadius: 14, textDecoration: 'none',
-                  transition: 'all 0.25s',
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.2)';
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.12)';
-                }}
-              >
-                Log In
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FOOTER ── */}
-      <footer style={{ background: '#1e0f3d', padding: '60px 24px 32px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 md:gap-10" style={{ marginBottom: 48 }}>
-            {/* Brand */}
-            <div className="md:col-span-2">
-              <TaskFlowLogo variant="full" iconSize={30} textSize={18} />
-              <p style={{ fontSize: 14, color: 'rgba(167,139,250,0.6)', marginTop: 16, lineHeight: 1.65, maxWidth: 280 }}>
-                The modern project management platform for high-performing teams. Collaborate, track, and ship faster.
+      {/* ─── REDESIGNED FOOTER ─── */}
+      <footer className="py-16 px-4 md:px-8 border-t border-white/5 bg-[#030B24] relative z-10 text-center sm:text-left">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-8 pb-12 border-b border-white/5">
+            {/* Logo and brief */}
+            <div className="space-y-4 max-w-sm text-center sm:text-left">
+              <TaskFlowLogo variant="full" iconSize={26} textSize={16} />
+              <p className="text-xs text-[#A0AEC0] leading-relaxed">
+                Manage projects, tasks and team collaboration from a single workspace.
               </p>
-              <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-                {['TW', 'LI', 'GH'].map(s => (
-                  <div key={s} style={{ width: 34, height: 34, borderRadius: 9, background: 'rgba(139,92,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: '#a78bfa', cursor: 'pointer', border: '1px solid rgba(139,92,246,0.2)', transition: 'all 0.2s' }}>
-                    {s}
-                  </div>
-                ))}
-              </div>
             </div>
 
             {/* Links */}
-            {[
-              { title: 'Product', links: ['Features', 'Changelog', 'Roadmap'] },
-              { title: 'Company', links: ['About', 'Blog', 'Careers', 'Contact'] },
-              { title: 'Legal', links: ['Privacy', 'Terms', 'Security', 'Cookies'] },
-            ].map(col => (
-              <div key={col.title}>
-                <h4 style={{ fontSize: 12, fontWeight: 700, color: '#c4b5fd', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>{col.title}</h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {col.links.map(link => (
-                    <a key={link} href="#" style={{ fontSize: 14, color: 'rgba(167,139,250,0.5)', textDecoration: 'none', fontWeight: 500, transition: 'color 0.2s' }}
-                      onMouseEnter={e => ((e.target as HTMLElement).style.color = '#c4b5fd')}
-                      onMouseLeave={e => ((e.target as HTMLElement).style.color = 'rgba(167,139,250,0.5)')}
-                    >
-                      {link}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            ))}
+            <div className="flex items-center justify-center gap-8 sm:gap-12">
+              {[
+                { name: 'Home', href: '#' },
+                { name: 'Features', href: '#features' },
+                { name: 'How It Works', href: '#how-it-works' }
+              ].map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="text-xs font-semibold text-[#A0AEC0] hover:text-white transition-colors"
+                >
+                  {link.name}
+                </a>
+              ))}
+            </div>
           </div>
 
-          {/* Bottom bar */}
-          <div style={{ borderTop: '1px solid rgba(139,92,246,0.12)', paddingTop: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-            <p style={{ fontSize: 13, color: 'rgba(167,139,250,0.4)', fontWeight: 500 }}>
-              © {new Date().getFullYear()} TaskFlow. All rights reserved.
-            </p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 6px #10b981' }} />
-              <span style={{ fontSize: 13, color: 'rgba(167,139,250,0.5)', fontWeight: 600 }}>All systems operational</span>
+          {/* Bottom Copyright */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 text-[11px] text-[#A0AEC0] font-medium">
+            <span>© 2026 TaskFlow. All rights reserved.</span>
+            <div className="flex items-center gap-1.5">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#10B981] shadow-glow" />
+              <span>All Systems Operational</span>
             </div>
           </div>
         </div>
@@ -1225,3 +640,4 @@ const Homepage: React.FC = () => {
 };
 
 export default Homepage;
+

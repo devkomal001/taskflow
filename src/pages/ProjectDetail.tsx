@@ -23,6 +23,7 @@ import {
   Edit2,
   Clock,
   AlertTriangle,
+  AlertCircle,
   Upload,
   Download,
   Image as ImageIcon,
@@ -663,13 +664,13 @@ const ProjectDetail: React.FC = () => {
       )}
 
       {/* Tabs */}
-      <div className="flex items-center gap-4 border-b border-violet-100 dark:border-violet-900/30 shrink-0 animate-fade-in-up delay-100">
+      <div className="flex items-center gap-4 border-b border-[#286CFC]/12 dark:border-[#286CFC]/10 shrink-0 animate-fade-in-up delay-100">
         <button
           onClick={() => setActiveTab('table')}
           className={`flex items-center gap-2 border-b-2 py-3 text-sm font-semibold transition-all ${
             activeTab === 'table' 
-              ? 'border-violet-500 text-violet-600 dark:text-violet-400 font-bold' 
-              : 'border-transparent text-slate-500 hover:text-slate-805 dark:hover:text-slate-200'
+              ? 'border-[#286CFC] text-[#286CFC] font-bold' 
+              : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
           }`}
         >
           <List size={16} />
@@ -679,8 +680,8 @@ const ProjectDetail: React.FC = () => {
           onClick={() => setActiveTab('kanban')}
           className={`flex items-center gap-2 border-b-2 py-3 text-sm font-semibold transition-all ${
             activeTab === 'kanban' 
-              ? 'border-violet-500 text-violet-600 dark:text-violet-400 font-bold' 
-              : 'border-transparent text-slate-500 hover:text-slate-805 dark:hover:text-slate-200'
+              ? 'border-[#286CFC] text-[#286CFC] font-bold' 
+              : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
           }`}
         >
           <KanbanSquare size={16} />
@@ -690,13 +691,13 @@ const ProjectDetail: React.FC = () => {
           onClick={() => setActiveTab('activity')}
           className={`flex items-center gap-2 border-b-2 py-3 text-sm font-semibold transition-all ${
             activeTab === 'activity' 
-              ? 'border-violet-500 text-violet-600 dark:text-violet-400 font-bold' 
-              : 'border-transparent text-slate-500 hover:text-slate-805 dark:hover:text-slate-200'
+              ? 'border-[#286CFC] text-[#286CFC] font-bold' 
+              : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
           }`}
         >
           <Activity size={16} />
           <span>Activity Feed</span>
-          <span className="rounded-full bg-violet-100/10 dark:bg-violet-900/30 px-1.5 py-0.5 text-[9px] text-violet-600 dark:text-violet-400 font-bold border border-violet-200/20">
+          <span className="rounded-full bg-[#286CFC]/10 dark:bg-[#286CFC]/15 px-1.5 py-0.5 text-[9px] text-[#286CFC] font-bold border border-[#286CFC]/20">
             {combinedTimeline.length}
           </span>
         </button>
@@ -704,13 +705,13 @@ const ProjectDetail: React.FC = () => {
           onClick={() => setActiveTab('files')}
           className={`flex items-center gap-2 border-b-2 py-3 text-sm font-semibold transition-all ${
             activeTab === 'files' 
-              ? 'border-violet-500 text-violet-600 dark:text-violet-400 font-bold' 
-              : 'border-transparent text-slate-500 hover:text-slate-805 dark:hover:text-slate-200'
+              ? 'border-[#286CFC] text-[#286CFC] font-bold' 
+              : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
           }`}
         >
           <Files size={16} />
           <span>File Repository</span>
-          <span className="rounded-full bg-violet-100/10 dark:bg-violet-900/30 px-1.5 py-0.5 text-[9px] text-violet-600 dark:text-violet-400 font-bold border border-violet-200/20">
+          <span className="rounded-full bg-[#286CFC]/10 dark:bg-[#286CFC]/15 px-1.5 py-0.5 text-[9px] text-[#286CFC] font-bold border border-[#286CFC]/20">
             {projectAttachments.length}
           </span>
         </button>
@@ -775,7 +776,7 @@ const ProjectDetail: React.FC = () => {
             <div className="overflow-x-auto h-full">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="border-b border-violet-100 dark:border-violet-900/30 bg-violet-500/5 dark:bg-violet-950/20 text-violet-700 dark:text-violet-300 uppercase tracking-wider font-bold">
+                  <tr className="border-b border-[#286CFC]/12 dark:border-[#286CFC]/10 bg-[#286CFC]/4 dark:bg-[#07153D]/60 text-slate-600 dark:text-slate-300 uppercase tracking-wider font-bold">
                     <th className="px-5 py-3.5">Task Title</th>
                     <th className="px-5 py-3.5 text-center">Team</th>
                     <th className="px-5 py-3.5 text-center">Priority</th>
@@ -784,7 +785,7 @@ const ProjectDetail: React.FC = () => {
                     <th className="px-5 py-3.5 text-center">Assignee</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-violet-100/40 dark:divide-violet-900/10">
+                <tbody className="divide-y divide-[#286CFC]/8 dark:divide-[#286CFC]/6">
                   {filteredTasks.map(task => {
                     const assignee = members.find(m => m.user_id === task.assignee_id);
                     const taskTeamId = task.team_id || (project && project.team_id);
